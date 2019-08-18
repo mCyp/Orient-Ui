@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
     // TODO 按照LinearLayoutManager编写
 
+    private static final String TAG = "TwoSideLayoutManager";
+
     // 开始的一边
     public static final int START_LEFT = 1;
     public static final int START_RIGHT = 2;
@@ -16,6 +18,7 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
     private static int DEFAULT_SIDE = START_LEFT;
 
     private int mStartSide;
+    private int mPendingScrollPosition = RecyclerView.NO_POSITION;
 
     public TwoSideLayoutManager(Context context,int startSide) {
         this.mStartSide = startSide;
@@ -26,16 +29,43 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
     }
 
     @Override
+    public boolean isAutoMeasureEnabled() {
+        return true;
+    }
+
+    @Override
     public RecyclerView.LayoutParams generateDefaultLayoutParams() {
         return new RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
-    private static final String TAG = "TwoSideLayoutManager";
+    @Override
+    public boolean canScrollVertically() {
+        return true;
+    }
+
+    @Override
+    public boolean canScrollHorizontally() {
+        return false;
+    }
 
     @Override
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
-        super.onLayoutChildren(recycler, state);
+        // 放置Children
+        // 1. 判断数量
+        if(mPendingScrollPosition != RecyclerView.NO_POSITION){
+            if(state.getItemCount() == 0){
+                removeAndRecycleAllViews(recycler);
+            }
+        }
+        // 1. 回收已经存在的视图
+        detachAndScrapAttachedViews(recycler);
+    }
+
+
+    // TODO 考虑一下布局的时候需要记录那些状态
+    static class LayoutState{
+
     }
 
 
