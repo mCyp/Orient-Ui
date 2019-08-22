@@ -10,11 +10,12 @@
         android:id="@+id/rv_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="72dp"/>
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_gravity="bottom"
+        android:visibility="gone"
         android:layout_height="72dp">
 
         <Button

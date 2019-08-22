@@ -12,51 +12,55 @@ import android.widget.LinearLayout;
 
 
 public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
-    // TODO 按照LinearLayoutManager编写
-
     private static final String TAG = "TwoSideLayoutManager";
 
-    // 开始的一边
+    // 从左侧考生
     public static final int START_LEFT = 0;
+    // 从右侧开始
     public static final int START_RIGHT = 1;
-    public static final int NO_POSITION = -1;
-    public static final int INVALID_OFFSET = Integer.MIN_VALUE;
+    private static final int NO_POSITION = -1;
+    private static final int INVALID_OFFSET = Integer.MIN_VALUE;
 
     private static int DEFAULT_SIDE = START_LEFT;
 
     // 工具类
-    OrientationHelper mOrientationHelper;
-
+    private OrientationHelper mOrientationHelper;
+    // 默认开始的一侧
     private int mStartSide;
 
     // 滚动的目标位置
     private int mPendingScrollPosition = RecyclerView.NO_POSITION;
     // 滚动的偏移量
-    int mPendingScrollPositionOffset = INVALID_OFFSET;
-
-    private boolean mStackFromEnd = false;
+    private int mPendingScrollPositionOffset = INVALID_OFFSET;
     // 布局状态
     private LayoutState mLayoutState;
     // 坐标信息
     private AnchorInfo mAnchorInfo = new AnchorInfo();
-    /**
-     * Stashed to avoid allocation, currently only used in #fill()
-     */
+    // 布局消费结果的记录
     private final LayoutChunkResult mLayoutChunkResult = new LayoutChunkResult();
 
-    public TwoSideLayoutManager(Context context, int startSide) {
+    private int lastViewOffset = 0;
+
+    public TwoSideLayoutManager(int startSide) {
         this.mStartSide = startSide;
         initOrientHelper();
     }
 
-    public TwoSideLayoutManager(Context context) {
-        this(context, DEFAULT_SIDE);
+    public TwoSideLayoutManager() {
+        this(DEFAULT_SIDE);
     }
+
+    public TwoSideLayoutManager(int startSide, int lastViewOffset) {
+        this.mStartSide = startSide;
+        this.lastViewOffset = lastViewOffset;
+        initOrientHelper();
+    }
+
 
     /**
      * 初始化
      */
-    public void initOrientHelper() {
+    private void initOrientHelper() {
         assertNotInLayoutOrScroll(null);
         if (mOrientationHelper == null) {
             mOrientationHelper =
@@ -88,6 +92,15 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
     }
 
     @Override
+    public void scrollToPosition(int position) {
+        mPendingScrollPosition = position;
+        mPendingScrollPositionOffset = INVALID_OFFSET;
+        requestLayout();
+    }
+
+    // TODO 设置跳转到指定位置带偏移量
+
+    @Override
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
         // 放置Children
         // 1. 判断数量
@@ -96,15 +109,14 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
                 removeAndRecycleAllViews(recycler);
             }
         }
-        // 1. 回收已经存在的视图
+        // 2. 回收已经存在的视图
         detachAndScrapAttachedViews(recycler);
-        // 初始化LayoutState
         ensureLayoutState();
         mLayoutState.mRecycle = false;
         final View focused = getFocusedChild();
+        // 3. 设置锚点信息
         if (!mAnchorInfo.mValid || mPendingScrollPosition != NO_POSITION) {
             mAnchorInfo.reset();
-            // 默认从结束方向开始绘制
             mAnchorInfo.mLayoutFromEnd = true;
             updateAnchorInfoForLayout(recycler, state, mAnchorInfo);
             mAnchorInfo.mValid = true;
@@ -114,15 +126,13 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
                 <= mOrientationHelper.getStartAfterPadding())) {
             mAnchorInfo.assignFromViewAndKeepVisibleRect(focused, getPosition(focused));
         }
-        final int firstLayoutDirection = LayoutState.ITEM_DIRECTION_TAIL;
 
-        // 2. 填充
-        // fill towards end
+        // 4. 填充
         int extraForStart = mOrientationHelper.getStartAfterPadding();
         int extraForEnd = mOrientationHelper.getEndAfterPadding();
         int startOffset;
         int endOffset;
-
+        // 4.1 从锚点向结束的方向填充子View
         updateLayoutStateToFillEnd(mAnchorInfo);
         mLayoutState.mExtra = extraForEnd;
         fill(recycler, mLayoutState, state, false);
@@ -131,7 +141,7 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
         if (mLayoutState.mAvailable > 0) {
             extraForStart += mLayoutState.mAvailable;
         }
-        // fill towards start
+        // 4.2 从锚点向结束的方向填充子View
         updateLayoutStateToFillStart(mAnchorInfo);
         mLayoutState.mExtra = extraForStart;
         mLayoutState.mCurrentPosition += mLayoutState.mItemDirection;
@@ -147,6 +157,7 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
             endOffset = mLayoutState.mOffset;
         }
 
+        // 5. 尝试修复可能发生的间隙
         if (getChildCount() > 0) {
             // because layout from end may be changed by scroll to position
             // we re-calculate it.
@@ -167,14 +178,13 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
         }
     }
 
-    void ensureLayoutState() {
+    /**
+     * 确保当前的LayoutState不为空
+     */
+    private void ensureLayoutState() {
         if (mLayoutState == null) {
-            mLayoutState = createLayoutState();
+            mLayoutState = new LayoutState();
         }
-    }
-
-    LayoutState createLayoutState() {
-        return new LayoutState();
     }
 
     /**
@@ -190,7 +200,7 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
             return;
         }
         anchorInfo.assignCoordinateFromPadding();
-        anchorInfo.mPosition = mStackFromEnd ? state.getItemCount() - 1 : 0;
+        anchorInfo.mPosition = 0;
     }
 
     private boolean updateAnchorFromPendingData(RecyclerView.State state, AnchorInfo anchorInfo) {
@@ -326,6 +336,9 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
         return outOfBoundsMatch != null ? outOfBoundsMatch : invalidMatch;
     }
 
+    /**
+     * 根据锚点信息更新LayoutState
+     */
     private void updateLayoutStateToFillEnd(AnchorInfo anchorInfo) {
         updateLayoutStateToFillEnd(anchorInfo.mPosition, anchorInfo.mCoordinate);
     }
@@ -357,8 +370,8 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
      *
      * @return 消费的空间
      */
-    int fill(RecyclerView.Recycler recycler, LayoutState layoutState,
-             RecyclerView.State state, boolean stopOnFocusable) {
+    private int fill(RecyclerView.Recycler recycler, LayoutState layoutState,
+                     RecyclerView.State state, boolean stopOnFocusable) {
         // max offset we should set is mFastScroll + available
         final int start = layoutState.mAvailable;
         if (layoutState.mScrollingOffset != LayoutState.SCROLLING_OFFSET_NaN) {
@@ -399,6 +412,9 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
         return start - layoutState.mAvailable;
     }
 
+    /**
+     * 回收超出屏幕的子View
+     */
     private void recycleByLayoutState(RecyclerView.Recycler recycler, LayoutState layoutState) {
         if (!layoutState.mRecycle || layoutState.mInfinite) {
             return;
@@ -473,12 +489,11 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
         }
     }
 
-    void layoutChunk(RecyclerView.Recycler recycler, RecyclerView.State state,
-                     LayoutState layoutState, LayoutChunkResult result) {
+    private void layoutChunk(RecyclerView.Recycler recycler, RecyclerView.State state,
+                             LayoutState layoutState, LayoutChunkResult result) {
         View view = layoutState.next(recycler);
         if (view == null) {
-            // if we are laying out views in scrap, this may return null which means there is
-            // no more items to layout.
+            // 没有更多的数据用来生成子View
             result.mFinished = true;
             return;
         }
@@ -488,11 +503,14 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
         /*if (recycler.getScrapList() == null) {
             addView(view, 0);
         } else {
-            addDisappearingView(view, 0);
+            addDisappearingView(view, 0);¡
         }*/
+
+        // 第一遍测量子View
         measureChild(view);
+        final int size = mOrientationHelper.getDecoratedMeasurement(view);
 
-
+        // 再次测量子View
         final RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) view.getLayoutParams();
         final int verticalInsets = lp.topMargin + lp.bottomMargin;
         final int horizontalInsets = lp.leftMargin + lp.rightMargin;
@@ -506,9 +524,9 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
                 View.MeasureSpec.EXACTLY);
         measureChildWithDecorationsAndMargin(view, wSpec, hSpec, true);
 
-        result.mConsumed = mOrientationHelper.getDecoratedMeasurement(view);
+        // 布局子View
+        result.mConsumed = size;
         int left, top, right, bottom;
-
         int num = params.getViewAdapterPosition() % 2;
         if (isLayoutRTL()) {
             if (num == mStartSide) {
@@ -527,7 +545,6 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
                 left = getPaddingLeft() + (getWidth() - getPaddingRight()) / 2;
                 right = left + mOrientationHelper.getDecoratedMeasurementInOther(view);
             }
-
         }
         if (layoutState.mLayoutDirection == LayoutState.LAYOUT_START) {
             bottom = layoutState.mOffset;
@@ -535,15 +552,18 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
         } else {
             top = layoutState.mOffset;
             bottom = layoutState.mOffset + result.mConsumed;
+            if (lp.getViewAdapterPosition() == state.getItemCount() - 1 && lastViewOffset != 0) {
+                lp.setMargins(lp.leftMargin, lp.topMargin, lp.rightMargin, lp.bottomMargin + lastViewOffset);
+                view.setLayoutParams(lp);
+                bottom += lastViewOffset;
+            }
         }
+
 
         // We calculate everything with View's bounding box (which includes decor and margins)
         // To calculate correct layout position, we subtract margins.
         layoutDecoratedWithMargins(view, left, top, right, bottom);
 
-        Log.d(TAG, "laid out child at position " + getPosition(view) + ", with l:"
-                + (left + params.leftMargin) + ", t:" + (top + params.topMargin) + ", r:"
-                + (right - params.rightMargin) + ", b:" + (bottom - params.bottomMargin));
         // Consume the available space if the view is not removed OR changed
         if (params.isItemRemoved() || params.isItemChanged()) {
             result.mIgnoreConsumed = true;
@@ -552,6 +572,9 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
     }
 
 
+    /**
+     * 测量子View
+     */
     private void measureChildWithDecorationsAndMargin(View child, int widthSpec, int heightSpec,
                                                       boolean alreadyMeasured) {
         RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) child.getLayoutParams();
@@ -567,17 +590,18 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
     }
 
 
-    boolean shouldReMeasureChild(View child, int widthSpec, int heightSpec, RecyclerView.LayoutParams lp) {
+    private boolean shouldReMeasureChild(View child, int widthSpec, int heightSpec, RecyclerView.LayoutParams lp) {
         return !isMeasurementUpToDate(child.getMeasuredWidth(), widthSpec, lp.width)
                 || !isMeasurementUpToDate(child.getMeasuredHeight(), heightSpec, lp.height);
     }
 
-    boolean shouldMeasureChild(View child, int widthSpec, int heightSpec, RecyclerView.LayoutParams lp) {
+    private boolean shouldMeasureChild(View child, int widthSpec, int heightSpec, RecyclerView.LayoutParams lp) {
         return child.isLayoutRequested()
                 || !isMeasurementUpToDate(child.getWidth(), widthSpec, lp.width)
                 || !isMeasurementUpToDate(child.getHeight(), heightSpec, lp.height);
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private static boolean isMeasurementUpToDate(int childSize, int spec, int dimension) {
         final int specMode = View.MeasureSpec.getMode(spec);
         final int specSize = View.MeasureSpec.getSize(spec);
@@ -606,65 +630,13 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
         final int availableSpace = getWidth() - (getPaddingLeft() + getPaddingRight()) / 2;
         int widthSpec = getChildMeasureSpec(availableSpace, View.MeasureSpec.EXACTLY
                 , horizontalUsed, availableSpace, true);
-        int heightSpec = getChildMeasureSpec(mOrientationHelper.getTotalSpace(), View.MeasureSpec.EXACTLY,
+        int heightSpec = getChildMeasureSpec(mOrientationHelper.getTotalSpace(), getHeightMode(),
                 verticalUsed, lp.height, true);
         measureChildWithDecorationsAndMargin(view, widthSpec, heightSpec, false);
     }
 
-    protected boolean isLayoutRTL() {
+    private boolean isLayoutRTL() {
         return getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL;
-    }
-
-
-    // TODO 考虑一下布局的时候需要记录那些状态
-    static class LayoutState {
-        static final String TAG = "LayoutState";
-        static final int LAYOUT_START = -1;
-        static final int LAYOUT_END = 1;
-        static final int INVALID_LAYOUT = Integer.MIN_VALUE;
-
-        static final int ITEM_DIRECTION_HEAD = -1;
-        static final int ITEM_DIRECTION_TAIL = 1;
-
-        static final int SCROLLING_OFFSET_NaN = Integer.MIN_VALUE;
-
-        // 某些情况下可能不想回收
-        boolean mRecycle = true;
-        // 布局开始的位置
-        int mOffset;
-        // 可以填充的空间
-        int mAvailable;
-        // 当前的位置
-        int mCurrentPosition;
-        // 当前的方向？
-        int mItemDirection;
-        // 布局方向
-        int mLayoutDirection;
-        // 滑动状态下的参数
-        int mScrollingOffset;
-        // 额外距离 is not considered to avoid recycling visible children.
-        int mExtra = 0;
-        // 预布局
-        boolean mIsPreLayout = false;
-        // 最近的滑动距离
-        int mLastScrollDelta;
-
-        // 是否是无限
-        boolean mInfinite;
-
-        // 是否有距离
-        boolean hasMore(RecyclerView.State state) {
-            return mCurrentPosition >= 0 && mCurrentPosition < state.getItemCount();
-        }
-
-        /**
-         * 获取下一个子View
-         */
-        View next(RecyclerView.Recycler recycler) {
-            final View view = recycler.getViewForPosition(mCurrentPosition);
-            mCurrentPosition += mItemDirection;
-            return view;
-        }
     }
 
     /**
@@ -717,7 +689,7 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
         return fixOffset;
     }
 
-    int scrollBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
+    private int scrollBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
         if (getChildCount() == 0 || dy == 0) {
             return 0;
         }
@@ -772,7 +744,7 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
         mLayoutState.mScrollingOffset = scrollingOffset;
     }
 
-    protected int getExtraLayoutSpace(RecyclerView.State state) {
+    private int getExtraLayoutSpace(RecyclerView.State state) {
         if (state.hasTargetScrollPosition()) {
             return mOrientationHelper.getTotalSpace();
         } else {
@@ -802,13 +774,6 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
     }
 
     @Override
-    public void scrollToPosition(int position) {
-        mPendingScrollPosition = position;
-        mPendingScrollPositionOffset = INVALID_OFFSET;
-        requestLayout();
-    }
-
-    @Override
     public void setMeasuredDimension(Rect childrenBounds, int wSpec, int hSpec) {
         final int width, height;
         final int horizontalPadding = getPaddingLeft() + getPaddingRight();
@@ -824,7 +789,60 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
         setMeasuredDimension(width, height);
     }
 
-    // 记录锚点信息
+    // TODO 考虑一下布局的时候需要记录那些状态
+    @SuppressWarnings("unused")
+    static class LayoutState {
+        static final String TAG = "LayoutState";
+        static final int LAYOUT_START = -1;
+        static final int LAYOUT_END = 1;
+
+        static final int ITEM_DIRECTION_HEAD = -1;
+        static final int ITEM_DIRECTION_TAIL = 1;
+
+        static final int SCROLLING_OFFSET_NaN = Integer.MIN_VALUE;
+
+        // 某些情况下可能不想回收
+        boolean mRecycle = true;
+        // 布局开始的位置
+        int mOffset;
+        // 可以填充的空间
+        int mAvailable;
+        // 当前的位置
+        int mCurrentPosition;
+        // 当前的方向？
+        int mItemDirection;
+        // 布局方向
+        int mLayoutDirection;
+        // 滑动状态下的参数
+        int mScrollingOffset;
+        // 额外距离 is not considered to avoid recycling visible children.
+        int mExtra = 0;
+        // 预布局
+        boolean mIsPreLayout = false;
+        // 最近的滑动距离
+        int mLastScrollDelta;
+
+        // 是否是无限
+        boolean mInfinite;
+
+        // 是否有距离
+        boolean hasMore(RecyclerView.State state) {
+            return mCurrentPosition >= 0 && mCurrentPosition < state.getItemCount();
+        }
+
+        /**
+         * 获取下一个子View
+         */
+        View next(RecyclerView.Recycler recycler) {
+            final View view = recycler.getViewForPosition(mCurrentPosition);
+            mCurrentPosition += mItemDirection;
+            return view;
+        }
+    }
+
+    /**
+     * 锚点信息
+     */
     static class AnchorInfo {
         OrientationHelper mOrientationHelper;
         int mPosition;
@@ -837,6 +855,9 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
             reset();
         }
 
+        /**
+         * 重置信息
+         */
         void reset() {
             mPosition = NO_POSITION;
             mCoordinate = INVALID_OFFSET;
@@ -870,7 +891,7 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
                     && lp.getViewLayoutPosition() < state.getItemCount();
         }
 
-        public void assignFromViewAndKeepVisibleRect(View child, int position) {
+        void assignFromViewAndKeepVisibleRect(View child, int position) {
             final int spaceChange = mOrientationHelper.getTotalSpaceChange();
             if (spaceChange >= 0) {
                 assignFromView(child, position);
@@ -917,7 +938,7 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
             }
         }
 
-        public void assignFromView(View child, int position) {
+        void assignFromView(View child, int position) {
             if (mLayoutFromEnd) {
                 mCoordinate = mOrientationHelper.getDecoratedEnd(child)
                         + mOrientationHelper.getTotalSpaceChange();
@@ -930,10 +951,10 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
     }
 
     protected static class LayoutChunkResult {
-        public int mConsumed;
-        public boolean mFinished;
-        public boolean mIgnoreConsumed;
-        public boolean mFocusable;
+        int mConsumed;
+        boolean mFinished;
+        boolean mIgnoreConsumed;
+        boolean mFocusable;
 
         void resetInternal() {
             mConsumed = 0;

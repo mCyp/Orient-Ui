@@ -3,8 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
-    android:background="@drawable/shape_main_item"
+    android:layout_height="80dp"
+    android:background="@drawable/task_item_left_bg"
+    android:layout_margin="6dp"
     tools:context=".MainActivity">
 
     <TextView

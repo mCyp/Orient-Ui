@@ -35,7 +35,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View root = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycle_item_main, viewGroup, false);
+        View root = LayoutInflater.from(viewGroup.getContext()).inflate(i, viewGroup, false);
         ViewHolder holder = new ViewHolder(root);
         return holder;
     }
@@ -51,6 +51,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 Toast.makeText(mContext,s, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if(position%2 == 1)
+            return R.layout.recycle_item_main_right;
+        else
+            return R.layout.recycle_item_main_left;
     }
 
     @Override
