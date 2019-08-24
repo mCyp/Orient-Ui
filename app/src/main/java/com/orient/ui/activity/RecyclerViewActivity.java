@@ -61,6 +61,19 @@ public class RecyclerViewActivity extends AppCompatActivity {
         values.add("Python");
         values.add("Vue");
         values.add("Flutter");
+        values.add("Flutter");
+        values.add("Flutter");
+        values.add("Flutter");
+        values.add("Flutter");
+        values.add("Flutter");
+        values.add("Flutter");
+        values.add("Flutter");
+        values.add("Flutter");
+        values.add("Flutter");
+        values.add("Flutter");
+        values.add("Flutter");
+        values.add("AI");
+
 
         mRecyclerView.setLayoutManager(new TwoSideLayoutManager(TwoSideLayoutManager.START_LEFT, UIUtils.dip2px(40)));
         List<String> params = new ArrayList<>();

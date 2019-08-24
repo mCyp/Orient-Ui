@@ -341,6 +341,7 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
      */
     private void updateLayoutStateToFillEnd(AnchorInfo anchorInfo) {
         updateLayoutStateToFillEnd(anchorInfo.mPosition, anchorInfo.mCoordinate);
+        Log.e(TAG,anchorInfo.toString());
     }
 
     private void updateLayoutStateToFillEnd(int itemPosition, int offset) {
@@ -354,6 +355,7 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
 
     private void updateLayoutStateToFillStart(AnchorInfo anchorInfo) {
         updateLayoutStateToFillStart(anchorInfo.mPosition, anchorInfo.mCoordinate);
+        Log.e(TAG,mLayoutState.toString());
     }
 
     private void updateLayoutStateToFillStart(int itemPosition, int offset) {
@@ -375,6 +377,9 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
         // max offset we should set is mFastScroll + available
         final int start = layoutState.mAvailable;
         if (layoutState.mScrollingOffset != LayoutState.SCROLLING_OFFSET_NaN) {
+            if (layoutState.mAvailable < 0) {
+                layoutState.mScrollingOffset += layoutState.mAvailable;
+            }
             recycleByLayoutState(recycler, layoutState);
         }
         int remainingSpace = layoutState.mAvailable + layoutState.mExtra;
@@ -512,7 +517,7 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
 
         // 再次测量子View
         final RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) view.getLayoutParams();
-        final int verticalInsets = lp.topMargin + lp.bottomMargin;
+        /*final int verticalInsets = lp.topMargin + lp.bottomMargin;
         final int horizontalInsets = lp.leftMargin + lp.rightMargin;
         final int totalSpaceInOther = (getWidth() - getPaddingRight() - getPaddingLeft()) / 2;
         final int wSpec;
@@ -521,8 +526,8 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
         wSpec = getChildMeasureSpec(totalSpaceInOther, View.MeasureSpec.EXACTLY,
                 horizontalInsets, lp.width, false);
         hSpec = View.MeasureSpec.makeMeasureSpec(lp.height,
-                View.MeasureSpec.EXACTLY);
-        measureChildWithDecorationsAndMargin(view, wSpec, hSpec, true);
+                View.MeasureSpec.EXACTLY);*/
+        //measureChildWithDecorationsAndMargin(view, wSpec, hSpec, true);
 
         // 布局子View
         result.mConsumed = size;
@@ -627,9 +632,10 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
         final RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) view.getLayoutParams();
         int verticalUsed = lp.bottomMargin + lp.topMargin;
         int horizontalUsed = lp.leftMargin + lp.rightMargin;
-        final int availableSpace = getWidth() - (getPaddingLeft() + getPaddingRight()) / 2;
+        final int availableSpace = (getWidth() - (getPaddingLeft() + getPaddingRight())) / 2;
+        //final int availableSpace = getWidth() - (getPaddingLeft() + getPaddingRight()) / 2;
         int widthSpec = getChildMeasureSpec(availableSpace, View.MeasureSpec.EXACTLY
-                , horizontalUsed, availableSpace, true);
+                , horizontalUsed, lp.width, true);
         int heightSpec = getChildMeasureSpec(mOrientationHelper.getTotalSpace(), getHeightMode(),
                 verticalUsed, lp.height, true);
         measureChildWithDecorationsAndMargin(view, widthSpec, heightSpec, false);
@@ -837,6 +843,11 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
             final View view = recycler.getViewForPosition(mCurrentPosition);
             mCurrentPosition += mItemDirection;
             return view;
+        }
+
+        @Override
+        public String toString() {
+            return super.toString();
         }
     }
 
