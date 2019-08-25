@@ -103,7 +103,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
                 .setTextColor(Color.parseColor("#673AB7"))
                 //.setBottomRes(R.drawable.ic_ma_1)
                 .setDotPaddingText(2)//dp.The distance between the last dot and the end text
-                .setBottomDistance(40)//you can add a distance to make bottom line longer
+                .setBottomDistance(20)//you can add a distance to make bottom line longer
                 .create();
     }
 
