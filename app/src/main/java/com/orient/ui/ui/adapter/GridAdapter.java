@@ -1,4 +1,4 @@
-package com.orient.ui.adapter;
+package com.orient.ui.ui.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.orient.ui.R;
+import com.orient.ui.data.GridItem;
 
 import java.util.List;
 
@@ -18,31 +18,31 @@ import java.util.List;
  * Author WangJie
  * Created on 2019/1/14.
  */
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
+public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
 
-    private List<String> values;
+    private List<GridItem> values;
     private Context mContext;
 
-    public RecyclerViewAdapter(List<String> values, Context context) {
+    public GridAdapter(List<GridItem> values, Context context) {
         this.values = values;
         this.mContext = context;
     }
 
-    public List<String> getValues() {
+    public List<GridItem> getValues() {
         return values;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View root = LayoutInflater.from(viewGroup.getContext()).inflate(i, viewGroup, false);
+        View root = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.special_grid_recycle_item, viewGroup, false);
         ViewHolder holder = new ViewHolder(root);
         return holder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        final String s = values.get(i);
+        final String s = values.get(i).getName();
         viewHolder.content = viewHolder.itemView.findViewById(R.id.txt_content);
         viewHolder.content.setText(s);
         viewHolder.content.setOnClickListener(new View.OnClickListener() {
@@ -54,19 +54,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     @Override
-    public int getItemViewType(int position) {
-        if(position%2 == 1)
-            return R.layout.recycle_item_main_right;
-        else
-            return R.layout.recycle_item_main_left;
-    }
-
-    @Override
     public int getItemCount() {
         return values.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
         public TextView content;
 
