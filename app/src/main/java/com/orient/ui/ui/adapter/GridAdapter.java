@@ -35,7 +35,7 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View root = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.special_grid_recycle_item, viewGroup, false);
+        View root = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.small_grid_recycle_item, viewGroup, false);
         ViewHolder holder = new ViewHolder(root);
         return holder;
     }

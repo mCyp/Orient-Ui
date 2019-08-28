@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="recycler_view_holder" type="id"/>
+
+    <!-- DeleteRecyclerView的默认id名 -->
+    <item name="item_layout" type="id"/>
+    <item name="item_delete" type="id"/>
+</resources>

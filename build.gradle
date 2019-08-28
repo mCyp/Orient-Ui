@@ -25,3 +25,13 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+ext{
+    // 黄油刀版本
+    butterKniferVersion = '8.8.1'
+
+    // glide版本
+    glideVersion = '3.7.0'
+
+    glideTransforemVersion = '4.0.1';
+}
