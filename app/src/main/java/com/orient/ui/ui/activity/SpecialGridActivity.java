@@ -14,7 +14,6 @@ import com.bumptech.glide.request.RequestOptions;
 import com.orient.me.rv.itemdocration.GridItemDecoration;
 import com.orient.ui.R;
 import com.orient.ui.data.GridItem;
-import com.orient.ui.ui.adapter.GridAdapter;
 import com.orient.ui.ui.adapter.RecyclerAdapter;
 
 import java.util.ArrayList;
@@ -44,7 +43,7 @@ public class SpecialGridActivity extends AppCompatActivity {
         GridLayoutManager gll = new GridLayoutManager(this, 3);
         gll.setSpanSizeLookup(new SpecialSpanSizeLookup());
         mRecyclerView.setLayoutManager(gll);
-        initData();
+        values = initData();
         mRecyclerView.setAdapter(mAdapter = new RecyclerAdapter<GridItem>(values,null) {
             @Override
             public ViewHolder<GridItem> onCreateViewHolder(View root, int viewType) {
@@ -74,19 +73,39 @@ public class SpecialGridActivity extends AppCompatActivity {
                 return 0;
             }
         });
-        itemDecoration = new GridItemDecoration.Builder(values, 3)
+
+        mAdapter.setAdapterListener(new RecyclerAdapter.AdapterListener<GridItem>() {
+            @Override
+            public void onItemClick(RecyclerAdapter.ViewHolder<GridItem> holder, GridItem gridItem) {
+                int pos = holder.getAdapterPosition();
+                if(holder.getAdapterPosition() == mAdapter.getItemCount()-1){
+                    List<GridItem> items = initData();
+                    items.get(items.size() - 1).setName("hhhahhahaa");
+                    mAdapter.replace(items);
+                    itemDecoration.replace(items,pos);
+                    values = items;
+                }
+            }
+
+            @Override
+            public void onItemLongClick(RecyclerAdapter.ViewHolder<GridItem> holder, GridItem gridItem) {
+
+            }
+        });
+
+        itemDecoration = new GridItemDecoration.Builder(this,values, 3)
                 .setTitleTextColor(Color.parseColor("#4e5864"))
-                .setTitleFontSize(24)
+                .setTitleFontSize(22)
                 .setTitleHeight(52)
                 .build();
         mRecyclerView.addItemDecoration(itemDecoration);
     }
 
-    private void initData() {
-        values = new ArrayList<>();
-        values.add(new GridItem("我很忙", "", R.drawable.jay,"最近常听",1,GridItem.TYPE_SMALL));
+    private List<GridItem> initData() {
+        List<GridItem> values = new ArrayList<>();
+        values.add(new GridItem("我很忙", "", R.drawable.head_1,"最近常听",1,GridItem.TYPE_SMALL));
         values.add(new GridItem("华语治愈：有些歌比闺蜜更懂你", "", R.drawable.head_2,"最近常听",1,GridItem.TYPE_SMALL));
-        values.add(new GridItem("我很忙", "", R.drawable.jay,"最近常听",1,GridItem.TYPE_SMALL));
+        values.add(new GridItem("[华语]90后的青春纪念手册", "", R.drawable.head_3,"最近常听",1,GridItem.TYPE_SMALL));
         values.add(new GridItem("校园：那些年，我爱过的那个少年", "听完[彩虹]，他们等你翻牌", R.drawable.normal_1
                 ,"更多为你推荐",3,GridItem.TYPE_NORMAL));
         values.add(new GridItem("校园：那些年，我爱过的那个少年", "听完[彩虹]，他们等你翻牌", R.drawable.normal_1
@@ -106,6 +125,7 @@ public class SpecialGridActivity extends AppCompatActivity {
         values.add(new GridItem("taylor swift音乐历程", "", R.drawable.special_1
                 ,"更多为你推荐",3,GridItem.TYPE_SPECIAL));
 
+        return values;
 
     }
 

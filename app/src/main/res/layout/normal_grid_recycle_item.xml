@@ -16,7 +16,7 @@
         android:layout_height="match_parent"
         android:layout_margin="10dp"
         app:layout_constraintDimensionRatio="1:1"
-        android:src="@drawable/jay"/>
+        android:src="@drawable/head_1"/>
 
     <ImageView
         android:layout_width="24dp"

@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/jay"/>
+        android:src="@drawable/head_1"/>
 
     <ImageView
         android:layout_width="32dp"

@@ -15,6 +15,17 @@ public class GridItem implements IGridItem {
     private String tag;
     private int spanSize;
     private int type;
+    //private boolean isOffset;
+
+    /*public GridItem(String name, String other, int source, String tag, int spanSize,int type,boolean isOffset) {
+        this.name = name;
+        this.other = other;
+        this.source = source;
+        this.tag = tag;
+        this.spanSize = spanSize;
+        this.type = type;
+        this.isOffset = isOffset;
+    }*/
 
     public GridItem(String name, String other, int source, String tag, int spanSize,int type) {
         this.name = name;
@@ -23,6 +34,7 @@ public class GridItem implements IGridItem {
         this.tag = tag;
         this.spanSize = spanSize;
         this.type = type;
+        //this.isOffset = false;
     }
 
     public String getName() {
@@ -55,6 +67,7 @@ public class GridItem implements IGridItem {
     public boolean isShow() {
         return true;
     }
+
 
     public String getOther() {
         return other;

@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="6dp"
+
+    android:layout_margin="5dp"
     tools:context=".MainActivity">
 
     <ImageView
@@ -15,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintDimensionRatio="1:1"
-        android:src="@drawable/jay"/>
+        android:src="@drawable/head_1"/>
 
     <ImageView
         android:layout_width="24dp"

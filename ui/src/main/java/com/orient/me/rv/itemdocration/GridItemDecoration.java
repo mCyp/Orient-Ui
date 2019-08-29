@@ -7,13 +7,18 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.SparseArray;
 import android.view.View;
 
 import com.orient.me.data.IGridItem;
 import com.orient.me.utils.UIUtils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -21,6 +26,8 @@ import java.util.List;
  */
 public class GridItemDecoration extends RecyclerView.ItemDecoration {
 
+    // 记录上次偏移位置 防止一行多个数据的时候视图偏移
+    private List<Integer> offsetPositions = new ArrayList<>();
     // 显示数据
     private List<? extends IGridItem> gridItems;
     // 画笔
@@ -34,18 +41,20 @@ public class GridItemDecoration extends RecyclerView.ItemDecoration {
     private int mTitleFontSize;
     private boolean isDrawTitleBg = false;
 
+    private Context mContext;
+
     // 总的SpanSize
     private int totalSpanSize;
     private int mCurrentSpanSize;
 
-    private GridItemDecoration(Config config) {
-        init(config);
-
+    private GridItemDecoration(Config config, Context context) {
+        this.mContext = context;
         mTitlePaint = new Paint();
         mTitlePaint.setAntiAlias(true);
         mTitlePaint.setDither(true);
-
+        mTitleFontSize = UIUtils.sp2px(mContext, config.titleFontSize);
         mRect = new Rect();
+        init(config);
     }
 
     private void init(Config config) {
@@ -53,38 +62,88 @@ public class GridItemDecoration extends RecyclerView.ItemDecoration {
         this.totalSpanSize = config.totalSpanSize;
         this.mTitleBgColor = config.titleBgColor;
         this.mTitleColor = config.titleTextColor;
-        this.mTitleHeight = UIUtils.dip2px(config.titleHeight);;
-        this.mTitleFontSize = config.titleFontSize;
+        this.mTitleHeight = UIUtils.dip2px(mContext, config.titleHeight);
+        ;
         this.isDrawTitleBg = config.isDrawTitleBg;
     }
 
-    public void updateGridItems(List<IGridItem> gridItems){
-        this.gridItems = gridItems;
+    /**
+     * 更新部分数据
+     */
+    public void addItems(List items){
+        this.gridItems.addAll(items);
+    }
+
+    /**
+     * 更新全部数据
+     * @param items 数据
+     */
+    public void replace(List<? extends IGridItem> items){
+        replace(items,0);
+    }
+
+    /**
+     * 对于当前位置前的数据需要更新，不然，对于文字下方的多列的首行视图会发生偏移
+     * @param items 更换的数据
+     * @param pos 当前可见视图在数据中的位置
+     */
+    public void replace(List<? extends IGridItem> items,int pos){
+        this.offsetPositions.clear();
+        if(items == null || items.size() == 0){
+            remove();
+            return;
+        }
+        if(pos >= items.size())
+            throw new UnsupportedOperationException();
+
+        this.gridItems = items;
+        int currentSpanSize = gridItems.get(0).getSpanSize();
+        for(int i= 1;i<pos;i++){
+            IGridItem item = items.get(i);
+            IGridItem lastItem = items.get(i-1);
+            if(!item.getTag().equals(lastItem.getTag())){
+                currentSpanSize = item.getSpanSize();
+                offsetPositions.add(i);
+                continue;
+            }
+
+            currentSpanSize += item.getSpanSize();
+            if(currentSpanSize <= totalSpanSize){
+                offsetPositions.add(i);
+            }
+        }
+    }
+
+
+
+    public void remove(){
+        this.gridItems.clear();
+        this.offsetPositions.clear();
     }
 
     @Override
     public void onDraw(@NonNull Canvas c, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         super.onDraw(c, parent, state);
-        Context context = parent.getContext();
-        mTitleFontSize = UIUtils.sp2px(context, mTitleFontSize);
 
         final int paddingLeft = parent.getPaddingLeft();
         final int paddingRight = parent.getPaddingRight();
         final int childCount = parent.getChildCount();
         for (int i = 0; i < childCount; i++) {
-            IGridItem item = gridItems.get(i);
+            View child = parent.getChildAt(i);
+            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
+            int pos = params.getViewLayoutPosition();
+            IGridItem item = gridItems.get(pos);
             if (item == null || !item.isShow())
                 continue;
 
-            View child = parent.getChildAt(i);
             if (i == 0) {
                 drawTitle(c, paddingLeft, paddingRight, child
-                        , (RecyclerView.LayoutParams) child.getLayoutParams(), i);
+                        , (RecyclerView.LayoutParams) child.getLayoutParams(), pos);
             } else {
-                IGridItem lastItem = gridItems.get(i - 1);
+                IGridItem lastItem = gridItems.get(pos - 1);
                 if (lastItem != null && !item.getTag().equals(lastItem.getTag())) {
                     drawTitle(c, paddingLeft, paddingRight, child,
-                            (RecyclerView.LayoutParams) child.getLayoutParams(), i);
+                            (RecyclerView.LayoutParams) child.getLayoutParams(), pos);
                 }
             }
         }
@@ -126,6 +185,7 @@ public class GridItemDecoration extends RecyclerView.ItemDecoration {
     public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         super.getItemOffsets(outRect, view, parent, state);
 
+
         int position = parent.getChildAdapterPosition(view);
         IGridItem item = gridItems.get(position);
         if (item == null || !item.isShow())
@@ -134,6 +194,11 @@ public class GridItemDecoration extends RecyclerView.ItemDecoration {
             outRect.set(0, mTitleHeight, 0, 0);
             mCurrentSpanSize = item.getSpanSize();
         } else {
+            if (!offsetPositions.isEmpty() && offsetPositions.contains(position)) {
+                outRect.set(0, mTitleHeight, 0, 0);
+                return;
+            }
+
             if (!TextUtils.isEmpty(item.getTag()) && !item.getTag().equals(gridItems.get(position - 1).getTag())) {
                 mCurrentSpanSize = item.getSpanSize();
             } else
@@ -141,6 +206,7 @@ public class GridItemDecoration extends RecyclerView.ItemDecoration {
 
             if (mCurrentSpanSize <= totalSpanSize) {
                 outRect.set(0, mTitleHeight, 0, 0);
+                offsetPositions.add(position);
             }
         }
     }
@@ -162,9 +228,11 @@ public class GridItemDecoration extends RecyclerView.ItemDecoration {
 
     public static class Builder {
         private Config config;
+        private Context context;
 
-        public Builder(List<? extends IGridItem> gridItems, int totalSpanSize) {
+        public Builder(Context context, List<? extends IGridItem> gridItems, int totalSpanSize) {
             config = new Config();
+            this.context = context;
             config.gridItems = gridItems;
             config.totalSpanSize = totalSpanSize;
         }
@@ -201,9 +269,8 @@ public class GridItemDecoration extends RecyclerView.ItemDecoration {
         }
 
         public GridItemDecoration build() {
-            return new GridItemDecoration(config);
+            return new GridItemDecoration(config, context);
         }
     }
-
 
 }
