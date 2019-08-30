@@ -10,6 +10,7 @@
         android:id="@+id/rv_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:paddingEnd="20dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

@@ -15,6 +15,7 @@ import com.orient.me.rv.itemdocration.GridItemDecoration;
 import com.orient.ui.R;
 import com.orient.ui.data.GridItem;
 import com.orient.ui.ui.adapter.RecyclerAdapter;
+import com.orient.ui.utils.UIUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,26 +105,23 @@ public class SpecialGridActivity extends AppCompatActivity {
     private List<GridItem> initData() {
         List<GridItem> values = new ArrayList<>();
         values.add(new GridItem("我很忙", "", R.drawable.head_1,"最近常听",1,GridItem.TYPE_SMALL));
-        values.add(new GridItem("华语治愈：有些歌比闺蜜更懂你", "", R.drawable.head_2,"最近常听",1,GridItem.TYPE_SMALL));
-        values.add(new GridItem("[华语]90后的青春纪念手册", "", R.drawable.head_3,"最近常听",1,GridItem.TYPE_SMALL));
-        values.add(new GridItem("校园：那些年，我爱过的那个少年", "听完[彩虹]，他们等你翻牌", R.drawable.normal_1
-                ,"更多为你推荐",3,GridItem.TYPE_NORMAL));
-        values.add(new GridItem("校园：那些年，我爱过的那个少年", "听完[彩虹]，他们等你翻牌", R.drawable.normal_1
-                ,"更多为你推荐",3,GridItem.TYPE_NORMAL));
-        values.add(new GridItem("taylor swift音乐历程", "", R.drawable.special_1
+        values.add(new GridItem("治愈：有些歌比闺蜜更懂你", "", R.drawable.head_2,"最近常听",1,GridItem.TYPE_SMALL));
+        values.add(new GridItem("「华语」90后的青春纪念手册", "", R.drawable.head_3,"最近常听",1,GridItem.TYPE_SMALL));
+
+        values.add(new GridItem("流行创作女神你霉，泰勒斯威夫特的创作历程", "", R.drawable.special_2
                 ,"更多为你推荐",3,GridItem.TYPE_SPECIAL));
-        values.add(new GridItem("校园：那些年，我爱过的那个少年", "听完[彩虹]，他们等你翻牌", R.drawable.normal_1
+        values.add(new GridItem("行走的CD写给别人的歌", "给「跟我走吧」几分，试试这些", R.drawable.normal_1
                 ,"更多为你推荐",3,GridItem.TYPE_NORMAL));
-        values.add(new GridItem("校园：那些年，我爱过的那个少年", "听完[彩虹]，他们等你翻牌", R.drawable.normal_1
+        values.add(new GridItem("爱情里的酸甜苦辣，让人捉摸不透", "听完「靠近一点点」，他们等你翻牌", R.drawable.normal_2
                 ,"更多为你推荐",3,GridItem.TYPE_NORMAL));
-        values.add(new GridItem("taylor swift音乐历程", "", R.drawable.special_1
+        values.add(new GridItem("关于喜欢你这件事，我都写在了歌里", "「好想你」听罢，听它们吧", R.drawable.normal_3
+                ,"更多为你推荐",3,GridItem.TYPE_NORMAL));
+        values.add(new GridItem("周杰伦暖心混剪，短短几分钟是多少人的青春", "", R.drawable.special_1
                 ,"更多为你推荐",3,GridItem.TYPE_SPECIAL));
-        values.add(new GridItem("校园：那些年，我爱过的那个少年", "听完[彩虹]，他们等你翻牌", R.drawable.normal_1
+        values.add(new GridItem("我好想和你一起听雨滴", "给「发如雪」几分，那这些呢", R.drawable.normal_4
                 ,"更多为你推荐",3,GridItem.TYPE_NORMAL));
-        values.add(new GridItem("校园：那些年，我爱过的那个少年", "听完[彩虹]，他们等你翻牌", R.drawable.normal_1
+        values.add(new GridItem("油管周杰伦热门单曲Top20", "「周杰伦」的这些哥，你听了吗", R.drawable.normal_5
                 ,"更多为你推荐",3,GridItem.TYPE_NORMAL));
-        values.add(new GridItem("taylor swift音乐历程", "", R.drawable.special_1
-                ,"更多为你推荐",3,GridItem.TYPE_SPECIAL));
 
         return values;
 
@@ -133,7 +131,6 @@ public class SpecialGridActivity extends AppCompatActivity {
 
         @Override
         public int getSpanSize(int i) {
-            // TODO 做自己处理的逻辑
             GridItem gridItem = values.get(i);
             return gridItem.getSpanSize();
         }
@@ -146,7 +143,7 @@ public class SpecialGridActivity extends AppCompatActivity {
         @BindView(R.id.tv_content)
         TextView mName;
 
-        public SmallHolder(View itemView) {
+        SmallHolder(View itemView) {
             super(itemView);
         }
 
@@ -168,7 +165,7 @@ public class SpecialGridActivity extends AppCompatActivity {
         @BindView(R.id.tv_desc)
         TextView mDesc;
 
-        public NormalHolder(View itemView) {
+        NormalHolder(View itemView) {
             super(itemView);
         }
 
@@ -189,7 +186,7 @@ public class SpecialGridActivity extends AppCompatActivity {
         @BindView(R.id.tv_title)
         TextView mTitle;
 
-        public SpecialHolder(View itemView) {
+        SpecialHolder(View itemView) {
             super(itemView);
         }
 
