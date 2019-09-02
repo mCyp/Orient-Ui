@@ -17,7 +17,6 @@ import com.orient.me.rv.itemdocration.GridItemDecoration;
 import com.orient.ui.R;
 import com.orient.ui.data.GridItem;
 import com.orient.ui.ui.adapter.RecyclerAdapter;
-import com.orient.ui.utils.UIUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,22 +24,24 @@ import java.util.List;
 import butterknife.BindView;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
-public class SpecialGridActivity extends AppCompatActivity {
+public class GridPageActivity extends AppCompatActivity {
+
+    @BindView(R.id.rv_content)
+    RecyclerView mRecyclerView;
 
     private List<GridItem> values;
-    private RecyclerView mRecyclerView;
     private GridItemDecoration itemDecoration;
     private RecyclerAdapter<GridItem> mAdapter;
 
     public static void show(Context context){
-        Intent intent = new Intent(context,SpecialGridActivity.class);
+        Intent intent = new Intent(context, GridPageActivity.class);
         context.startActivity(intent);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_special_grid);
+        setContentView(R.layout.gird_page_activity);
 
         initWidget();
     }
@@ -56,11 +57,11 @@ public class SpecialGridActivity extends AppCompatActivity {
             @Override
             public ViewHolder<GridItem> onCreateViewHolder(View root, int viewType) {
                 switch (viewType) {
-                    case R.layout.small_grid_recycle_item:
+                    case R.layout.grid_small_recycle_item:
                         return new SmallHolder(root);
-                    case R.layout.normal_grid_recycle_item:
+                    case R.layout.grid_normal_recycle_item:
                         return new NormalHolder(root);
-                    case R.layout.special_grid_recycle_item:
+                    case R.layout.grid_special_recycle_item:
                         return new SpecialHolder(root);
                     default:
                         return null;
@@ -72,11 +73,11 @@ public class SpecialGridActivity extends AppCompatActivity {
             public int getItemLayout(GridItem gridItem, int position) {
                 switch (gridItem.getType()) {
                     case GridItem.TYPE_SMALL:
-                        return R.layout.small_grid_recycle_item;
+                        return R.layout.grid_small_recycle_item;
                     case GridItem.TYPE_NORMAL:
-                        return R.layout.normal_grid_recycle_item;
+                        return R.layout.grid_normal_recycle_item;
                     case GridItem.TYPE_SPECIAL:
-                        return R.layout.special_grid_recycle_item;
+                        return R.layout.grid_special_recycle_item;
                 }
                 return 0;
             }
@@ -85,6 +86,7 @@ public class SpecialGridActivity extends AppCompatActivity {
         mAdapter.setAdapterListener(new RecyclerAdapter.AdapterListener<GridItem>() {
             @Override
             public void onItemClick(RecyclerAdapter.ViewHolder<GridItem> holder, GridItem gridItem) {
+                // 测试的代码
                 int pos = holder.getAdapterPosition();
                 if(holder.getAdapterPosition() == mAdapter.getItemCount()-1){
                     List<GridItem> items = initData();
@@ -111,23 +113,23 @@ public class SpecialGridActivity extends AppCompatActivity {
 
     private List<GridItem> initData() {
         List<GridItem> values = new ArrayList<>();
-        values.add(new GridItem("我很忙", "", R.drawable.head_1,"最近常听",1,GridItem.TYPE_SMALL));
-        values.add(new GridItem("治愈：有些歌比闺蜜更懂你", "", R.drawable.head_2,"最近常听",1,GridItem.TYPE_SMALL));
-        values.add(new GridItem("「华语」90后的青春纪念手册", "", R.drawable.head_3,"最近常听",1,GridItem.TYPE_SMALL));
+        values.add(new GridItem("我很忙", "", R.drawable.grid_head_1,"最近常听",1,GridItem.TYPE_SMALL));
+        values.add(new GridItem("治愈：有些歌比闺蜜更懂你", "", R.drawable.grid_head_2,"最近常听",1,GridItem.TYPE_SMALL));
+        values.add(new GridItem("「华语」90后的青春纪念手册", "", R.drawable.grid_head_3,"最近常听",1,GridItem.TYPE_SMALL));
 
-        values.add(new GridItem("流行创作女神你霉，泰勒斯威夫特的创作历程", "", R.drawable.special_2
+        values.add(new GridItem("流行创作女神你霉，泰勒斯威夫特的创作历程", "", R.drawable.grid_special_2
                 ,"更多为你推荐",3,GridItem.TYPE_SPECIAL));
-        values.add(new GridItem("行走的CD写给别人的歌", "给「跟我走吧」几分，试试这些", R.drawable.normal_1
+        values.add(new GridItem("行走的CD写给别人的歌", "给「跟我走吧」几分，试试这些", R.drawable.grid_normal_1
                 ,"更多为你推荐",3,GridItem.TYPE_NORMAL));
-        values.add(new GridItem("爱情里的酸甜苦辣，让人捉摸不透", "听完「靠近一点点」，他们等你翻牌", R.drawable.normal_2
+        values.add(new GridItem("爱情里的酸甜苦辣，让人捉摸不透", "听完「靠近一点点」，他们等你翻牌", R.drawable.grid_normal_2
                 ,"更多为你推荐",3,GridItem.TYPE_NORMAL));
-        values.add(new GridItem("关于喜欢你这件事，我都写在了歌里", "「好想你」听罢，听它们吧", R.drawable.normal_3
+        values.add(new GridItem("关于喜欢你这件事，我都写在了歌里", "「好想你」听罢，听它们吧", R.drawable.grid_normal_3
                 ,"更多为你推荐",3,GridItem.TYPE_NORMAL));
-        values.add(new GridItem("周杰伦暖心混剪，短短几分钟是多少人的青春", "", R.drawable.special_1
+        values.add(new GridItem("周杰伦暖心混剪，短短几分钟是多少人的青春", "", R.drawable.grid_special_1
                 ,"更多为你推荐",3,GridItem.TYPE_SPECIAL));
-        values.add(new GridItem("我好想和你一起听雨滴", "给「发如雪」几分，那这些呢", R.drawable.normal_4
+        values.add(new GridItem("我好想和你一起听雨滴", "给「发如雪」几分，那这些呢", R.drawable.grid_normal_4
                 ,"更多为你推荐",3,GridItem.TYPE_NORMAL));
-        values.add(new GridItem("油管周杰伦热门单曲Top20", "「周杰伦」的这些哥，你听了吗", R.drawable.normal_5
+        values.add(new GridItem("油管周杰伦热门单曲Top20", "「周杰伦」的这些哥，你听了吗", R.drawable.grid_normal_5
                 ,"更多为你推荐",3,GridItem.TYPE_NORMAL));
 
         return values;
@@ -156,7 +158,7 @@ public class SpecialGridActivity extends AppCompatActivity {
 
         @Override
         protected void onBind(GridItem gridItem) {
-            Glide.with(SpecialGridActivity.this).load(gridItem.getSource())
+            Glide.with(GridPageActivity.this).load(gridItem.getSource())
                     .apply(RequestOptions.bitmapTransform(new RoundedCornersTransformation(20, 0)))
                     .into(mHead);
             mName.setText(gridItem.getName());
@@ -178,7 +180,7 @@ public class SpecialGridActivity extends AppCompatActivity {
 
         @Override
         protected void onBind(GridItem gridItem) {
-            Glide.with(SpecialGridActivity.this).load(gridItem.getSource())
+            Glide.with(GridPageActivity.this).load(gridItem.getSource())
                     .apply(RequestOptions.bitmapTransform(new RoundedCornersTransformation(20, 0)))
                     .into(mHead);
             mTitle.setText(gridItem.getName());
@@ -199,7 +201,7 @@ public class SpecialGridActivity extends AppCompatActivity {
 
         @Override
         protected void onBind(GridItem gridItem) {
-            Glide.with(SpecialGridActivity.this).load(gridItem.getSource())
+            Glide.with(GridPageActivity.this).load(gridItem.getSource())
                     .apply(RequestOptions.bitmapTransform(new RoundedCornersTransformation(20, 0)))
                     .into(mHead);
             mTitle.setText(gridItem.getName());

@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="80dp"
-    android:background="@drawable/task_item_left_bg"
+    android:background="@drawable/timeline_left_item_bg"
     android:layout_margin="6dp"
-    tools:context=".MainActivity">
+    tools:context=".ui.activity.MainActivity">
 
     <TextView
-        android:id="@+id/txt_content"
+        android:id="@+id/tv_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:textSize="20sp"

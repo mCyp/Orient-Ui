@@ -5,11 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="80dp"
     android:layout_margin="6dp"
-    android:background="@drawable/task_item_right_bg"
-    tools:context=".MainActivity">
+    android:background="@drawable/timeline_right_item_bg"
+    tools:context=".ui.activity.MainActivity">
 
     <TextView
-        android:id="@+id/txt_content"
+        android:id="@+id/tv_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:textSize="20sp"

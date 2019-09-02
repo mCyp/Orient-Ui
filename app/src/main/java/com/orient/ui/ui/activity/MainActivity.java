@@ -1,15 +1,11 @@
-package com.orient.ui;
+package com.orient.ui.ui.activity;
 
-import android.os.Bundle;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.orient.ui.ui.activity.BaseActivity;
-import com.orient.ui.ui.activity.RecyclerViewActivity;
-import com.orient.ui.ui.activity.SpecialGridActivity;
+import com.orient.ui.R;
 import com.orient.ui.ui.adapter.RecyclerAdapter;
 import com.orient.ui.widget.GridDividerItemDecoration;
 
@@ -60,10 +56,10 @@ public class MainActivity extends BaseActivity {
 
                 switch (mainItem.name) {
                     case "两侧布局":
-                        RecyclerViewActivity.show(MainActivity.this);
+                        TimeLineActivity.show(MainActivity.this);
                         break;
                     case "网格首页":
-                        SpecialGridActivity.show(MainActivity.this);
+                        GridPageActivity.show(MainActivity.this);
                         break;
                 }
             }
