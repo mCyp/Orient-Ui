@@ -1,7 +1,7 @@
 package com.orient.me.data;
 
 /**
- * 网格的接口
+ * 数据约束
  */
 public interface IGridItem {
     /**
@@ -16,7 +16,7 @@ public interface IGridItem {
     String getTag();
 
     /**
-     * 占宽权重
+     * 权重
      */
     int getSpanSize();
 }

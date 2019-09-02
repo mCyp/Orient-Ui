@@ -1,5 +1,7 @@
 package com.orient.ui.ui.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,6 +31,11 @@ public class SpecialGridActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private GridItemDecoration itemDecoration;
     private RecyclerAdapter<GridItem> mAdapter;
+
+    public static void show(Context context){
+        Intent intent = new Intent(context,SpecialGridActivity.class);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
