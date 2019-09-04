@@ -1,4 +1,4 @@
-<div align=center>![标题](https://github.com/mCyp/Orient-Ui/blob/master/picture/cover.png)
+![标题](https://github.com/mCyp/Orient-Ui/blob/master/picture/cover.png)
 
 ## Orient-Ui
 
