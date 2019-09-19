@@ -1,4 +1,4 @@
-package com.orient.me.rv.itemdocration;
+package com.orient.me.widget.rv.itemdocration;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -7,18 +7,14 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.SparseArray;
 import android.view.View;
 
 import com.orient.me.data.IGridItem;
 import com.orient.me.utils.UIUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 /**

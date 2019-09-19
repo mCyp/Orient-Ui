@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:background="@color/white_alpha_160"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/im_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/app_name"
+        android:maxHeight="@dimen/len_100"
+        android:maxWidth="@dimen/len_100"
+        android:minHeight="@dimen/len_48"
+        android:minWidth="@dimen/len_48"
+        android:scaleType="centerInside"
+        android:src="@drawable/empty_view_status_empty"
+        android:tint="@color/colorPrimary" />
+
+    <!--<net.qiujuer.genius.ui.widget.Loading
+        android:id="@+id/loading"
+        android:layout_width="@dimen/len_32"
+        android:layout_height="@dimen/len_32"
+        android:visibility="gone"
+        app:gAutoRun="false"
+        app:gBackgroundColor="@null"
+        app:gForegroundColor="@color/colorAccent"
+        app:gForegroundLineSize="@dimen/len_2"
+        tools:visibility="visible" />-->
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/loading"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/empty_view_staus_progress"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/txt_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/len_16"
+        android:layout_marginTop="@dimen/len_16"
+        android:text="@string/prompt_empty"
+        android:textSize="@dimen/len_20"
+        android:textColor="@color/textSecond" />
+</LinearLayout>

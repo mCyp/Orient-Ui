@@ -1,4 +1,4 @@
-package com.orient.me.rv;
+package com.orient.me.widget.rv;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

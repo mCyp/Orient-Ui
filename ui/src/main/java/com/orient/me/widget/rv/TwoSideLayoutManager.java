@@ -1,10 +1,7 @@
-package com.orient.me.rv;
+package com.orient.me.widget.rv;
 
-import android.content.Context;
 import android.graphics.Rect;
-import android.support.annotation.NonNull;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;

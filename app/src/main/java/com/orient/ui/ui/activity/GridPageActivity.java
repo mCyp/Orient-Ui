@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.orient.me.rv.itemdocration.GridItemDecoration;
+import com.orient.me.widget.rv.itemdocration.GridItemDecoration;
 import com.orient.ui.R;
 import com.orient.ui.data.GridItem;
 import com.orient.ui.ui.adapter.RecyclerAdapter;
