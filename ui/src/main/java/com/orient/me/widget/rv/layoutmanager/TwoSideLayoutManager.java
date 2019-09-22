@@ -1,4 +1,4 @@
-package com.orient.me.widget.rv;
+package com.orient.me.widget.rv.layoutmanager;
 
 import android.graphics.Rect;
 import android.support.v4.view.ViewCompat;

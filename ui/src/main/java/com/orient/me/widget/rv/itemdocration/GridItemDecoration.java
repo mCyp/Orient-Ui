@@ -59,7 +59,6 @@ public class GridItemDecoration extends RecyclerView.ItemDecoration {
         this.mTitleBgColor = config.titleBgColor;
         this.mTitleColor = config.titleTextColor;
         this.mTitleHeight = UIUtils.dip2px(mContext, config.titleHeight);
-        ;
         this.isDrawTitleBg = config.isDrawTitleBg;
     }
 
@@ -159,6 +158,7 @@ public class GridItemDecoration extends RecyclerView.ItemDecoration {
     private void drawTitle(Canvas canvas, int pl, int pr, View child, RecyclerView.LayoutParams params, int pos) {
         if (isDrawTitleBg) {
             mTitlePaint.setColor(mTitleBgColor);
+            // TODO 绘制背景好像出错了
             canvas.drawRect(pl, child.getTop() - params.topMargin - mTitleHeight, pl
                     , child.getTop() - params.topMargin, mTitlePaint);
         }

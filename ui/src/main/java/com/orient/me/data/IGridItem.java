@@ -1,7 +1,7 @@
 package com.orient.me.data;
 
 /**
- * 数据约束
+ * 网格首页数据需要实现的接口
  */
 public interface IGridItem {
     /**

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:background="@color/white_alpha_160"
+    android:background="#ffffff"
     android:orientation="vertical">
 
     <ImageView
@@ -14,10 +14,10 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:contentDescription="@string/app_name"
-        android:maxHeight="@dimen/len_100"
-        android:maxWidth="@dimen/len_100"
-        android:minHeight="@dimen/len_48"
-        android:minWidth="@dimen/len_48"
+        android:maxHeight="100dp"
+        android:maxWidth="100dp"
+        android:minHeight="48dp"
+        android:minWidth="48dp"
         android:scaleType="centerInside"
         android:src="@drawable/empty_view_status_empty"
         android:tint="@color/colorPrimary" />
@@ -33,22 +33,22 @@
         app:gForegroundLineSize="@dimen/len_2"
         tools:visibility="visible" />-->
 
-    <com.airbnb.lottie.LottieAnimationView
+    <!--<com.airbnb.lottie.LottieAnimationView
         android:id="@+id/loading"
         android:layout_width="300dp"
         android:layout_height="300dp"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/empty_view_staus_progress"
-        android:visibility="gone"/>
+        android:visibility="gone"/>-->
 
     <TextView
         android:id="@+id/txt_empty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/len_16"
-        android:layout_marginTop="@dimen/len_16"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
         android:text="@string/prompt_empty"
-        android:textSize="@dimen/len_20"
+        android:textSize="20sp"
         android:textColor="@color/textSecond" />
 </LinearLayout>

@@ -7,7 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.orient.me.widget.rv.TwoSideLayoutManager;
+import com.orient.me.widget.rv.layoutmanager.TwoSideLayoutManager;
 import com.orient.ui.R;
 import com.orient.ui.ui.adapter.RecyclerAdapter;
 import com.orient.ui.utils.UIUtils;
