@@ -1,5 +1,6 @@
 package com.orient.me.widget.rv.itemdocration.timeline;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -13,7 +14,7 @@ import com.orient.me.utils.UIUtils;
 
 import java.util.List;
 
-public abstract class TimeLineDecoration extends RecyclerView.ItemDecoration {
+public abstract class AbstractTimeLineDecoration extends RecyclerView.ItemDecoration {
 
     public static final int TYPE_NONE = 0X0001;
     public static final int TYPE_TOP = 0x0002;
@@ -26,6 +27,7 @@ public abstract class TimeLineDecoration extends RecyclerView.ItemDecoration {
     // 3. 支持中间绘制原点或者使用Drawable
     // 4. 支持自定义绘制
 
+    private Context mContext;
     protected List<? extends ITimeItem> timeItems;
     // 是否启用同样的 标记 隐藏
     private boolean isSameTitleHide = true;
@@ -40,6 +42,7 @@ public abstract class TimeLineDecoration extends RecyclerView.ItemDecoration {
     private int mTopOffset;
     private int mLeftOffset;
     private Paint mTextPaint;
+    private int mTitleFontSize;
     private int mBgColor;
     private Paint mBgPaint;
 
@@ -54,8 +57,8 @@ public abstract class TimeLineDecoration extends RecyclerView.ItemDecoration {
     private int mDotRes;
     private Paint mDotPaint;
 
-    public TimeLineDecoration() {
-
+    public AbstractTimeLineDecoration(Context context) {
+        this.mContext = context;
     }
 
     private void init() {
@@ -66,6 +69,7 @@ public abstract class TimeLineDecoration extends RecyclerView.ItemDecoration {
 
         mTitleColor = Color.parseColor("#4e5864");
         mTopOffset = UIUtils.dip2px(40);
+        mTitleFontSize = UIUtils.sp2px(mContext,20);
         mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
         mTextPaint.setColor(mTitleColor);
         mTextPaint = new Paint();
@@ -142,7 +146,7 @@ public abstract class TimeLineDecoration extends RecyclerView.ItemDecoration {
                         mTop = child.getTop() - params.topMargin - mTopOffset;
                         mRight = child.getRight();
                         mBottom = child.getTop() - params.topMargin;
-                        onDrawTitleItem(mTextPaint, mBgPaint, mLeft, mTop, mRight, mBottom, i);
+                        onDrawTitleItem(canvas,mTextPaint, mBgPaint, mLeft, mTop, mRight, mBottom, i);
                     }
                 } else {
                     if (pos == 0 || !timeItem.getTitle().equals(mLastTitle)) {
@@ -150,7 +154,7 @@ public abstract class TimeLineDecoration extends RecyclerView.ItemDecoration {
                         mTop = child.getTop();
                         mRight = child.getLeft() - params.leftMargin - (mLineOffset * 2 + mLineWidth);
                         mBottom = child.getBottom();
-                        onDrawTitleItem(mTextPaint, mBgPaint, mLeft, mTop, mRight, mBottom, i);
+                        onDrawTitleItem(canvas,mTextPaint, mBgPaint, mLeft, mTop, mRight, mBottom, i);
                     }
                 }
                 mLastTitle = timeItem.getTitle();
@@ -162,13 +166,13 @@ public abstract class TimeLineDecoration extends RecyclerView.ItemDecoration {
                     mTop = child.getTop() - params.topMargin - mTopOffset;
                     mRight = child.getRight();
                     mBottom = child.getTop() - params.topMargin;
-                    onDrawTitleItem(mTextPaint, mBgPaint, mLeft, mTop, mRight, mBottom, i);
+                    onDrawTitleItem(canvas,mTextPaint, mBgPaint, mLeft, mTop, mRight, mBottom, i);
                 } else {
                     mLeft = child.getLeft() - params.leftMargin - (mLineOffset * 2 + mLineWidth) - mLeftOffset;
                     mTop = child.getTop();
                     mRight = child.getLeft() - params.leftMargin - (mLineOffset * 2 + mLineWidth);
                     mBottom = child.getBottom();
-                    onDrawTitleItem(mTextPaint, mBgPaint, mLeft, mTop, mRight, mBottom, i);
+                    onDrawTitleItem(canvas,mTextPaint, mBgPaint, mLeft, mTop, mRight, mBottom, i);
                 }
             }
         }
@@ -185,7 +189,7 @@ public abstract class TimeLineDecoration extends RecyclerView.ItemDecoration {
      * @param bottom    绘制文本区域范围
      * @param pos       使用数据的位置
      */
-    protected abstract void onDrawTitleItem(Paint textPaint, Paint bgPaint, int left, int top, int right, int bottom, int pos);
+    protected abstract void onDrawTitleItem(Canvas canvas,Paint textPaint, Paint bgPaint, int left, int top, int right, int bottom, int pos);
 
 
     private void drawVerticalLine(Canvas c, RecyclerView parent) {
@@ -225,7 +229,7 @@ public abstract class TimeLineDecoration extends RecyclerView.ItemDecoration {
      * @param dotPaint 原点的画笔
      * @param cx 圆心x
      * @param cy 原因y
-     * @param radius 半径
+     * @param radius 最大半径
      * @param pos 位置
      */
     protected abstract void onDrawPointItem(Canvas canvas,Paint dotPaint,int cx,int cy,int radius,int pos);

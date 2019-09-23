@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.orient.me.data.IGridItem;
 import com.orient.me.utils.UIUtils;
@@ -133,12 +134,12 @@ public class GridItemDecoration extends RecyclerView.ItemDecoration {
 
             if (i == 0) {
                 drawTitle(c, paddingLeft, paddingRight, child
-                        , (RecyclerView.LayoutParams) child.getLayoutParams(), pos);
+                        , (RecyclerView.LayoutParams) child.getLayoutParams(), pos,parent);
             } else {
                 IGridItem lastItem = gridItems.get(pos - 1);
                 if (lastItem != null && !item.getTag().equals(lastItem.getTag())) {
                     drawTitle(c, paddingLeft, paddingRight, child,
-                            (RecyclerView.LayoutParams) child.getLayoutParams(), pos);
+                            (RecyclerView.LayoutParams) child.getLayoutParams(), pos,parent);
                 }
             }
         }
@@ -155,11 +156,11 @@ public class GridItemDecoration extends RecyclerView.ItemDecoration {
      * @param params RecyclerView.LayoutParams
      * @param pos    位置
      */
-    private void drawTitle(Canvas canvas, int pl, int pr, View child, RecyclerView.LayoutParams params, int pos) {
+    private void drawTitle(Canvas canvas, int pl, int pr, View child, RecyclerView.LayoutParams params, int pos,RecyclerView parent) {
+        ViewGroup.LayoutParams prentLayoutParams = parent.getLayoutParams();
         if (isDrawTitleBg) {
             mTitlePaint.setColor(mTitleBgColor);
-            // TODO 绘制背景好像出错了
-            canvas.drawRect(pl, child.getTop() - params.topMargin - mTitleHeight, pl
+            canvas.drawRect(pl, child.getTop() - params.topMargin - mTitleHeight, parent.getRight()  - parent.getPaddingEnd()
                     , child.getTop() - params.topMargin, mTitlePaint);
         }
 

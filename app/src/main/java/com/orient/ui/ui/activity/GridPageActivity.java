@@ -105,6 +105,7 @@ public class GridPageActivity extends AppCompatActivity {
 
         itemDecoration = new GridItemDecoration.Builder(this,values, 3)
                 .setTitleTextColor(Color.parseColor("#4e5864"))
+                //.setTitleBgColor(Color.parseColor("#008577"))
                 .setTitleFontSize(22)
                 .setTitleHeight(52)
                 .build();
