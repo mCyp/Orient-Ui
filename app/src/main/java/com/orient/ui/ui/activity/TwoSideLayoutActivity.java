@@ -3,6 +3,7 @@ package com.orient.ui.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
@@ -18,7 +19,10 @@ import java.util.List;
 
 import butterknife.BindView;
 
-public class TimeLineActivity extends BaseActivity {
+/**
+ * 两侧布局的最佳实践
+ */
+public class TwoSideLayoutActivity extends BaseActivity {
 
     @BindView(R.id.rv_content)
     RecyclerView mRecyclerView;
@@ -27,14 +31,14 @@ public class TimeLineActivity extends BaseActivity {
     private List<String> values = new ArrayList<>();
 
     public static void show(Context context){
-        Intent intent = new Intent(context, TimeLineActivity.class);
+        Intent intent = new Intent(context, TwoSideLayoutActivity.class);
         context.startActivity(intent);
     }
 
 
     @Override
     protected int getLayoutId() {
-        return R.layout.timeline_activity;
+        return R.layout.two_side_layout_activity;
     }
 
     @Override
@@ -46,17 +50,18 @@ public class TimeLineActivity extends BaseActivity {
         mRecyclerView.setAdapter(mAdapter = new RecyclerAdapter<String>() {
             @Override
             public ViewHolder<String> onCreateViewHolder(View root, int viewType) {
-                return new TimeLineActivity.ViewHolder(root);
+                return new TwoSideLayoutActivity.ViewHolder(root);
             }
 
             @Override
             public int getItemLayout(String s, int position) {
                 if(position%2 == 1)
-                    return R.layout.timeline_right_recycle_item;
+                    return R.layout.two_side_right_recycle_item;
                 else
-                    return R.layout.timeline_left_recycle_item;
+                    return R.layout.two_side_left_recycle_item;
             }
         });
+
 
         DotItemDecoration dotItemDecoration = providesDotItemDecoration();
         mRecyclerView.addItemDecoration(dotItemDecoration);

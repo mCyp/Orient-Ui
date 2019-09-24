@@ -56,10 +56,13 @@ public class MainActivity extends BaseActivity {
 
                 switch (mainItem.name) {
                     case "两侧布局":
-                        TimeLineActivity.show(MainActivity.this);
+                        TwoSideLayoutActivity.show(MainActivity.this);
                         break;
                     case "网格首页":
                         GridPageActivity.show(MainActivity.this);
+                        break;
+                    case "时间轴":
+                        TimelineActivity.show(MainActivity.this);
                         break;
                 }
             }
@@ -70,6 +73,7 @@ public class MainActivity extends BaseActivity {
         List<MainItem> items = new ArrayList<>();
         items.add(new MainItem("两侧布局", -1));
         items.add(new MainItem("网格首页", -1));
+        items.add(new MainItem("时间轴", -1));
         return items;
     }
 

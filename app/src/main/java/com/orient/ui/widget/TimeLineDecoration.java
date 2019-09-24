@@ -10,11 +10,17 @@ import com.orient.me.data.ITimeItem;
 import com.orient.me.widget.rv.itemdocration.timeline.AbstractTimeLineDecoration;
 import com.orient.ui.utils.UIUtils;
 
+import java.util.List;
+
 public class TimeLineDecoration extends AbstractTimeLineDecoration {
 
 
     public TimeLineDecoration(Context context) {
         super(context);
+    }
+
+    public TimeLineDecoration(Context context, List<? extends ITimeItem> timeItems) {
+        super(context, timeItems);
     }
 
     @Override
@@ -34,6 +40,6 @@ public class TimeLineDecoration extends AbstractTimeLineDecoration {
 
     @Override
     protected void onDrawPointItem(Canvas canvas, Paint dotPaint, int cx, int cy, int radius, int pos) {
-
+        canvas.drawCircle(cx,cy,UIUtils.dip2px(6),dotPaint);
     }
 }
