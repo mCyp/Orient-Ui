@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.orient.me.widget.rv.itemdocration.timeline.AbstractTimeLineDecoration;
 import com.orient.ui.R;
 import com.orient.ui.data.TimeItem;
 import com.orient.ui.ui.adapter.RecyclerAdapter;
@@ -55,18 +56,24 @@ public class TimelineActivity extends BaseActivity {
         });
         List<TimeItem> timeItems = initItems();
         mAdapter.addAllData(timeItems);
-        TimeLineDecoration decoration = new TimeLineDecoration(this,timeItems);
+        AbstractTimeLineDecoration decoration = new AbstractTimeLineDecoration.Builder(this,timeItems)
+                .setTitle(Color.parseColor("#ffffff"),20)
+                .setTitleStyle(AbstractTimeLineDecoration.FLAG_TITLE_TYPE_TOP,40)
+                .setLine(AbstractTimeLineDecoration.FLAG_LINE_DIVIDE,30,Color.parseColor("#8d9ca9"))
+                .setDot(AbstractTimeLineDecoration.FLAG_DOT_DRAW,8)
+                .setSameTitleHide()
+                .build(TimeLineDecoration.class);
         mRecyclerView.addItemDecoration(decoration);
     }
 
     private List<TimeItem> initItems(){
         List<TimeItem> items = new ArrayList<>();
-        items.add(new TimeItem("完善信息","实践探究","+30积分", Color.parseColor("#008577"),0));
-        items.add(new TimeItem("了解基地","实践探究","+30积分", Color.parseColor("#008577"),0));
-        items.add(new TimeItem("知识储备","实践探究","+30积分", Color.parseColor("#008577"),0));
-        items.add(new TimeItem("安全教育主题馆","实践探究","+30积分", Color.parseColor("#008577"),0));
-        items.add(new TimeItem("评价教师","总结拓展","+30积分", Color.parseColor("#008577"),0));
-        items.add(new TimeItem("评价路线","总结拓展","+30积分", Color.parseColor("#008577"),0));
+        items.add(new TimeItem("完善信息","实践探究","+30积分", Color.parseColor("#F57F17"),0));
+        items.add(new TimeItem("了解基地","实践探究","+30积分", Color.parseColor("#F57F17"),0));
+        items.add(new TimeItem("知识储备","实践探究","+30积分", Color.parseColor("#F57F17"),0));
+        items.add(new TimeItem("安全教育主题馆","实践探究","+30积分", Color.parseColor("#F57F17"),0));
+        items.add(new TimeItem("评价教师","总结拓展","+30积分", Color.parseColor("#0D47A1"),0));
+        items.add(new TimeItem("评价路线","总结拓展","+30积分", Color.parseColor("#0D47A1"),0));
         return items;
     }
 
