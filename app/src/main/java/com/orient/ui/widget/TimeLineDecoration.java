@@ -1,27 +1,23 @@
 package com.orient.ui.widget;
 
-import android.content.Context;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.text.TextUtils;
 
 import com.orient.me.data.ITimeItem;
-import com.orient.me.widget.rv.itemdocration.timeline.AbstractTimeLineDecoration;
+import com.orient.me.widget.rv.itemdocration.timeline.SingleTimeLineDecoration;
 import com.orient.ui.utils.UIUtils;
 
-import java.util.List;
-
-public class TimeLineDecoration extends AbstractTimeLineDecoration {
+public class TimeLineDecoration extends SingleTimeLineDecoration {
 
     private Paint mRectPaint;
     //private String[] COLORS = new String[]{"#F57F17","#0D47A1"};
 
 
-    public TimeLineDecoration(AbstractTimeLineDecoration.Config config) {
+    public TimeLineDecoration(SingleTimeLineDecoration.Config config) {
         super(config);
 
         mRectPaint = new Paint();

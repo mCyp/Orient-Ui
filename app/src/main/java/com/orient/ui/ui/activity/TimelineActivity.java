@@ -3,14 +3,13 @@ package com.orient.ui.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.orient.me.widget.rv.itemdocration.timeline.AbstractTimeLineDecoration;
+import com.orient.me.widget.rv.itemdocration.timeline.SingleTimeLineDecoration;
+import com.orient.me.widget.rv.itemdocration.timeline.TimeLine;
 import com.orient.ui.R;
 import com.orient.ui.data.TimeItem;
 import com.orient.ui.ui.adapter.RecyclerAdapter;
@@ -56,11 +55,11 @@ public class TimelineActivity extends BaseActivity {
         });
         List<TimeItem> timeItems = initItems();
         mAdapter.addAllData(timeItems);
-        AbstractTimeLineDecoration decoration = new AbstractTimeLineDecoration.Builder(this,timeItems)
+        TimeLine decoration = new SingleTimeLineDecoration.Builder(this,timeItems)
                 .setTitle(Color.parseColor("#ffffff"),20)
-                .setTitleStyle(AbstractTimeLineDecoration.FLAG_TITLE_TYPE_TOP,40)
-                .setLine(AbstractTimeLineDecoration.FLAG_LINE_DIVIDE,30,Color.parseColor("#8d9ca9"))
-                .setDot(AbstractTimeLineDecoration.FLAG_DOT_DRAW,8)
+                .setTitleStyle(SingleTimeLineDecoration.FLAG_TITLE_TYPE_TOP,40)
+                .setLine(SingleTimeLineDecoration.FLAG_LINE_DIVIDE,30,Color.parseColor("#8d9ca9"))
+                .setDot(SingleTimeLineDecoration.FLAG_DOT_DRAW)
                 .setSameTitleHide()
                 .build(TimeLineDecoration.class);
         mRecyclerView.addItemDecoration(decoration);

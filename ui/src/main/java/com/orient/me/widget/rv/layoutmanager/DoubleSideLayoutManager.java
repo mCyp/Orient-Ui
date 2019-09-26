@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 
-public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
+public class DoubleSideLayoutManager extends RecyclerView.LayoutManager {
     private static final String TAG = "TwoSideLayoutManager";
 
     // 从左侧考生
@@ -41,16 +41,16 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
     private int lastViewOffset = 0;
     // 最底部的不回收
 
-    public TwoSideLayoutManager(int startSide) {
+    public DoubleSideLayoutManager(int startSide) {
         this.mStartSide = startSide;
         initOrientHelper();
     }
 
-    public TwoSideLayoutManager() {
+    public DoubleSideLayoutManager() {
         this(DEFAULT_SIDE);
     }
 
-    public TwoSideLayoutManager(int startSide, int lastViewOffset) {
+    public DoubleSideLayoutManager(int startSide, int lastViewOffset) {
         this.mStartSide = startSide;
         this.lastViewOffset = lastViewOffset;
         initOrientHelper();
@@ -517,8 +517,11 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
             addView(view, 0);
         }
 
+        Rect insets = new Rect();
+        calculateItemDecorationsForChild(view,insets);
         // 第一遍测量子View
-        measureChild(view);
+        //measureChild(view,0,0);
+        measureChild(view,insets);
 
         // 布局子View
         layoutChild(view, result, params, layoutState, state);
@@ -552,7 +555,7 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
                 left = getPaddingLeft();
                 right = left + mOrientationHelper.getDecoratedMeasurementInOther(view);
             } else {
-                left = getPaddingLeft() + (getWidth() - getPaddingRight()) / 2;
+                left = getPaddingLeft() + (getWidth() - getPaddingRight() - getPaddingLeft()) / 2;
                 right = left + mOrientationHelper.getDecoratedMeasurementInOther(view);
             }
         }
@@ -624,12 +627,11 @@ public class TwoSideLayoutManager extends RecyclerView.LayoutManager {
     /**
      * 测量子类
      */
-    private void measureChild(View view) {
+    private void measureChild(View view,Rect insets) {
         final RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) view.getLayoutParams();
-        int verticalUsed = lp.bottomMargin + lp.topMargin;
-        int horizontalUsed = lp.leftMargin + lp.rightMargin;
-        final int availableSpace = (getWidth() - (getPaddingLeft() + getPaddingRight())) / 2;
-        //final int availableSpace = getWidth() - (getPaddingLeft() + getPaddingRight()) / 2;
+        int verticalUsed = lp.bottomMargin + lp.topMargin + insets.top + insets.bottom;
+        int horizontalUsed = lp.leftMargin + lp.rightMargin + insets.left + insets.right;
+        final int availableSpace = getWidth() / 2;
         int widthSpec = getChildMeasureSpec(availableSpace, View.MeasureSpec.EXACTLY
                 , horizontalUsed, lp.width, true);
         int heightSpec = getChildMeasureSpec(mOrientationHelper.getTotalSpace(), getHeightMode(),
