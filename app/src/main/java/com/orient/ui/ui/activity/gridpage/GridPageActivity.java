@@ -1,4 +1,4 @@
-package com.orient.ui.ui.activity;
+package com.orient.ui.ui.activity.gridpage;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +15,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.orient.me.widget.rv.itemdocration.GridItemDecoration;
 import com.orient.ui.R;
-import com.orient.ui.data.GridItem;
 import com.orient.ui.ui.adapter.RecyclerAdapter;
 
 import java.util.ArrayList;

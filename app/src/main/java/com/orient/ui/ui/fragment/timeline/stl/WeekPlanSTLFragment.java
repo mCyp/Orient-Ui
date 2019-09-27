@@ -1,20 +1,21 @@
-package com.orient.ui.ui.activity;
+package com.orient.ui.ui.fragment.timeline.stl;
 
-import android.content.Context;
-import android.content.Intent;
+
 import android.graphics.Color;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.orient.me.widget.rv.itemdocration.timeline.SingleTimeLineDecoration;
+import com.orient.me.utils.UIUtils;
 import com.orient.me.widget.rv.itemdocration.timeline.TimeLine;
 import com.orient.me.widget.rv.layoutmanager.DoubleSideLayoutManager;
 import com.orient.ui.R;
-import com.orient.ui.data.TimeItem;
+import com.orient.ui.ui.activity.timeline.TimeItem;
 import com.orient.ui.ui.adapter.RecyclerAdapter;
-import com.orient.ui.utils.UIUtils;
-import com.orient.ui.widget.DoubleSideTimeLine;
+import com.orient.ui.ui.fragment.BaseFragment;
+import com.orient.ui.widget.timeline.dtl.WeekPlanDTL;
+import com.orient.ui.widget.timeline.stl.WeekPlanSTL;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,46 +23,37 @@ import java.util.List;
 import butterknife.BindView;
 
 /**
- * 两侧布局的最佳实践
+ * 一周计划的Fragment
+ * 两侧分布的时间轴 样式一
  */
-public class TwoSideLayoutActivity extends BaseActivity {
+public class WeekPlanSTLFragment extends BaseFragment {
 
     @BindView(R.id.rv_content)
     RecyclerView mRecyclerView;
 
     private RecyclerAdapter<TimeItem> mAdapter;
-    private List<String> values = new ArrayList<>();
-
-    public static void show(Context context) {
-        Intent intent = new Intent(context, TwoSideLayoutActivity.class);
-        context.startActivity(intent);
-    }
 
 
     @Override
     protected int getLayoutId() {
-        return R.layout.two_side_layout_activity;
+        return R.layout.common_fragment;
     }
 
     @Override
-    protected void initWidget() {
-        super.initWidget();
+    protected void initWidget(View root) {
+        super.initWidget(root);
 
 
-        mRecyclerView.setLayoutManager(new DoubleSideLayoutManager(DoubleSideLayoutManager.START_LEFT, UIUtils.dip2px(40)));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setAdapter(mAdapter = new RecyclerAdapter<TimeItem>() {
             @Override
             public ViewHolder<TimeItem> onCreateViewHolder(View root, int viewType) {
-                return new TwoSideLayoutActivity.ViewHolder(root);
+                return new WeekPlanViewHolder(root);
             }
 
             @Override
             public int getItemLayout(TimeItem s, int position) {
-                return R.layout.two_side_left_recycle_item;
-                /*if (position % 2 == 1)
-                    return R.layout.two_side_right_recycle_item;
-                else
-                    return R.layout.two_side_left_recycle_item;*/
+                return R.layout.week_plan_stl_recycle_item;
             }
         });
 
@@ -70,20 +62,6 @@ public class TwoSideLayoutActivity extends BaseActivity {
 
         TimeLine timeLine = provideTimeLine(timeItems);
         mRecyclerView.addItemDecoration(timeLine);
-    }
-
-    @Override
-    protected void initData() {
-        super.initData();
-
-        /*values.add("Java");
-        values.add("Android");
-        values.add("Kotlin");
-        values.add("Python");
-        values.add("Vue");
-        values.add("Flutter");
-
-        mAdapter.addAllData(values);*/
     }
 
     private List<TimeItem> initItems() {
@@ -99,15 +77,15 @@ public class TwoSideLayoutActivity extends BaseActivity {
 
 
     private TimeLine provideTimeLine(List<TimeItem> timeItems) {
-        return new SingleTimeLineDecoration.Builder(this, timeItems)
+        return new TimeLine.Builder(getContext(), timeItems)
                 .setTitle(Color.parseColor("#8d9ca9"), 14)
-                .setTitleStyle(TimeLine.FLAG_TITLE_TYPE_LEFT, 0)
-                .setLine(TimeLine.FLAG_LINE_BEGIN_TO_END, 30, Color.parseColor("#757575"),3)
-                .setDot(TimeLine.FLAG_DOT_DRAW)
-                .build(DoubleSideTimeLine.class);
+                .setTitleStyle(TimeLine.FLAG_TITLE_TYPE_LEFT, 100)
+                .setLine(TimeLine.FLAG_LINE_BEGIN_TO_END, 40, Color.parseColor("#757575"),3)
+                .setDot(TimeLine.FLAG_DOT_RES)
+                .build(WeekPlanSTL.class);
     }
 
-    class ViewHolder extends RecyclerAdapter.ViewHolder<TimeItem> {
+    class WeekPlanViewHolder extends RecyclerAdapter.ViewHolder<TimeItem> {
 
         @BindView(R.id.tv_name)
         TextView mNameTv;
@@ -115,13 +93,7 @@ public class TwoSideLayoutActivity extends BaseActivity {
         @BindView(R.id.tv_detail)
         TextView mDetailTv;
 
-        @BindView(R.id.btn_go)
-        TextView mGoBtn;
-
-        @BindView(R.id.btn_write)
-        TextView mWriteBtn;
-
-        ViewHolder(View itemView) {
+        WeekPlanViewHolder(View itemView) {
             super(itemView);
         }
 
@@ -129,14 +101,8 @@ public class TwoSideLayoutActivity extends BaseActivity {
         protected void onBind(TimeItem timeItem) {
             mNameTv.setText(timeItem.getName());
             mDetailTv.setText(timeItem.getDetail());
-
-            setColor(timeItem.getColor());
         }
 
-        private void setColor(int color){
-            mGoBtn.setBackgroundColor(color);
-            mWriteBtn.setBackgroundColor(color);
-        }
     }
 
 

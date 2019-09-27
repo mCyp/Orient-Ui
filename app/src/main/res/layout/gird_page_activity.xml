@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activity.GridPageActivity">
+    tools:context=".ui.activity.gridpage.GridPageActivity">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_content"

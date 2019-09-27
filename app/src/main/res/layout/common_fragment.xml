@@ -4,13 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/teal_50"
-    tools:context=".ui.activity.sidelayout.DoubleSideLayoutActivity">
+    android:background="@color/teal_50">
 
-    <fragment
-        android:id="@+id/fg_name"
-        android:name="com.orient.ui.ui.fragment.timeline.dtl.WeekPlanDTLFragment"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        />
 
 </FrameLayout>

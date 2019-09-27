@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.orient.ui.widget;
+package com.orient.ui.widget.gridpage;
 
 import android.content.Context;
 import android.content.res.TypedArray;

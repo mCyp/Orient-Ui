@@ -101,6 +101,29 @@ public abstract class TimeLine extends RecyclerView.ItemDecoration {
         mDotPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
     }
 
+
+    /**
+     * 更新部分数据
+     */
+    public void addItems(List items){
+        this.timeItems.addAll(items);
+    }
+
+    /**
+     * 更新全部数据
+     * @param items 数据
+     */
+    public void replace(List<? extends ITimeItem> items){
+        this.timeItems = items;
+    }
+
+    /**
+     * 清除数据
+     */
+    public void remove(){
+        this.timeItems.clear();
+    }
+
     @Override
     public void onDraw(@NonNull Canvas c, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         super.onDraw(c, parent, state);

@@ -1,4 +1,4 @@
-package com.orient.ui.widget;
+package com.orient.ui.widget.timeline.stl;
 
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
@@ -8,20 +8,18 @@ import android.graphics.RectF;
 import android.text.TextUtils;
 
 import com.orient.me.data.ITimeItem;
+import com.orient.me.utils.UIUtils;
 import com.orient.me.widget.rv.itemdocration.timeline.SingleTimeLineDecoration;
-import com.orient.ui.utils.UIUtils;
 
-public class TimeLineDecoration extends SingleTimeLineDecoration {
+public class StepSTL extends SingleTimeLineDecoration {
 
     private Paint mRectPaint;
-    //private String[] COLORS = new String[]{"#F57F17","#0D47A1"};
 
-
-    public TimeLineDecoration(SingleTimeLineDecoration.Config config) {
+    public StepSTL(SingleTimeLineDecoration.Config config) {
         super(config);
 
         mRectPaint = new Paint();
-
+        mDotPaint.setMaskFilter(new BlurMaskFilter(6, BlurMaskFilter.Blur.SOLID));
     }
 
     @Override
@@ -49,10 +47,9 @@ public class TimeLineDecoration extends SingleTimeLineDecoration {
     }
 
     @Override
-    protected void onDrawPointItem(Canvas canvas,  int cx, int cy, int radius, int pos) {
+    protected void onDrawDotItem(Canvas canvas, int cx, int cy, int radius, int pos) {
         ITimeItem item = timeItems.get(pos);
         mDotPaint.setColor(item.getColor());
-        mDotPaint.setMaskFilter(new BlurMaskFilter(20, BlurMaskFilter.Blur.SOLID));
         canvas.drawCircle(cx,cy,UIUtils.dip2px(6),mDotPaint);
     }
 }

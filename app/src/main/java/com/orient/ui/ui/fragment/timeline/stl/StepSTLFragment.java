@@ -1,8 +1,8 @@
-package com.orient.ui.ui.activity;
+package com.orient.ui.ui.fragment.timeline.stl;
 
-import android.content.Context;
-import android.content.Intent;
+
 import android.graphics.Color;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -11,37 +11,36 @@ import android.widget.TextView;
 import com.orient.me.widget.rv.itemdocration.timeline.SingleTimeLineDecoration;
 import com.orient.me.widget.rv.itemdocration.timeline.TimeLine;
 import com.orient.ui.R;
-import com.orient.ui.data.TimeItem;
+import com.orient.ui.ui.activity.timeline.TimeItem;
 import com.orient.ui.ui.adapter.RecyclerAdapter;
-import com.orient.ui.widget.TimeLineDecoration;
+import com.orient.ui.ui.fragment.BaseFragment;
+import com.orient.ui.widget.timeline.stl.StepSTL;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 
-public class TimelineActivity extends BaseActivity {
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class StepSTLFragment extends BaseFragment {
 
     @BindView(R.id.rv_content)
     RecyclerView mRecyclerView;
 
     private RecyclerAdapter<TimeItem> mAdapter;
 
-    public static void show(Context context){
-        Intent intent = new Intent(context, TimelineActivity.class);
-        context.startActivity(intent);
-    }
-
     @Override
     protected int getLayoutId() {
-        return R.layout.timeline_activity;
+        return R.layout.fragment_step_stl;
     }
 
     @Override
-    protected void initWidget() {
-        super.initWidget();
+    protected void initWidget(View root) {
+        super.initWidget(root);
 
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setAdapter(mAdapter = new RecyclerAdapter<TimeItem>() {
             @Override
             public ViewHolder<TimeItem> onCreateViewHolder(View root, int viewType) {
@@ -50,18 +49,19 @@ public class TimelineActivity extends BaseActivity {
 
             @Override
             public int getItemLayout(TimeItem timeItem, int position) {
-                return R.layout.timeline_recycle_item;
+                return R.layout.step_recycle_item;
             }
         });
+
         List<TimeItem> timeItems = initItems();
         mAdapter.addAllData(timeItems);
-        TimeLine decoration = new SingleTimeLineDecoration.Builder(this,timeItems)
+        TimeLine decoration = new SingleTimeLineDecoration.Builder(getContext(),timeItems)
                 .setTitle(Color.parseColor("#ffffff"),20)
                 .setTitleStyle(SingleTimeLineDecoration.FLAG_TITLE_TYPE_TOP,40)
                 .setLine(SingleTimeLineDecoration.FLAG_LINE_DIVIDE,30,Color.parseColor("#8d9ca9"))
                 .setDot(SingleTimeLineDecoration.FLAG_DOT_DRAW)
                 .setSameTitleHide()
-                .build(TimeLineDecoration.class);
+                .build(StepSTL.class);
         mRecyclerView.addItemDecoration(decoration);
     }
 
@@ -94,4 +94,5 @@ public class TimelineActivity extends BaseActivity {
             mContentTv.setText(timeItem.getDetail());
         }
     }
+
 }

@@ -6,8 +6,11 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.orient.ui.R;
+import com.orient.ui.ui.activity.gridpage.GridPageActivity;
+import com.orient.ui.ui.activity.sidelayout.DoubleSideLayoutActivity;
+import com.orient.ui.ui.activity.timeline.TimelineActivity;
 import com.orient.ui.ui.adapter.RecyclerAdapter;
-import com.orient.ui.widget.GridDividerItemDecoration;
+import com.orient.ui.widget.gridpage.GridDividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +59,7 @@ public class MainActivity extends BaseActivity {
 
                 switch (mainItem.name) {
                     case "两侧布局":
-                        TwoSideLayoutActivity.show(MainActivity.this);
+                        DoubleSideLayoutActivity.show(MainActivity.this);
                         break;
                     case "网格首页":
                         GridPageActivity.show(MainActivity.this);

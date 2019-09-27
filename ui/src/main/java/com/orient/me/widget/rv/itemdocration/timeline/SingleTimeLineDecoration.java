@@ -2,7 +2,9 @@ package com.orient.me.widget.rv.itemdocration.timeline;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -25,19 +27,19 @@ public abstract class SingleTimeLineDecoration extends TimeLine {
         if ((mFlag & FLAG_SAME_TITLE_HIDE) != 0) {
             if ((mFlag & FLAG_TITLE_TYPE_TOP) != 0) {
                 if (pos == 0 || !timeItem.getTitle().equals(lastTitle)) {
-                    outRect.set(mLineOffset, mTopOffset, 0, 0);
+                    outRect.set(mLineOffset + mLineWidth, mTopOffset, 0, 0);
                 } else {
-                    outRect.set(mLineOffset, 0, 0, 0);
+                    outRect.set(mLineOffset + mLineWidth, 0, 0, 0);
                 }
                 lastTitle = timeItem.getTitle();
             } else {
-                outRect.set(mLineOffset + mLeftOffset, 0, 0, 0);
+                outRect.set(mLineOffset + mLineWidth + mLeftOffset, 0, 0, 0);
             }
         } else {
             if ((mFlag & FLAG_TITLE_TYPE_TOP) != 0) {
-                outRect.set(mLineOffset, mTopOffset, 0, 0);
+                outRect.set(mLineOffset + mLineWidth, mTopOffset, 0, 0);
             } else {
-                outRect.set(mLineOffset + mLeftOffset, 0, 0, 0);
+                outRect.set(mLineOffset + mLineWidth + mLeftOffset, 0, 0, 0);
             }
         }
     }
@@ -46,9 +48,6 @@ public abstract class SingleTimeLineDecoration extends TimeLine {
     @Override
     public void onDraw(@NonNull Canvas c, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         super.onDraw(c, parent, state);
-
-        // 兼容4.0硬件加速无效
-        parent.setLayerType(View.LAYER_TYPE_SOFTWARE,mDotPaint);
 
         int childCount = parent.getChildCount();
         if (childCount == 0)
@@ -81,23 +80,23 @@ public abstract class SingleTimeLineDecoration extends TimeLine {
             if ((mFlag & FLAG_SAME_TITLE_HIDE) != 0) {
                 if ((mFlag & FLAG_TITLE_TYPE_TOP) != 0) {
                     if (pos == 0 || !timeItem.getTitle().equals(mLastTitle)) {
-                        mLeft = child.getLeft() - params.leftMargin - (mLineOffset);
+                        mLeft = child.getLeft() - params.leftMargin - mLineOffset - mLineWidth;
                         mTop = child.getTop() - params.topMargin - mTopOffset;
                         mRight = child.getRight();
                         mBottom = child.getTop() - params.topMargin;
                         if ((mFlag & FLAG_TITLE_DRAW_BG) != 0)
                             canvas.drawRect(mLeft, mTop, mRight, mBottom, mBgPaint);
-                        onDrawTitleItem(canvas, mLeft, mTop, mRight, mBottom, i);
+                        onDrawTitleItem(canvas, mLeft, mTop, mRight, mBottom, pos);
                     }
-                } else if((mFlag & FLAG_TITLE_TYPE_LEFT) != 0) {
+                } else if ((mFlag & FLAG_TITLE_TYPE_LEFT) != 0) {
                     if (pos == 0 || !timeItem.getTitle().equals(mLastTitle)) {
-                        mLeft = child.getLeft() - params.leftMargin - (mLineOffset * 2 + mLineWidth) - mLeftOffset;
+                        mLeft = child.getLeft() - params.leftMargin - (mLineOffset + mLineWidth) - mLeftOffset;
                         mTop = child.getTop();
-                        mRight = child.getLeft() - params.leftMargin - (mLineOffset * 2 + mLineWidth);
+                        mRight = child.getLeft() - params.leftMargin - (mLineOffset + mLineWidth);
                         mBottom = child.getBottom();
                         if ((mFlag & FLAG_TITLE_DRAW_BG) != 0)
                             canvas.drawRect(mLeft, mTop, mRight, mBottom, mBgPaint);
-                        onDrawTitleItem(canvas,  mLeft, mTop, mRight, mBottom, i);
+                        onDrawTitleItem(canvas, mLeft, mTop, mRight, mBottom, pos);
                     }
                 }
                 mLastTitle = timeItem.getTitle();
@@ -105,21 +104,21 @@ public abstract class SingleTimeLineDecoration extends TimeLine {
                 if ((mFlag & FLAG_TITLE_TYPE_TOP) != 0) {
                     // 绘制上面的标题
                     // TODO 验证RecyclerView子布局中的内外边距
-                    mLeft = child.getLeft() - params.leftMargin - (mLineOffset);
+                    mLeft = child.getLeft() - params.leftMargin - mLineOffset - mLineWidth;
                     mTop = child.getTop() - params.topMargin - mTopOffset;
                     mRight = child.getRight();
                     mBottom = child.getTop() - params.topMargin;
                     if ((mFlag & FLAG_TITLE_DRAW_BG) != 0)
                         canvas.drawRect(mLeft, mTop, mRight, mBottom, mBgPaint);
-                    onDrawTitleItem(canvas,  mLeft, mTop, mRight, mBottom, i);
-                } else if((mFlag & FLAG_TITLE_TYPE_LEFT) != 0) {
-                    mLeft = child.getLeft() - params.leftMargin - (mLineOffset * 2 + mLineWidth) - mLeftOffset;
+                    onDrawTitleItem(canvas, mLeft, mTop, mRight, mBottom, pos);
+                } else if ((mFlag & FLAG_TITLE_TYPE_LEFT) != 0) {
+                    mLeft = child.getLeft() - params.leftMargin - (mLineOffset + mLineWidth) - mLeftOffset;
                     mTop = child.getTop();
-                    mRight = child.getLeft() - params.leftMargin - (mLineOffset * 2 + mLineWidth);
+                    mRight = child.getLeft() - params.leftMargin - (mLineOffset + mLineWidth);
                     mBottom = child.getBottom();
                     if ((mFlag & FLAG_TITLE_DRAW_BG) != 0)
                         canvas.drawRect(mLeft, mTop, mRight, mBottom, mBgPaint);
-                    onDrawTitleItem(canvas, mLeft, mTop, mRight, mBottom, i);
+                    onDrawTitleItem(canvas, mLeft, mTop, mRight, mBottom, pos);
                 }
             }
         }
@@ -128,11 +127,11 @@ public abstract class SingleTimeLineDecoration extends TimeLine {
     /**
      * 绘制标题
      *
-     * @param left      绘制文本区域范围
-     * @param top       绘制文本区域范围
-     * @param right     绘制文本区域范围
-     * @param bottom    绘制文本区域范围
-     * @param pos       使用数据的位置
+     * @param left   绘制文本区域范围
+     * @param top    绘制文本区域范围
+     * @param right  绘制文本区域范围
+     * @param bottom 绘制文本区域范围
+     * @param pos    使用数据的位置
      */
     protected abstract void onDrawTitleItem(Canvas canvas, int left, int top, int right, int bottom, int pos);
 
@@ -156,12 +155,12 @@ public abstract class SingleTimeLineDecoration extends TimeLine {
                         beginY = (child.getTop() + child.getBottom()) / 2;
                     } else if (i == childCount - 1) {
                         endY = (child.getTop() + child.getBottom()) / 2;
-                        c.drawLine(left + mLineOffset, beginY, left + mLineOffset + mLineWidth, endY, mLinePaint);
+                        c.drawLine(left + mLineOffset / 2, beginY, left + mLineOffset / 2 + mLineWidth, endY, mLinePaint);
                     } else {
                         View lastChild = parent.getChildAt(i - 1);
                         endY = (lastChild.getTop() + lastChild.getBottom()) / 2;
                         if (endY != beginY) {
-                            c.drawLine(left + mLineOffset, beginY, left + mLineOffset + mLineWidth, endY, mLinePaint);
+                            c.drawLine(left + mLineOffset / 2, beginY, left + mLineOffset / 2 + mLineWidth, endY, mLinePaint);
                         }
                         beginY = (child.getTop() + child.getBottom()) / 2;
                     }
@@ -171,16 +170,16 @@ public abstract class SingleTimeLineDecoration extends TimeLine {
         } else {
             View lastChild = parent.getChildAt(childCount - 1);
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) lastChild.getLayoutParams();
-            if((mFlag & FLAG_LINE_BEGIN_TO_END)!= 0) {
+            if ((mFlag & FLAG_LINE_BEGIN_TO_END) != 0) {
                 if (params.getViewAdapterPosition() == timeItems.size() - 1) {
                     bottom = (lastChild.getBottom() + lastChild.getTop()) / 2;
                 } else {
                     bottom = lastChild.getBottom();
                 }
-            }else {
+            } else {
                 bottom = lastChild.getBottom();
             }
-            c.drawLine(left + mLineOffset, top, left + mLineOffset + mLineWidth, top + bottom, mLinePaint);
+            c.drawLine(left + mLineOffset / 2 + mLeftOffset, top, left + mLineOffset / 2 + mLineWidth + mLeftOffset, top + bottom, mLinePaint);
         }
 
 
@@ -200,23 +199,46 @@ public abstract class SingleTimeLineDecoration extends TimeLine {
             r = Math.min((mLineOffset * 2 + mLineWidth) / 2, r);
 
             if ((mFlag & FLAG_TITLE_POS_NONE) != 0 || (mFlag & FLAG_TITLE_TYPE_TOP) != 0) {
-                cx = mLineOffset + (mLineWidth + 1) / 2;
+                cx = (mLineOffset + (mLineWidth + 1)) / 2;
             } else {
-                cx = mLeftOffset + mLineOffset + (mLineWidth + 1) / 2;
+                cx = mLeftOffset + (mLineOffset + (mLineWidth + 1)) / 2;
             }
-            onDrawPointItem(c, cx, cy, r, i);
+
+            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
+            int pos = params.getViewAdapterPosition();
+            if ((mFlag & FLAG_DOT_RES) != 0) {
+                ITimeItem timeItem = timeItems.get(pos);
+                if (timeItem != null) {
+                    Drawable drawable = ContextCompat.getDrawable(mContext, timeItem.getResource());
+                    onDrawDotResItem(c, cx, cy, r, drawable, pos);
+                }
+            } else
+                onDrawDotItem(c, cx, cy, r, pos);
         }
     }
 
     /**
      * 绘制原点
      *
-     * @param cx       圆心x
-     * @param cy       原因y
+     * @param cx     圆心x
+     * @param cy     圆心y
+     * @param radius 最大半径
+     * @param pos    位置
+     */
+    protected void onDrawDotItem(Canvas canvas, int cx, int cy, int radius, int pos) {
+
+    }
+
+    /**
+     * @param cx       圆心X
+     * @param cy       圆心Y
      * @param radius   最大半径
+     * @param drawable 绘制的Drawable
      * @param pos      位置
      */
-    protected abstract void onDrawPointItem(Canvas canvas, int cx, int cy, int radius, int pos);
+    protected void onDrawDotResItem(Canvas canvas, int cx, int cy, int radius, Drawable drawable, int pos) {
+
+    }
 
 
 }

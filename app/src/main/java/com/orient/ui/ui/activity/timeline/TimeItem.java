@@ -1,4 +1,4 @@
-package com.orient.ui.data;
+package com.orient.ui.ui.activity.timeline;
 
 import com.orient.me.data.ITimeItem;
 

@@ -3,7 +3,9 @@ package com.orient.me.widget.rv.itemdocration.timeline;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -160,7 +162,15 @@ public abstract class DoubleTimeLineDecoration extends TimeLine {
             int r = (top - bottom) / 2;
             r = Math.min((mLineOffset * 2 + mLineWidth) / 2, r);
 
-            onDrawPointItem(c, cx, cy, r, pos);
+            if ((mFlag & FLAG_DOT_RES) != 0) {
+                ITimeItem timeItem = timeItems.get(pos);
+                if(timeItem != null) {
+                    Drawable drawable = ContextCompat.getDrawable(mContext, timeItem.getResource());
+                    onDrawDotResItem(c,cx,cy,r,drawable,pos);
+                }
+            } else
+                onDrawDotItem(c, cx, cy, r, pos);
+
         }
     }
 
@@ -172,7 +182,19 @@ public abstract class DoubleTimeLineDecoration extends TimeLine {
      * @param radius 最大半径
      * @param pos    位置
      */
-    protected void onDrawPointItem(Canvas canvas, int cx, int cy, int radius, int pos) {
+    protected void onDrawDotItem(Canvas canvas, int cx, int cy, int radius, int pos) {
+
+    }
+
+    /**
+     *
+     * @param cx 圆心X
+     * @param cy 圆心Y
+     * @param radius 最大半径
+     * @param drawable 绘制的Drawable
+     * @param pos 位置
+     */
+    protected void onDrawDotResItem(Canvas canvas, int cx, int cy, int radius, Drawable drawable,int pos){
 
     }
 

@@ -1,7 +1,8 @@
-package com.orient.ui.data;
+package com.orient.ui.ui.activity.gridpage;
 
 import com.orient.me.data.IGridItem;
 
+@SuppressWarnings("WeakerAccess")
 public class GridItem implements IGridItem {
 
     public static final int TYPE_SMALL =1 ;

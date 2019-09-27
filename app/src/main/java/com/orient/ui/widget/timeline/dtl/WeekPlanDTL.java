@@ -1,4 +1,4 @@
-package com.orient.ui.widget;
+package com.orient.ui.widget.timeline.dtl;
 
 import android.content.Context;
 import android.graphics.BlurMaskFilter;
@@ -12,12 +12,12 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
 import com.orient.me.data.ITimeItem;
+import com.orient.me.utils.UIUtils;
 import com.orient.me.widget.rv.itemdocration.timeline.DoubleTimeLineDecoration;
-import com.orient.ui.utils.UIUtils;
 
-public class DoubleSideTimeLine extends DoubleTimeLineDecoration {
+public class WeekPlanDTL extends DoubleTimeLineDecoration {
 
-    public DoubleSideTimeLine(Config config) {
+    public WeekPlanDTL(Config config) {
         super(config);
     }
 
@@ -44,28 +44,23 @@ public class DoubleSideTimeLine extends DoubleTimeLineDecoration {
     }
 
     @Override
-    protected void onDrawPointItem(Canvas canvas, int cx, int cy, int radius, int pos) {
-        ITimeItem item = timeItems.get(pos);
+    protected void onDrawDotResItem(Canvas canvas, int cx, int cy, int radius, Drawable drawable, int pos) {
+        super.onDrawDotResItem(canvas, cx, cy, radius, drawable, pos);
 
-        int res = item.getResource();
-        Drawable drawable = ContextCompat.getDrawable(mContext,res);
-        if(drawable != null){
+        if (drawable != null) {
             int height = drawable.getIntrinsicHeight();
             int width = drawable.getIntrinsicWidth();
-            int left = cx - width/2;
-            int top = cy- height/2;
-            int right = cx + width/2;
-            int bottom = cy + height/2;
-            drawable.setBounds(left,top,right,bottom);
+            int left = cx - width / 2;
+            int top = cy - height / 2;
+            int right = cx + width / 2;
+            int bottom = cy + height / 2;
+            drawable.setBounds(left, top, right, bottom);
             drawable.draw(canvas);
             mDotPaint.setStyle(Paint.Style.STROKE);
             mDotPaint.setColor(Color.parseColor("#ffffff"));
             mDotPaint.setStrokeWidth(UIUtils.dip2px(2));
-            canvas.drawCircle(cx,cy,width/2-UIUtils.dip2px(3),mDotPaint);
+            canvas.drawCircle(cx, cy, width / 2 - UIUtils.dip2px(3), mDotPaint);
         }
-
-        /*mDotPaint.setColor(item.getColor());
-        mDotPaint.setMaskFilter(new BlurMaskFilter(20, BlurMaskFilter.Blur.SOLID));
-        canvas.drawCircle(cx, cy, UIUtils.dip2px(6), mDotPaint);*/
     }
+
 }

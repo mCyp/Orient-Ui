@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="120dp"
+    android:layout_margin="6dp"
+    tools:context=".ui.activity.MainActivity">
+
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/textPrimary"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_detail"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="Hi" />
+
+    <TextView
+        android:id="@+id/tv_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/len_10"
+        android:gravity="center"
+        android:textColor="@color/textSecond"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_name"
+        tools:text="wangjie" />
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginStart="@dimen/len_20"
+        android:layout_marginEnd="@dimen/len_20"
+        android:background="@color/grey_300"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+
+</android.support.constraint.ConstraintLayout>

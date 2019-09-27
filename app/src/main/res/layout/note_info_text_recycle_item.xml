@@ -11,6 +11,7 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
+        android:padding="@dimen/len_10"
         android:layout_height="match_parent">
 
         <TextView
@@ -21,20 +22,24 @@
             android:layout_height="wrap_content"
             android:textSize="18sp"
             tools:text="Hi"
-            android:gravity="center"
+            android:layout_marginStart="@dimen/len_10"
+            android:gravity="start"
+            android:textStyle="bold"
             app:layout_constraintVertical_chainStyle="packed"
-            android:textColor="@color/textPrimary"/>
+            android:textColor="@color/brown_400"/>
 
         <TextView
             android:id="@+id/tv_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
+            android:layout_marginStart="@dimen/len_10"
             app:layout_constraintTop_toBottomOf="@+id/tv_name"
             app:layout_constraintBottom_toBottomOf="@+id/gl_1"
             android:textSize="14sp"
-            android:gravity="center"
-            android:textColor="@color/textSecond"
+            android:gravity="start"
+            android:maxLines="3"
+            android:textColor="@color/brown_200"
             tools:text="wangjie"/>
 
         <android.support.constraint.Guideline
@@ -42,57 +47,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.6"/>
+            app:layout_constraintGuide_percent="0.7"/>
 
         <View
             app:layout_constraintTop_toTopOf="@id/gl_1"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginStart="@dimen/len_20"
-            android:layout_marginEnd="@dimen/len_20"
+            android:layout_marginStart="@dimen/len_10"
+            android:layout_marginEnd="@dimen/len_10"
             android:background="@color/grey_300"/>
 
         <TextView
             android:id="@+id/btn_go"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:paddingStart="@dimen/len_10"
-            android:paddingEnd="@dimen/len_10"
+            android:layout_height="wrap_content"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="@+id/gl_1"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/btn_write"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            android:text="Go"
+            android:text="12:11"
+            android:layout_marginStart="@dimen/len_10"
             android:textSize="@dimen/font_14"
-            android:textColor="@color/white"
-            android:gravity="center"
-            android:background="@color/red_300"
-            android:layout_margin="@dimen/len_10"/>
-
-        <TextView
-            android:id="@+id/btn_write"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:paddingStart="@dimen/len_10"
-            android:paddingEnd="@dimen/len_10"
-            app:layout_constraintLeft_toRightOf="@+id/btn_go"
-            app:layout_constraintTop_toTopOf="@id/gl_1"
-            android:layout_margin="@dimen/len_10"
-            android:textSize="@dimen/font_14"
-            android:text="write"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:background="@color/red_300"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            />
-
-
-
+            android:textColor="@color/textSecond"
+            android:gravity="center" />
 
     </android.support.constraint.ConstraintLayout>
-
-
 
 </android.support.v7.widget.CardView>
