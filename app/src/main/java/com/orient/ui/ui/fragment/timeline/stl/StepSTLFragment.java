@@ -67,12 +67,14 @@ public class StepSTLFragment extends BaseFragment {
 
     private List<TimeItem> initItems(){
         List<TimeItem> items = new ArrayList<>();
-        items.add(new TimeItem("完善信息","实践探究","+30积分", Color.parseColor("#F57F17"),0));
-        items.add(new TimeItem("了解基地","实践探究","+30积分", Color.parseColor("#F57F17"),0));
-        items.add(new TimeItem("知识储备","实践探究","+30积分", Color.parseColor("#F57F17"),0));
-        items.add(new TimeItem("安全教育主题馆","实践探究","+30积分", Color.parseColor("#F57F17"),0));
-        items.add(new TimeItem("评价教师","总结拓展","+30积分", Color.parseColor("#0D47A1"),0));
-        items.add(new TimeItem("评价路线","总结拓展","+30积分", Color.parseColor("#0D47A1"),0));
+        for(int i = 0;i<3;i++) {
+            items.add(new TimeItem("完善信息", "实践探究"+i, "+30积分", Color.parseColor("#F57F17"), 0));
+            items.add(new TimeItem("了解基地", "实践探究"+i, "+30积分", Color.parseColor("#F57F17"), 0));
+            items.add(new TimeItem("知识储备", "实践探究"+i, "+30积分", Color.parseColor("#F57F17"), 0));
+            items.add(new TimeItem("安全教育主题馆", "实践探究"+i, "+30积分", Color.parseColor("#F57F17"), 0));
+            items.add(new TimeItem("评价教师", "总结拓展"+i, "+30积分", Color.parseColor("#0D47A1"), 0));
+            items.add(new TimeItem("评价路线", "总结拓展"+i, "+30积分", Color.parseColor("#0D47A1"), 0));
+        }
         return items;
     }
 

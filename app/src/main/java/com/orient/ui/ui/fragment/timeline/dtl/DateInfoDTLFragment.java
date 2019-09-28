@@ -38,7 +38,7 @@ public class DateInfoDTLFragment extends BaseFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_date_info_dtl;
+        return R.layout.common_fragment;
     }
 
     @Override
@@ -78,9 +78,9 @@ public class DateInfoDTLFragment extends BaseFragment {
         calendar.add(Calendar.DAY_OF_MONTH,1);
         items.add(new DateInfo("高尔夫", "约个高尔夫",calendar.getTime(), Color.parseColor("#5FB29F")));
         calendar.add(Calendar.DAY_OF_MONTH,1);
-        items.add(new DateInfo("桑拿", "今天来洗个澡", calendar.getTime(),Color.parseColor("#ec407a")));
+        items.add(new DateInfo("游泳", "今天来洗个澡", calendar.getTime(),Color.parseColor("#ec407a")));
         calendar.add(Calendar.DAY_OF_MONTH,1);
-        items.add(new DateInfo("足浴", "快上班了好好休息",calendar.getTime(), Color.parseColor("#0D47A1")));
+        items.add(new DateInfo("温泉", "快上班了好好休息",calendar.getTime(), Color.parseColor("#0D47A1")));
         return items;
     }
 
@@ -88,7 +88,7 @@ public class DateInfoDTLFragment extends BaseFragment {
     private TimeLine provideTimeLine(List<DateInfo> timeItems) {
         return new TimeLine.Builder(getContext(), timeItems)
                 .setTitleStyle(TimeLine.FLAG_TITLE_POS_NONE, 0)
-                .setLine(TimeLine.FLAG_LINE_BEGIN_TO_END, 30, Color.parseColor("#757575"), 2)
+                .setLine(TimeLine.FLAG_LINE_BEGIN_TO_END, 60, Color.parseColor("#757575"), 2)
                 .setDot(TimeLine.FLAG_DOT_DRAW)
                 .build(DateInfoDTL.class);
     }

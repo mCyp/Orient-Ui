@@ -48,12 +48,6 @@ public class DateInfoDTL extends DoubleTimeLineDecoration {
     }
 
     @Override
-    public void onDraw(@NonNull Canvas c, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-
-        super.onDraw(c, parent, state);
-    }
-
-    @Override
     protected void onDrawTitleItem(Canvas canvas, int left, int top, int right, int bottom, int centerX, int pos, boolean isLeft) {
         // 不需要做什么
     }

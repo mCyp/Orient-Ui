@@ -13,4 +13,16 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="TabLayoutStyle" parent="Base.Widget.Design.TabLayout">
+        <item name="tabBackground">@color/white</item>
+        <item name="tabIndicatorColor">@color/teal_300</item>
+        <item name="tabIndicatorHeight">1dp</item>
+        <item name="tabSelectedTextColor">@color/teal_300</item>
+    </style>
+
+    <style name="CustomStyle" parent="Base.Widget.Design.TabLayout">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/textPrimary</item>
+    </style>
+
 </resources>

@@ -23,6 +23,10 @@ public abstract class DoubleTimeLineDecoration extends TimeLine {
         mStartSide = LEFT;
     }
 
+    /**
+     * 设置起始边
+     * @param startSide Left RIGHT
+     */
     public void setStartSide(int startSide) {
         this.mStartSide = startSide;
     }
@@ -39,14 +43,14 @@ public abstract class DoubleTimeLineDecoration extends TimeLine {
         int side = pos % 2;
         if ((mFlag & FLAG_TITLE_TYPE_LEFT) != 0) {
             if (side == mStartSide)
-                outRect.set(0, 0, mLineOffset + mLeftOffset, 0);
+                outRect.set(0, 0, (mLineOffset+mLineWidth)/2 + mLeftOffset, 0);
             else
-                outRect.set(mLineOffset + mLeftOffset, 0, 0, 0);
+                outRect.set((mLineOffset+mLineWidth)/2 + mLeftOffset, 0, 0, 0);
         } else {
             if (side == mStartSide)
-                outRect.set(0, 0, mLineOffset, 0);
+                outRect.set(0, 0, (mLineOffset+mLineWidth)/2, 0);
             else
-                outRect.set(mLineOffset, 0, 0, 0);
+                outRect.set((mLineOffset+mLineWidth)/2, 0, 0, 0);
         }
     }
 
@@ -77,7 +81,7 @@ public abstract class DoubleTimeLineDecoration extends TimeLine {
     @Override
     protected void drawTitle(Canvas canvas, RecyclerView parent) {
         int childCount = parent.getChildCount();
-        String mLastTitle = null;
+        // 注意：隐藏相同标题对两侧布局不重要
         int centerX = parent.getMeasuredWidth() / 2;
         for (int i = 0; i < childCount; i++) {
             View child = parent.getChildAt(i);
@@ -160,7 +164,7 @@ public abstract class DoubleTimeLineDecoration extends TimeLine {
             cx = parent.getMeasuredWidth() / 2;
             cy = (bottom + top) / 2;
             int r = (top - bottom) / 2;
-            r = Math.min((mLineOffset * 2 + mLineWidth) / 2, r);
+            r = Math.min((mLineOffset + mLineWidth) / 2, r);
 
             if ((mFlag & FLAG_DOT_RES) != 0) {
                 ITimeItem timeItem = timeItems.get(pos);

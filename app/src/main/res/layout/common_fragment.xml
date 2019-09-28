@@ -2,12 +2,14 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/lay_bg"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/teal_50">
+    android:background="@color/light_green_50">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_content"
+        android:paddingTop="@dimen/len_10"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />

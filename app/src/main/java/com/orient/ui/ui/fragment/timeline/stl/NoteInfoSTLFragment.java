@@ -82,8 +82,8 @@ public class NoteInfoSTLFragment extends BaseFragment {
         calendar.add(Calendar.DAY_OF_MONTH, 1);
         items.add(new NoteInfo("高尔夫", "约个高尔夫", calendar.getTime(), Color.parseColor("#5FB29F"),NOTE_IMG ));
         calendar.add(Calendar.DAY_OF_MONTH, 1);
-        items.add(new NoteInfo("桑拿", "今天来洗个澡", calendar.getTime(), Color.parseColor("#ec407a"), NOTE_TEXT));
-        items.add(new NoteInfo("足浴", "快上班了好好休息", calendar.getTime(), Color.parseColor("#0D47A1"), NOTE_TEXT));
+        items.add(new NoteInfo("游泳", "今天来洗个澡", calendar.getTime(), Color.parseColor("#ec407a"), NOTE_TEXT));
+        items.add(new NoteInfo("温泉", "快上班了好好休息", calendar.getTime(), Color.parseColor("#0D47A1"), NOTE_TEXT));
         return items;
     }
 
@@ -94,6 +94,7 @@ public class NoteInfoSTLFragment extends BaseFragment {
                 .setTitleStyle(SingleTimeLineDecoration.FLAG_TITLE_TYPE_LEFT, 80)
                 .setLine(SingleTimeLineDecoration.FLAG_LINE_CONSISTENT, 0, Color.parseColor("#00000000"))
                 .setDot(SingleTimeLineDecoration.FLAG_DOT_DRAW)
+                .setSameTitleHide()
                 .build(NoteInfoSTL.class);
     }
 

@@ -42,8 +42,6 @@ public abstract class TimeLine extends RecyclerView.ItemDecoration {
     // 标题放置的类型
     protected int mFlag;
     // 上次的标题
-    protected String lastTitle = null;
-
 
     // 标题分两种，
     // 1. 上方

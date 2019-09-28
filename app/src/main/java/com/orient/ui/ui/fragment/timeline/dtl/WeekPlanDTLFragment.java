@@ -68,8 +68,8 @@ public class WeekPlanDTLFragment extends BaseFragment {
         items.add(new TimeItem("喝酒", "06-12，周三", "今天找老徐吃烧烤", Color.parseColor("#ab47bc"), R.drawable.timeline_ic_drink));
         items.add(new TimeItem("画画", "07-07，周四", "去鼋头渚写生", Color.parseColor("#aed581"), R.drawable.timeline_ic_draw));
         items.add(new TimeItem("高尔夫", "08-20，周五", "约个高尔夫", Color.parseColor("#5FB29F"), R.drawable.timeline_ic_golf));
-        items.add(new TimeItem("桑拿", "09-16，周六", "今天来洗个澡", Color.parseColor("#ec407a"), R.drawable.timeline_ic_bath));
-        items.add(new TimeItem("足浴", "10-01，周日", "快上班了好好休息", Color.parseColor("#0D47A1"), R.drawable.timeline_ic_footer));
+        items.add(new TimeItem("游泳", "09-16，周六", "今天来洗个澡", Color.parseColor("#ec407a"), R.drawable.timeline_ic_bath));
+        items.add(new TimeItem("温泉", "10-01，周日", "快上班了好好休息", Color.parseColor("#0D47A1"), R.drawable.timeline_ic_footer));
         return items;
     }
 
@@ -78,7 +78,7 @@ public class WeekPlanDTLFragment extends BaseFragment {
         return new TimeLine.Builder(getContext(), timeItems)
                 .setTitle(Color.parseColor("#8d9ca9"), 14)
                 .setTitleStyle(TimeLine.FLAG_TITLE_TYPE_LEFT, 0)
-                .setLine(TimeLine.FLAG_LINE_BEGIN_TO_END, 30, Color.parseColor("#757575"),3)
+                .setLine(TimeLine.FLAG_LINE_BEGIN_TO_END, 60, Color.parseColor("#757575"),3)
                 .setDot(TimeLine.FLAG_DOT_RES)
                 .build(WeekPlanDTL.class);
     }

@@ -1,5 +1,6 @@
 package com.orient.ui.widget.timeline.stl;
 
+import com.orient.ui.utils.DateUtils;
 import com.orient.ui.widget.timeline.dtl.DateInfo;
 
 import java.security.PublicKey;
@@ -25,6 +26,11 @@ public class NoteInfo extends DateInfo {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    @Override
+    public String getTitle() {
+        return DateUtils.date2SDayFormat(getDate());
     }
 }
 
