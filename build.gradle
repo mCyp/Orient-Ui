@@ -8,6 +8,10 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.4.1'
+
+        //bintray 插件
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
         
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -34,4 +38,35 @@ ext{
     glideVersion = '3.7.0'
 
     glideTransforemVersion = '4.0.1';
+
+    //bintray 网站上你创建的仓库的名字（必配项）
+    bintrayRepo = 'Maven'
+    //在这个仓库下的 package name（必配项）
+    bintrayName = 'Orient-Ui'
+    //以上两项均只是指向 bintray 网站上你的仓库和仓库下的package
+
+    //publishedGroupId:artifact:libraryVersion 构成你开源库的唯一路径
+    //例如：com.dasu.tv:tv:0.0.1，在build.gradle里就可以根据这个路径来compile依赖库了
+    //以下三项均是必配项
+    publishedGroupId = 'com.orient'
+    artifact = 'Orient-Ui'
+    libraryVersion = '1.0.0'
+
+    //开源库对应的 github 地址，不知道可不可以不配，应该也是必配
+    gitUrl = 'https://github.com/mCyp/Orient-Ui.git'
+
+    //以下三项只是对开源库的描述（应该不是必配项吧，没尝试过）
+    libraryName = 'Orient-Ui'
+    libraryDescription = 'A Android Ui Library'
+    siteUrl = 'https://github.com/mCyp/Orient-Ui'
+
+    //开发者信息，也是必配的吧
+    developerId = 'JieWang'
+    developerName = 'JieWang'
+    developerEmail = 'JieWang19951030@Gmail.com'
+
+    //这部分可以不用改，我也不大懂这些开源协议，但应该都一样
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
 }
