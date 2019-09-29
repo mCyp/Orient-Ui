@@ -3,7 +3,6 @@
 <h1 align="center">Orient - UI</h1>
 <div align="center">
 分享平时工作中一些有趣的UI
-
 <img src = "https://api.bintray.com/packages/jiewang19951030/Maven/Orient-Ui/images/download.svg"/> <img src="https://img.shields.io/badge/license-Apache2.0-green.svg" style="" />
 
 </div>
@@ -16,7 +15,7 @@
 
 借助`RecyclerView`实现以下布局。
 
-<img src="https://github.com/mCyp/Orient-Ui/blob/master/picture/%E4%B8%A4%E4%BE%A7%E5%B8%83%E5%B1%80.png" alt="S90929-10290486"  style="float:left;zoom:15%;" />
+<img width="200" height="400" src="https://github.com/mCyp/Orient-Ui/blob/master/picture/%E4%B8%A4%E4%BE%A7%E5%B8%83%E5%B1%80.png" alt="S90929-10290486"  style="float:left;" />
 
 #### 时间轴 - TimeLine
 
@@ -28,7 +27,7 @@
 
 摆脱嵌套，借助`RecyclerView`的`GridLayoutManager`自制首页。
 
-<img src="https://github.com/mCyp/Orient-Ui/blob/master/picture/GridPage.png" alt="GridPage" style="zoom:51%;float:left;" />
+<img width="200" height="400" src="https://github.com/mCyp/Orient-Ui/blob/master/picture/GridPage.png" alt="GridPage" style="float:left;" />
 
 #### 状态视图 - EmptyView
 
@@ -43,6 +42,10 @@
 ## 📖 依赖和文档
 
 ####  添加依赖
+
+```
+implementation 'com.orient:Orient-Ui:1.0.0'
+```
 
 #### 使用说明
 
