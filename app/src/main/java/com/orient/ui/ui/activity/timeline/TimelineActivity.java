@@ -26,7 +26,7 @@ import butterknife.BindView;
 
 public class TimelineActivity extends BaseActivity {
 
-    public static final String[] titles = {"双一", "双二", "单一","单二","单三","单四"};
+    public static final String[] titles = {"DateInfoDTL", "WeekPlanDTL", "NoteInfoSTL","WeekPlanSTL","StepSTL","SocialMediaSTL"};
 
     @BindView(R.id.mTabLayout)
     TabLayout mTabLayout;
@@ -45,9 +45,9 @@ public class TimelineActivity extends BaseActivity {
     protected void initWidget() {
         super.initWidget();
 
-        for (int i = 0; i < titles.length; i++) {
-            mTabLayout.addTab(mTabLayout.newTab());
-        }
+       /* for (int i = 0; i < titles.length; i++) {
+            mTabLayout.addTab(mTabLayout.newTab().setIcon(res[i]));
+        }*/
 
         mTabLayout.setupWithViewPager(mViewPager, true);
         mAdapter = new TimeLineAdapter(getSupportFragmentManager(), titles);
@@ -70,6 +70,12 @@ public class TimelineActivity extends BaseActivity {
                 mViewPager.setCurrentItem(tab.getPosition());
             }
         });
+
+        // 重新添加
+        mTabLayout.removeAllTabs();
+        for (int i = 0; i < titles.length; i++) {
+            mTabLayout.addTab(mTabLayout.newTab().setText(titles[i]));
+        }
     }
 
     public static void show(Context context){

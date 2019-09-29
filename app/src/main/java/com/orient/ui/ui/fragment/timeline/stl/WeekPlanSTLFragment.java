@@ -28,6 +28,8 @@ import butterknife.BindView;
  */
 public class WeekPlanSTLFragment extends BaseFragment {
 
+    @BindView(R.id.lay_bg)
+    View view;
     @BindView(R.id.rv_content)
     RecyclerView mRecyclerView;
 
@@ -43,7 +45,7 @@ public class WeekPlanSTLFragment extends BaseFragment {
     protected void initWidget(View root) {
         super.initWidget(root);
 
-
+        view.setBackgroundResource(R.color.purple_50);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setAdapter(mAdapter = new RecyclerAdapter<TimeItem>() {
             @Override
@@ -53,26 +55,15 @@ public class WeekPlanSTLFragment extends BaseFragment {
 
             @Override
             public int getItemLayout(TimeItem s, int position) {
-                return R.layout.week_plan_stl_recycle_item;
+                return R.layout.two_side_left_recycle_item;
             }
         });
 
-        List<TimeItem> timeItems = initItems();
+        List<TimeItem> timeItems = TimeItem.initTimeInfo();
         mAdapter.addAllData(timeItems);
 
         TimeLine timeLine = provideTimeLine(timeItems);
         mRecyclerView.addItemDecoration(timeLine);
-    }
-
-    private List<TimeItem> initItems() {
-        List<TimeItem> items = new ArrayList<>();
-        items.add(new TimeItem("喝茶", "10-01，周二", "第一天养养生吧~", Color.parseColor("#f36c60"), R.drawable.timeline_ic_tea));
-        items.add(new TimeItem("喝酒", "10-01，周二", "今天找老徐吃烧烤", Color.parseColor("#ab47bc"), R.drawable.timeline_ic_drink));
-        items.add(new TimeItem("画画", "07-07，周四", "去鼋头渚写生", Color.parseColor("#aed581"), R.drawable.timeline_ic_draw));
-        items.add(new TimeItem("高尔夫", "08-20，周五", "约个高尔夫", Color.parseColor("#5FB29F"), R.drawable.timeline_ic_golf));
-        items.add(new TimeItem("游泳", "08-20，周五", "今天来洗个澡", Color.parseColor("#ec407a"), R.drawable.timeline_ic_bath));
-        items.add(new TimeItem("温泉", "08-20，周五", "快上班了好好休息", Color.parseColor("#0D47A1"), R.drawable.timeline_ic_footer));
-        return items;
     }
 
 
@@ -93,6 +84,12 @@ public class WeekPlanSTLFragment extends BaseFragment {
         @BindView(R.id.tv_detail)
         TextView mDetailTv;
 
+        @BindView(R.id.btn_go)
+        TextView mGoBtn;
+
+        @BindView(R.id.btn_write)
+        TextView mWriteBtn;
+
         WeekPlanViewHolder(View itemView) {
             super(itemView);
         }
@@ -101,6 +98,13 @@ public class WeekPlanSTLFragment extends BaseFragment {
         protected void onBind(TimeItem timeItem) {
             mNameTv.setText(timeItem.getName());
             mDetailTv.setText(timeItem.getDetail());
+
+            setColor(timeItem.getColor());
+        }
+
+        private void setColor(int color){
+            mGoBtn.setBackgroundColor(color);
+            mWriteBtn.setBackgroundColor(color);
         }
 
     }

@@ -11,6 +11,9 @@
         <item name="android:textSize">16sp</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+
+        <!-- 添加这一句， 即可改变图标的颜色-->
+        <item name="android:textColorSecondary">#ffffff</item>
     </style>
 
     <style name="TabLayoutStyle" parent="Base.Widget.Design.TabLayout">

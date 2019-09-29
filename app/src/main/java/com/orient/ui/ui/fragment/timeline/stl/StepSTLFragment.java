@@ -16,7 +16,6 @@ import com.orient.ui.ui.adapter.RecyclerAdapter;
 import com.orient.ui.ui.fragment.BaseFragment;
 import com.orient.ui.widget.timeline.stl.StepSTL;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -53,33 +52,20 @@ public class StepSTLFragment extends BaseFragment {
             }
         });
 
-        List<TimeItem> timeItems = initItems();
+        List<TimeItem> timeItems = TimeItem.initStepInfo();
         mAdapter.addAllData(timeItems);
-        TimeLine decoration = new SingleTimeLineDecoration.Builder(getContext(),timeItems)
-                .setTitle(Color.parseColor("#ffffff"),20)
-                .setTitleStyle(SingleTimeLineDecoration.FLAG_TITLE_TYPE_TOP,40)
-                .setLine(SingleTimeLineDecoration.FLAG_LINE_DIVIDE,30,Color.parseColor("#8d9ca9"))
+        TimeLine decoration = new SingleTimeLineDecoration.Builder(getContext(), timeItems)
+                .setTitle(Color.parseColor("#ffffff"), 20)
+                .setTitleStyle(SingleTimeLineDecoration.FLAG_TITLE_TYPE_TOP, 40)
+                .setLine(SingleTimeLineDecoration.FLAG_LINE_DIVIDE, 50, Color.parseColor("#8d9ca9"))
                 .setDot(SingleTimeLineDecoration.FLAG_DOT_DRAW)
                 .setSameTitleHide()
                 .build(StepSTL.class);
         mRecyclerView.addItemDecoration(decoration);
     }
 
-    private List<TimeItem> initItems(){
-        List<TimeItem> items = new ArrayList<>();
-        for(int i = 0;i<3;i++) {
-            items.add(new TimeItem("完善信息", "实践探究"+i, "+30积分", Color.parseColor("#F57F17"), 0));
-            items.add(new TimeItem("了解基地", "实践探究"+i, "+30积分", Color.parseColor("#F57F17"), 0));
-            items.add(new TimeItem("知识储备", "实践探究"+i, "+30积分", Color.parseColor("#F57F17"), 0));
-            items.add(new TimeItem("安全教育主题馆", "实践探究"+i, "+30积分", Color.parseColor("#F57F17"), 0));
-            items.add(new TimeItem("评价教师", "总结拓展"+i, "+30积分", Color.parseColor("#0D47A1"), 0));
-            items.add(new TimeItem("评价路线", "总结拓展"+i, "+30积分", Color.parseColor("#0D47A1"), 0));
-        }
-        return items;
-    }
 
-
-    class TimeLineViewHolder extends RecyclerAdapter.ViewHolder<TimeItem>{
+    class TimeLineViewHolder extends RecyclerAdapter.ViewHolder<TimeItem> {
 
         @BindView(R.id.tv_title)
         TextView mTitleTv;

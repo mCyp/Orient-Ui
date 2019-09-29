@@ -14,33 +14,20 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:contentDescription="@string/app_name"
-        android:maxHeight="100dp"
-        android:maxWidth="100dp"
+        android:maxHeight="120dp"
+        android:maxWidth="120dp"
         android:minHeight="48dp"
         android:minWidth="48dp"
         android:scaleType="centerInside"
-        android:src="@drawable/empty_view_status_empty"
-        android:tint="@color/colorPrimary" />
+        android:src="@drawable/ic_empty" />
 
-    <!--<net.qiujuer.genius.ui.widget.Loading
+    <com.orient.me.widget.loading.LoadingIndicatorView
         android:id="@+id/loading"
-        android:layout_width="@dimen/len_32"
-        android:layout_height="@dimen/len_32"
-        android:visibility="gone"
-        app:gAutoRun="false"
-        app:gBackgroundColor="@null"
-        app:gForegroundColor="@color/colorAccent"
-        app:gForegroundLineSize="@dimen/len_2"
-        tools:visibility="visible" />-->
-
-    <!--<com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/loading"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"
-        app:lottie_rawRes="@raw/empty_view_staus_progress"
-        android:visibility="gone"/>-->
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/AVLoadingIndicatorView.Large"
+        app:indicatorName="LineScalePulseOutIndicator"
+        app:indicatorColor="@color/colorPrimary"/>
 
     <TextView
         android:id="@+id/txt_empty"
@@ -49,6 +36,6 @@
         android:layout_marginBottom="16dp"
         android:layout_marginTop="16dp"
         android:text="@string/prompt_empty"
-        android:textSize="20sp"
+        android:textSize="16sp"
         android:textColor="@color/textSecond" />
 </LinearLayout>

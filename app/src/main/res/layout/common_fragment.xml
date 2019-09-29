@@ -5,7 +5,7 @@
     android:id="@+id/lay_bg"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_green_50">
+    android:background="@color/teal_50">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_content"

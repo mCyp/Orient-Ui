@@ -1,8 +1,13 @@
 package com.orient.ui.widget.timeline.dtl;
 
+import android.graphics.Color;
+
 import com.orient.me.data.ITimeItem;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class DateInfo implements ITimeItem {
 
@@ -60,5 +65,23 @@ public class DateInfo implements ITimeItem {
     @Override
     public int getResource() {
         return 0;
+    }
+
+    public static List<DateInfo> initDateInfo() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        List<DateInfo> items = new ArrayList<>();
+        items.add(new DateInfo("喝茶", "第一天养养生吧~", calendar.getTime(), Color.parseColor("#f36c60")));
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        items.add(new DateInfo("喝酒", "今天找老徐吃烧烤", calendar.getTime(), Color.parseColor("#ab47bc")));
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        items.add(new DateInfo("画画", "去鼋头渚写生", calendar.getTime(), Color.parseColor("#aed581")));
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        items.add(new DateInfo("高尔夫", "约个高尔夫", calendar.getTime(), Color.parseColor("#5FB29F")));
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        items.add(new DateInfo("游泳", "今天来洗个澡", calendar.getTime(), Color.parseColor("#ec407a")));
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        items.add(new DateInfo("温泉", "快上班了好好休息", calendar.getTime(), Color.parseColor("#ffd54f")));
+        return items;
     }
 }

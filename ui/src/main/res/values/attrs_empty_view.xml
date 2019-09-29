@@ -3,7 +3,17 @@
         <attr name="comEmptyText" format="integer" />
         <attr name="comErrorText" format="integer" />
         <attr name="comLoadingText" format="integer" />
+        <attr name="comLoadingColor" format="integer" />
         <attr name="comEmptyDrawable" format="integer" />
         <attr name="comErrorDrawable" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="LoadingIndicatorView">
+        <attr name="minWidth" format="dimension" />
+        <attr name="maxWidth" format="dimension"/>
+        <attr name="minHeight" format="dimension" />
+        <attr name="maxHeight" format="dimension"/>
+        <attr name="indicatorName" format="string"/>
+        <attr name="indicatorColor" format="color"/>
     </declare-styleable>
 </resources>

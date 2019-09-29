@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.activity.timeline.TimelineActivity"></activity>
+        <activity android:name=".ui.activity.placeholder.PlaceHolderActivity"></activity>
+        <activity android:name=".ui.activity.timeline.TimelineActivity" />
         <activity android:name=".ui.activity.gridpage.GridPageActivity" />
         <activity android:name=".ui.activity.MainActivity">
             <intent-filter>

@@ -10,9 +10,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.orient.me.R;
+import com.orient.me.widget.loading.LoadingIndicatorView;
 
 
 /**
+ * 来自 Qiujuer老师https://github.com/qiujuer
+ * 因为觉得挺好用，所以就收录进来了
+ *
  * 简单的占位控件，
  * 实现了显示一个空的图片显示，
  * 可以和MVP配合显示没有数据，正在加载等状态
@@ -21,10 +25,10 @@ import com.orient.me.R;
 public class EmptyView extends LinearLayout implements PlaceHolderView {
     private ImageView mEmptyImg;
     private TextView mStatusText;
-    //private Loading mLoading;
-    //private LottieAnimationView mLottieAnimationView;
+    private LoadingIndicatorView loadingIndicatorView;
 
     private int[] mDrawableIds = new int[]{0, 0};
+    private int[] mColor = new int[]{0};
     private int[] mTextIds = new int[]{0, 0, 0};
 
     private View[] mBindViews;
@@ -46,20 +50,22 @@ public class EmptyView extends LinearLayout implements PlaceHolderView {
 
     private void init(AttributeSet attrs, int defStyle) {
         inflate(getContext(), R.layout.empty_view, this);
-        mEmptyImg = (ImageView) findViewById(R.id.im_empty);
-        mStatusText = (TextView) findViewById(R.id.txt_empty);
-        //mLoading = (Loading) findViewById(R.id.loading);
-        //mLottieAnimationView = findViewById(R.id.loading);
+        mEmptyImg =  findViewById(R.id.im_empty);
+        mStatusText =  findViewById(R.id.txt_empty);
+        loadingIndicatorView = findViewById(R.id.loading);
 
         // Load attributes
         final TypedArray a = getContext().obtainStyledAttributes(
                 attrs, R.styleable.EmptyView, defStyle, 0);
 
-        mDrawableIds[0] = a.getInt(R.styleable.EmptyView_comEmptyDrawable, R.drawable.empty_view_status_empty);
-        mDrawableIds[1] = a.getInt(R.styleable.EmptyView_comErrorDrawable, R.drawable.empty_view_status_empty);
+        mDrawableIds[0] = a.getInt(R.styleable.EmptyView_comEmptyDrawable, R.drawable.ic_empty);
+        mDrawableIds[1] = a.getInt(R.styleable.EmptyView_comErrorDrawable, R.drawable.ic_error);
+        mColor[0] = a.getInt(R.styleable.EmptyView_comLoadingColor, R.color.colorAccent);
         mTextIds[0] = a.getInt(R.styleable.EmptyView_comEmptyText, R.string.prompt_empty);
         mTextIds[1] = a.getInt(R.styleable.EmptyView_comErrorText, R.string.prompt_error);
         mTextIds[2] = a.getInt(R.styleable.EmptyView_comLoadingText, R.string.prompt_loading);
+
+        loadingIndicatorView.setIndicatorColor(getResources().getColor(mColor[0]));
 
         a.recycle();
     }
@@ -95,8 +101,8 @@ public class EmptyView extends LinearLayout implements PlaceHolderView {
      */
     @Override
     public void triggerEmpty() {
-        /*mLottieAnimationView.setVisibility(GONE);
-        mLottieAnimationView.pauseAnimation();*/
+        loadingIndicatorView.setVisibility(GONE);
+        loadingIndicatorView.hide();
         mEmptyImg.setImageResource(mDrawableIds[0]);
         mStatusText.setText(mTextIds[0]);
         mEmptyImg.setVisibility(VISIBLE);
@@ -109,8 +115,9 @@ public class EmptyView extends LinearLayout implements PlaceHolderView {
      */
     @Override
     public void triggerNetError() {
-        /*mLottieAnimationView.setVisibility(GONE);
-        mLottieAnimationView.pauseAnimation();*/
+        loadingIndicatorView.setVisibility(GONE);
+        loadingIndicatorView.hide();
+
         mEmptyImg.setImageResource(mDrawableIds[1]);
         mStatusText.setText(mTextIds[1]);
         mEmptyImg.setVisibility(VISIBLE);
@@ -123,6 +130,12 @@ public class EmptyView extends LinearLayout implements PlaceHolderView {
      */
     @Override
     public void triggerError(@StringRes int strRes) {
+        loadingIndicatorView.setVisibility(GONE);
+        loadingIndicatorView.hide();
+
+        mEmptyImg.setImageResource(mDrawableIds[1]);
+        mStatusText.setText(mTextIds[1]);
+        mEmptyImg.setVisibility(VISIBLE);
         setVisibility(VISIBLE);
         changeBindViewVisibility(GONE);
     }
@@ -135,8 +148,8 @@ public class EmptyView extends LinearLayout implements PlaceHolderView {
         mEmptyImg.setVisibility(GONE);
         mStatusText.setText(mTextIds[2]);
         setVisibility(VISIBLE);
-        /*mLottieAnimationView.setVisibility(VISIBLE);
-        mLottieAnimationView.playAnimation();*/
+        loadingIndicatorView.setVisibility(VISIBLE);
+        loadingIndicatorView.show();
         changeBindViewVisibility(GONE);
     }
 

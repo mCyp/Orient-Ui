@@ -65,26 +65,11 @@ public class NoteInfoSTLFragment extends BaseFragment {
             }
         });
 
-        List<NoteInfo> timeItems = initItems();
+        List<NoteInfo> timeItems = NoteInfo.initNoteInfo();
         mAdapter.addAllData(timeItems);
 
         TimeLine timeLine = provideTimeLine(timeItems);
         mRecyclerView.addItemDecoration(timeLine);
-    }
-
-    private List<NoteInfo> initItems() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        List<NoteInfo> items = new ArrayList<>();
-        items.add(new NoteInfo("喝茶", "第一天养养生吧~", calendar.getTime(), Color.parseColor("#f36c60"), NOTE_IMG));
-        items.add(new NoteInfo("喝酒", "今天找老徐吃烧烤", calendar.getTime(), Color.parseColor("#ab47bc"), NOTE_TEXT));
-        items.add(new NoteInfo("画画", "去鼋头渚写生", calendar.getTime(), Color.parseColor("#aed581"), NOTE_TEXT));
-        calendar.add(Calendar.DAY_OF_MONTH, 1);
-        items.add(new NoteInfo("高尔夫", "约个高尔夫", calendar.getTime(), Color.parseColor("#5FB29F"),NOTE_IMG ));
-        calendar.add(Calendar.DAY_OF_MONTH, 1);
-        items.add(new NoteInfo("游泳", "今天来洗个澡", calendar.getTime(), Color.parseColor("#ec407a"), NOTE_TEXT));
-        items.add(new NoteInfo("温泉", "快上班了好好休息", calendar.getTime(), Color.parseColor("#0D47A1"), NOTE_TEXT));
-        return items;
     }
 
 

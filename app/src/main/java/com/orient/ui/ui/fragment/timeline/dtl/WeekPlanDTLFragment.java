@@ -15,7 +15,6 @@ import com.orient.ui.ui.adapter.RecyclerAdapter;
 import com.orient.ui.ui.fragment.BaseFragment;
 import com.orient.ui.widget.timeline.dtl.WeekPlanDTL;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -55,22 +54,11 @@ public class WeekPlanDTLFragment extends BaseFragment {
             }
         });
 
-        List<TimeItem> timeItems = initItems();
+        List<TimeItem> timeItems = TimeItem.initTimeInfo();
         mAdapter.addAllData(timeItems);
 
         TimeLine timeLine = provideTimeLine(timeItems);
         mRecyclerView.addItemDecoration(timeLine);
-    }
-
-    private List<TimeItem> initItems() {
-        List<TimeItem> items = new ArrayList<>();
-        items.add(new TimeItem("喝茶", "10-01，周二", "第一天养养生吧~", Color.parseColor("#f36c60"), R.drawable.timeline_ic_tea));
-        items.add(new TimeItem("喝酒", "06-12，周三", "今天找老徐吃烧烤", Color.parseColor("#ab47bc"), R.drawable.timeline_ic_drink));
-        items.add(new TimeItem("画画", "07-07，周四", "去鼋头渚写生", Color.parseColor("#aed581"), R.drawable.timeline_ic_draw));
-        items.add(new TimeItem("高尔夫", "08-20，周五", "约个高尔夫", Color.parseColor("#5FB29F"), R.drawable.timeline_ic_golf));
-        items.add(new TimeItem("游泳", "09-16，周六", "今天来洗个澡", Color.parseColor("#ec407a"), R.drawable.timeline_ic_bath));
-        items.add(new TimeItem("温泉", "10-01，周日", "快上班了好好休息", Color.parseColor("#0D47A1"), R.drawable.timeline_ic_footer));
-        return items;
     }
 
 

@@ -4,9 +4,11 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.orient.ui.R;
 import com.orient.ui.ui.activity.gridpage.GridPageActivity;
+import com.orient.ui.ui.activity.placeholder.PlaceHolderActivity;
 import com.orient.ui.ui.activity.sidelayout.DoubleSideLayoutActivity;
 import com.orient.ui.ui.activity.timeline.TimelineActivity;
 import com.orient.ui.ui.adapter.RecyclerAdapter;
@@ -67,6 +69,12 @@ public class MainActivity extends BaseActivity {
                     case "时间轴":
                         TimelineActivity.show(MainActivity.this);
                         break;
+                    case "占位布局":
+                        PlaceHolderActivity.show(MainActivity.this);
+                        break;
+                    case "表格":
+                        Toast.makeText(MainActivity.this,"开发进行中~",Toast.LENGTH_SHORT).show();
+                        break;
                 }
             }
         });
@@ -77,6 +85,8 @@ public class MainActivity extends BaseActivity {
         items.add(new MainItem("两侧布局", -1));
         items.add(new MainItem("网格首页", -1));
         items.add(new MainItem("时间轴", -1));
+        items.add(new MainItem("占位布局", -1));
+        items.add(new MainItem("表格", -1));
         return items;
     }
 

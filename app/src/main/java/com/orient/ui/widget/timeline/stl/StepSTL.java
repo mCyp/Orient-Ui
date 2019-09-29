@@ -19,6 +19,7 @@ public class StepSTL extends SingleTimeLineDecoration {
         super(config);
 
         mRectPaint = new Paint();
+        mRectPaint.setMaskFilter(new BlurMaskFilter(10, BlurMaskFilter.Blur.SOLID));
         mDotPaint.setMaskFilter(new BlurMaskFilter(6, BlurMaskFilter.Blur.SOLID));
     }
 
@@ -26,13 +27,12 @@ public class StepSTL extends SingleTimeLineDecoration {
     protected void onDrawTitleItem(Canvas canvas, int left, int top, int right, int bottom, int pos) {
         ITimeItem item = timeItems.get(pos);
 
-        int rectWidth = UIUtils.dip2px(100);
+        int rectWidth = UIUtils.dip2px(120);
         int height = bottom - top;
-        left += mLineOffset;
+        int paddingLeft = UIUtils.dip2px(10);
         mRectPaint.setColor(item.getColor());
-        canvas.drawRect(left,top,left+rectWidth,bottom,mRectPaint);
-        canvas.drawArc(new RectF(left+rectWidth-height/2,top,left+rectWidth+height/2
-                ,bottom),270,180,true,mRectPaint);
+        canvas.drawRoundRect(left+paddingLeft,top,left+rectWidth,bottom,UIUtils.dip2px(6),UIUtils.dip2px(6),mRectPaint);
+
 
         String title = item.getTitle();
         if(TextUtils.isEmpty(title))

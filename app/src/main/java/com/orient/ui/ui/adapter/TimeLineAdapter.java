@@ -47,9 +47,10 @@ public class TimeLineAdapter extends FragmentPagerAdapter {
         return titles.length;
     }
 
-    @Nullable
+    /*@Nullable
     @Override
     public CharSequence getPageTitle(int position) {
         return titles[position];
-    }
+    }*/
+
 }
