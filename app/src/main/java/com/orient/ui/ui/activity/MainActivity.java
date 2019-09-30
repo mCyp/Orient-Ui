@@ -9,7 +9,7 @@ import android.widget.Toast;
 import com.orient.ui.R;
 import com.orient.ui.ui.activity.gridpage.GridPageActivity;
 import com.orient.ui.ui.activity.placeholder.PlaceHolderActivity;
-import com.orient.ui.ui.activity.sidelayout.DoubleSideLayoutActivity;
+import com.orient.ui.ui.activity.doubleside.DoubleSideLayoutActivity;
 import com.orient.ui.ui.activity.timeline.TimelineActivity;
 import com.orient.ui.ui.adapter.RecyclerAdapter;
 import com.orient.ui.widget.gridpage.GridDividerItemDecoration;

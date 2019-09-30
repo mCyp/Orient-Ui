@@ -23,6 +23,7 @@ public class WeekPlanDTL extends DoubleTimeLineDecoration {
 
     @Override
     protected void onDrawTitleItem(Canvas canvas, int left, int top, int right, int bottom, int centerX, int pos, boolean isLeft) {
+        // Draw title part
         ITimeItem item = timeItems.get(pos);
 
         int height = bottom - top;
@@ -46,7 +47,7 @@ public class WeekPlanDTL extends DoubleTimeLineDecoration {
     @Override
     protected void onDrawDotResItem(Canvas canvas, int cx, int cy, int radius, Drawable drawable, int pos) {
         super.onDrawDotResItem(canvas, cx, cy, radius, drawable, pos);
-
+        // draw dot part
         if (drawable != null) {
             int height = drawable.getIntrinsicHeight();
             int width = drawable.getIntrinsicWidth();

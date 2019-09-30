@@ -54,8 +54,8 @@ public class PlaceHolderActivity extends BaseActivity {
                         mEmptyView.triggerOk();
                         return true;
                     case R.id.menu_error:
-                        mEmptyView.triggerError(R.string.prompt_error);
-                        // 或者 mEmptyView.triggerNetError();
+                        mEmptyView.triggerNetError();
+                        //mEmptyView.triggerError();
                         return true;
                     case R.id.menu_null:
                         mEmptyView.triggerEmpty();

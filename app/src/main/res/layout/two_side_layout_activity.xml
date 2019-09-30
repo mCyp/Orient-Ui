@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/teal_50"
-    tools:context=".ui.activity.sidelayout.DoubleSideLayoutActivity">
+    tools:context=".ui.activity.doubleside.DoubleSideLayoutActivity">
 
     <fragment
         android:id="@+id/fg_name"
