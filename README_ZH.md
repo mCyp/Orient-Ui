@@ -3,7 +3,7 @@
 <h1 align="center">Orient - UI</h1>
 <div align="center">
   分享平时工作中一些有趣的UI</br>
-<img src = "https://api.bintray.com/packages/jiewang19951030/Maven/Orient-Ui/images/download.svg"/> <img src="https://img.shields.io/badge/license-Apache2.0-green.svg" style="" /><a href="https://codebeat.co/projects/github-com-mcyp-orient-ui-master"><img alt="codebeat badge" src="https://codebeat.co/badges/33618fe7-81fe-4d7f-ac59-054a8c62a556" /></a>
+<img src = "https://api.bintray.com/packages/jiewang19951030/Maven/Orient-Ui/images/download.svg"/> <img src="https://img.shields.io/badge/license-Apache2.0-green.svg" style="" /> <a href="https://codebeat.co/projects/github-com-mcyp-orient-ui-master"><img alt="codebeat badge" src="https://codebeat.co/badges/33618fe7-81fe-4d7f-ac59-054a8c62a556" /></a>
 
 
 
