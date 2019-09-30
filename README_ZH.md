@@ -3,12 +3,13 @@
 <h1 align="center">Orient - UI</h1>
 <div align="center">
   分享平时工作中一些有趣的UI</br>
-<img src = "https://api.bintray.com/packages/jiewang19951030/Maven/Orient-Ui/images/download.svg"/> <img src="https://img.shields.io/badge/license-Apache2.0-green.svg" style="" />
+<img src = "https://api.bintray.com/packages/jiewang19951030/Maven/Orient-Ui/images/download.svg"/> <img src="https://img.shields.io/badge/license-Apache2.0-green.svg" style="" /><a href="https://codebeat.co/projects/github-com-mcyp-orient-ui-master"><img alt="codebeat badge" src="https://codebeat.co/badges/33618fe7-81fe-4d7f-ac59-054a8c62a556" /></a>
+
 
 
 </div>
 
-[English]()|中文
+[English](https://github.com/mCyp/Orient-Ui/blob/master/README.md)|中文
 
 ## 💫 功能
 
@@ -48,14 +49,11 @@
 implementation 'com.orient:Orient-Ui:1.0.0'
 ```
 
-#### 使用说明
-
-- [两侧布局]()
-- [时间轴]()
-- [网格首页]()
-- [占位布局]()
+#### [使用说明](https://github.com/mCyp/Orient-Ui/blob/master/doc/Document.md)
 
 ####  Demo下载
+
+- [apk](https://github.com/mCyp/Orient-Ui/blob/master/apk/orient-ui.apk?raw=true)
 
 ## ⌨️ 技术反馈
 

@@ -59,7 +59,7 @@ e.g: TimeLineStyle-**DoubleTimeLine**; LineStyle-**BeginToEnd**; DotStyle-**Reso
 
 > 举个例子：完成一个TimeLineStyle-**DoubleTimeLine**; LineStyle-**BeginToEnd**; DotStyle-**Resource**; TitleStyle-**Left**;的时间轴
 
-<img width="200" height="400" src="https://github.com/mCyp/Orient-Ui/blob/master/picture/%E4%B8%A4%E4%BE%A7%E5%B8%83%E5%B1%80.png" alt="S90929-10290486"  style="float:left;" />
+<img width="200" height="400" src="https://github.com/mCyp/Orient-Ui/blob/master/picture/double_hint.jpg" alt="S90929-10290486"  style="float:left;" />
 
 1. The data must implement `ITimeItem` interface | 数据必须继承`ITimeItem` 接口
 
@@ -125,7 +125,7 @@ e.g: TimeLineStyle-**SingleTimeLine**; LineStyle-**Divide**; DotStyle-**Draw**; 
 
 > 举个例子：完成一个TimeLineStyle-**SingleTimeLine**; LineStyle-**Divide**; DotStyle-**Draw**; TitleSytle-**Top**;的时间轴
 
-<img width="200" height="400" src="https://github.com/mCyp/Orient-Ui/blob/master/picture/%E4%B8%A4%E4%BE%A7%E5%B8%83%E5%B1%80.png" alt="S90929-10290486"  style="float:left;" />
+<img width="200" height="400" src="https://github.com/mCyp/Orient-Ui/blob/master/picture/single_hint.jpg" alt="S90929-10290486"  style="float:left;" />
 
 The only difference between **SingleTimeLine** and **DoubleTimeLine** is parent class, SingleTimeLine should extends **SingleTimeLineDecoration**.
 
@@ -137,7 +137,7 @@ The only difference between **SingleTimeLine** and **DoubleTimeLine** is parent 
 
 > 状态视图用来表达数据的不同状态，例如**错误**、**空**、**加载**和**展示数据**。
 
-<img width="200" height="400" src="https://github.com/mCyp/Orient-Ui/blob/master/picture/%E4%B8%A4%E4%BE%A7%E5%B8%83%E5%B1%80.png" alt="S90929-10290486"  style="float:left;" />
+<img width="200" height="400" src="https://github.com/mCyp/Orient-Ui/blob/master/picture/StatusView.gif" alt="S90929-10290486"  style="float:left;" />
 
 ### Use | 使用
 

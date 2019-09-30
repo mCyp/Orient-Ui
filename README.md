@@ -3,13 +3,14 @@
 <h1 align="center">Orient - UI</h1>
 <div align="center">
   Share some funny UI in Orient</br>
-<img src = "https://api.bintray.com/packages/jiewang19951030/Maven/Orient-Ui/images/download.svg"/> <img src="https://img.shields.io/badge/license-Apache2.0-green.svg" style="" />
+<img src = "https://api.bintray.com/packages/jiewang19951030/Maven/Orient-Ui/images/download.svg"/> <img src="https://img.shields.io/badge/license-Apache2.0-green.svg" style="" /><a href="https://codebeat.co/projects/github-com-mcyp-orient-ui-master"><img alt="codebeat badge" src="https://codebeat.co/badges/33618fe7-81fe-4d7f-ac59-054a8c62a556" /></a>
+
 
 
 
 </div>
 
-English|[中文]()
+English|[中文](https://github.com/mCyp/Orient-Ui/blob/master/README_ZH.md)
 
 ## 💫 Component
 
@@ -49,11 +50,11 @@ English|[中文]()
 implementation 'com.orient:Orient-Ui:1.0.0'
 ```
 
-### [Using Document]()
+### [Using Document](https://github.com/mCyp/Orient-Ui/blob/master/doc/Document.md)
 
 ### APK Download
 
-- [apk]()
+- [apk](https://github.com/mCyp/Orient-Ui/blob/master/apk/orient-ui.apk?raw=true)
 
 ## ⌨️ Feedback
 
