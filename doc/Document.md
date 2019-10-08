@@ -120,7 +120,7 @@ private TimeLine provideTimeLine(List<TimeItem> timeItems) {
 	                .build(WeekPlanDTL.class);
 }
 
-// when using 
+// when using DoubleTimeLine
 // RecyclerView must use DoubleSideLayoutManager
 mRecyclerView.setLayoutManager(new DoubleSideLayoutManager(DoubleSideLayoutManager.START_LEFT));
 TimeLine timeLine = provideTimeLine(timeItems);
@@ -137,9 +137,9 @@ e.g: TimeLineStyle-**SingleTimeLine**; LineStyle-**Divide**; DotStyle-**Draw**; 
 
 <img width="200" height="400" src="https://github.com/mCyp/Orient-Ui/blob/master/picture/single_hint.jpg" alt="S90929-10290486"  style="float:left;" />
 
-The only difference between **SingleTimeLine** and **DoubleTimeLine** is parent class, SingleTimeLine should extends **SingleTimeLineDecoration**.
+The main difference between **SingleTimeLine** and **DoubleTimeLine** is parent class, SingleTimeLine should extends **SingleTimeLineDecoration**. Otherwise, when we use `RecyclerView`, **SingleTimeLine** should use `LinearLayoutManager`, and **DoubleTimeLine** should use `DoubleSideLayoutManager`。
 
-> 唯一的区别是**SingleTimeLine** 和 **DoubleTimeLine**的父类不同，SingleTimeLine应该继承**SingleTimeLineDecoration**。
+> 主要的区别是**SingleTimeLine** 和 **DoubleTimeLine**的父类不同，SingleTimeLine应该继承**SingleTimeLineDecoration**。除此以外，**SingleTimeLine**对应着的`RecyclerView`布局是`LinearLayoutManager`（线性布局），而 **DoubleTimeLine**对应着`DoubleSideLayoutManager`。
 
 ## StatusView | 状态视图
 
