@@ -22,7 +22,7 @@ Add Dependency in `build.gradle`:
 
 > 在项目文件`build.gradle`添加依赖
 
-```
+```groovy
 implementation 'com.orient:Orient-Ui:1.0.0'
 ```
 
@@ -38,7 +38,7 @@ You should assign start side when you create `DoubleSideLayoutManager`,`Left` or
 
 > 你应该指定布局开始的一侧当你创建`DoubleSideLayoutManager`的时候，左边或者右边。
 
-```
+```java
 mRecyclerView.setLayoutManager(new DoubleSideLayoutManager(DoubleSideLayoutManager.START_LEFT));
 ```
 
@@ -73,7 +73,7 @@ e.g: TimeLineStyle-**DoubleTimeLine**; LineStyle-**BeginToEnd**; DotStyle-**Reso
 
 1. The data must implement `ITimeItem` interface | 数据必须继承`ITimeItem` 接口
 
-```
+```java
 public interface ITimeItem {
 	// the title you want to show
 	String getTitle();
@@ -86,7 +86,7 @@ public interface ITimeItem {
 
 2. Create your TimeLine extends `DoubleTimeLineDecoration` | 创建你自己的`TimeLine`并继承 `DoubleTimeLineDecoration` 
 
-```
+```java
 public class WeekPlanDTL extends DoubleTimeLineDecoration {
 
     public WeekPlanDTL(Config config) {
@@ -110,7 +110,7 @@ public class WeekPlanDTL extends DoubleTimeLineDecoration {
 
 3. Add to  `RecyclerView` and set data | 添加进`RecyclerView`然后设置数据
 
-```
+```java
 private TimeLine provideTimeLine(List<TimeItem> timeItems) {
 	return new TimeLine.Builder(getContext(), timeItems)
 	                .setTitle(Color.parseColor("#8d9ca9"), 14)
@@ -168,7 +168,7 @@ some **attr** in **EmptyView**
 
 xml:
 
-```
+```xml
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -207,7 +207,7 @@ xml:
 
 2. Get EmptyView and Bind data View | 获取`EmptyView`然后绑定数据视图
 
-```
+```java
 // use ButterKnife
 @BindView(R.id.tv_name)
 TextView mContent;
@@ -223,7 +223,7 @@ protected void initWidget() {
 
 3. Change Status | 切换状态
 
-```
+```java
 // change loading status
 mEmptyView.triggerLoading();
 // change show data status

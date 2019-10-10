@@ -45,7 +45,7 @@
 
 ####  添加依赖
 
-```
+```groovy
 implementation 'com.orient:Orient-Ui:1.0.0'
 ```
 
