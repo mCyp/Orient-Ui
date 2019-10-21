@@ -27,9 +27,14 @@
         android:visibility="gone"/>
 
     <com.orient.me.widget.placeholder.StatusView
-        android:id="@+id/et_content"
+        android:id="@+id/sv_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:comEmptyText="@string/test_empty"
+        app:comErrorText="@string/test_error"
+        app:comLoadingText="@string/test_loading"
+        app:comLoadingColor="@color/amber_300"
+        app:comErrorDrawable=""
         />
 
 </LinearLayout>

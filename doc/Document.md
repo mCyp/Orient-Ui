@@ -153,9 +153,9 @@ The main difference between **SingleTimeLine** and **DoubleTimeLine** is parent 
 
 1. add into xml | 添加进xml文件中
 
-some **attr** in **EmptyView**
+some **attr** in **StatusView**
 
-> **EmptyView**中的一些属性
+> **StatusView**中的一些属性
 
 | attr             | explanation                          |
 | ---------------- | ------------------------------------ |
@@ -197,7 +197,7 @@ xml:
         android:gravity="center"
         android:visibility="gone"/>
 
-    <com.orient.me.widget.placeholder.EmptyView
+    <com.orient.me.widget.placeholder.StatusView
         android:id="@+id/et_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
