@@ -1,7 +1,13 @@
 package com.orient.me.widget.placeholder;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.StringRes;
 import android.util.AttributeSet;
 import android.view.View;
@@ -14,58 +20,81 @@ import com.orient.me.widget.loading.LoadingIndicatorView;
 
 
 /**
- * 来自 Qiujuer老师https://github.com/qiujuer
- * 因为觉得挺好用，所以就收录进来了
- *
+ * 改自 Qiujuer老师https://github.com/qiujuer
+ * <p>
  * 简单的占位控件，
  * 实现了显示一个空的图片显示，
  * 可以和MVP配合显示没有数据，正在加载等状态
  */
 @SuppressWarnings("unused")
-public class EmptyView extends LinearLayout implements PlaceHolderView {
+public class StatusView extends LinearLayout implements PlaceHolderView {
     private ImageView mEmptyImg;
     private TextView mStatusText;
     private LoadingIndicatorView loadingIndicatorView;
 
-    private int[] mDrawableIds = new int[]{0, 0};
-    private int[] mColor = new int[]{0};
-    private int[] mTextIds = new int[]{0, 0, 0};
+    private Drawable[] mDrawableIds;
+    private ColorStateList[] mColor = new ColorStateList[]{null};
+    private CharSequence[] mTextIds = new CharSequence[]{"我去帮你找一下数据～", "哎，错误发生了!", "加载中~"};
 
     private View[] mBindViews;
 
-    public EmptyView(Context context) {
+    public StatusView(Context context) {
         super(context);
         init(null, 0);
     }
 
-    public EmptyView(Context context, AttributeSet attrs) {
+    public StatusView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(attrs, 0);
     }
 
-    public EmptyView(Context context, AttributeSet attrs, int defStyle) {
+    public StatusView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(attrs, defStyle);
     }
 
     private void init(AttributeSet attrs, int defStyle) {
-        inflate(getContext(), R.layout.empty_view, this);
-        mEmptyImg =  findViewById(R.id.im_empty);
-        mStatusText =  findViewById(R.id.txt_empty);
+        inflate(getContext(), R.layout.status_view, this);
+        mEmptyImg = findViewById(R.id.im_empty);
+        mStatusText = findViewById(R.id.txt_empty);
         loadingIndicatorView = findViewById(R.id.loading);
+
+        Resources res = getContext().getResources();
+        mDrawableIds =
+                new Drawable[]{res.getDrawable(R.drawable.ic_empty)
+                        , res.getDrawable(R.drawable.ic_error)};
 
         // Load attributes
         final TypedArray a = getContext().obtainStyledAttributes(
-                attrs, R.styleable.EmptyView, defStyle, 0);
+                attrs, R.styleable.StatusView, defStyle, 0);
 
-        mDrawableIds[0] = a.getInt(R.styleable.EmptyView_comEmptyDrawable, R.drawable.ic_empty);
-        mDrawableIds[1] = a.getInt(R.styleable.EmptyView_comErrorDrawable, R.drawable.ic_error);
-        mColor[0] = a.getInt(R.styleable.EmptyView_comLoadingColor, R.color.colorAccent);
-        mTextIds[0] = a.getInt(R.styleable.EmptyView_comEmptyText, R.string.prompt_empty);
-        mTextIds[1] = a.getInt(R.styleable.EmptyView_comErrorText, R.string.prompt_error);
-        mTextIds[2] = a.getInt(R.styleable.EmptyView_comLoadingText, R.string.prompt_loading);
+        Drawable emptyDrawable = a.getDrawable(R.styleable.StatusView_comEmptyDrawable);
+        if (emptyDrawable != null) {
+            mDrawableIds[0] = emptyDrawable;
+        }
+        Drawable errorDrawable = a.getDrawable(R.styleable.StatusView_comErrorDrawable);
+        if (errorDrawable != null) {
+            mDrawableIds[1] = errorDrawable;
+        }
+        ColorStateList loadingColor = a.getColorStateList(R.styleable.StatusView_comLoadingColor);
+        if (loadingColor != null) {
+            mColor[0] = loadingColor;
+        }
+        CharSequence emptyText = a.getText(R.styleable.StatusView_comEmptyText);
+        if (emptyText != null && emptyText.length() != 0) {
+            mTextIds[0] = emptyText;
+        }
+        CharSequence errorText = a.getText(R.styleable.StatusView_comErrorText);
+        if (errorText != null && errorText.length() != 0) {
+            mTextIds[1] = errorText;
+        }
+        CharSequence loadingText = a.getText(R.styleable.StatusView_comLoadingText);
+        if (loadingText != null && loadingText.length() != 0) {
+            mTextIds[2] = loadingText;
+        }
 
-        loadingIndicatorView.setIndicatorColor(getResources().getColor(mColor[0]));
+        if (mColor[0] != null)
+            loadingIndicatorView.setIndicatorColor(mColor[0].getDefaultColor());
 
         a.recycle();
     }
@@ -103,7 +132,7 @@ public class EmptyView extends LinearLayout implements PlaceHolderView {
     public void triggerEmpty() {
         loadingIndicatorView.setVisibility(GONE);
         loadingIndicatorView.hide();
-        mEmptyImg.setImageResource(mDrawableIds[0]);
+        mEmptyImg.setImageDrawable(mDrawableIds[0]);
         mStatusText.setText(mTextIds[0]);
         mEmptyImg.setVisibility(VISIBLE);
         setVisibility(VISIBLE);
@@ -118,7 +147,7 @@ public class EmptyView extends LinearLayout implements PlaceHolderView {
         loadingIndicatorView.setVisibility(GONE);
         loadingIndicatorView.hide();
 
-        mEmptyImg.setImageResource(mDrawableIds[1]);
+        mEmptyImg.setImageDrawable(mDrawableIds[1]);
         mStatusText.setText(mTextIds[1]);
         mEmptyImg.setVisibility(VISIBLE);
         setVisibility(VISIBLE);
@@ -133,7 +162,7 @@ public class EmptyView extends LinearLayout implements PlaceHolderView {
         loadingIndicatorView.setVisibility(GONE);
         loadingIndicatorView.hide();
 
-        mEmptyImg.setImageResource(mDrawableIds[1]);
+        mEmptyImg.setImageDrawable(mDrawableIds[1]);
         mStatusText.setText(mTextIds[1]);
         mEmptyImg.setVisibility(VISIBLE);
         setVisibility(VISIBLE);

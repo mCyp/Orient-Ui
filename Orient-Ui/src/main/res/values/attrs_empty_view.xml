@@ -1,11 +1,11 @@
 <resources>
-    <declare-styleable name="EmptyView">
-        <attr name="comEmptyText" format="integer" />
-        <attr name="comErrorText" format="integer" />
-        <attr name="comLoadingText" format="integer" />
-        <attr name="comLoadingColor" format="integer" />
-        <attr name="comEmptyDrawable" format="integer" />
-        <attr name="comErrorDrawable" format="integer" />
+    <declare-styleable name="StatusView">
+        <attr name="comEmptyText" format="string" />
+        <attr name="comErrorText" format="string" />
+        <attr name="comLoadingText" format="string" />
+        <attr name="comLoadingColor" format="reference|color" />
+        <attr name="comEmptyDrawable" format="reference|color" />
+        <attr name="comErrorDrawable" format="reference|color" />
     </declare-styleable>
 
     <declare-styleable name="LoadingIndicatorView">

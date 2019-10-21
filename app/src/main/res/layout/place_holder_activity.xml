@@ -19,16 +19,17 @@
         android:id="@+id/tv_name"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Hello,World!"
+        android:text="@string/app_name"
         android:textColor="@color/textPrimary"
         android:textSize="@dimen/font_20"
         android:textStyle="bold"
         android:gravity="center"
         android:visibility="gone"/>
 
-    <com.orient.me.widget.placeholder.EmptyView
+    <com.orient.me.widget.placeholder.StatusView
         android:id="@+id/et_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        />
 
 </LinearLayout>

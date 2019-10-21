@@ -2,16 +2,11 @@ package com.orient.ui.ui.activity.placeholder;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 
-import com.orient.me.widget.placeholder.EmptyView;
+import com.orient.me.widget.placeholder.StatusView;
 import com.orient.ui.R;
 import com.orient.ui.ui.activity.BaseActivity;
 
@@ -24,7 +19,7 @@ public class PlaceHolderActivity extends BaseActivity {
     @BindView(R.id.tv_name)
     TextView mContent;
     @BindView(R.id.et_content)
-    EmptyView mEmptyView;
+    StatusView mStatusView;
 
     public static void show(Context context){
         Intent intent = new Intent(context,PlaceHolderActivity.class);
@@ -41,24 +36,24 @@ public class PlaceHolderActivity extends BaseActivity {
         super.initWidget();
 
         mToolbar.setNavigationOnClickListener(v -> onBackPressed());
-        mEmptyView.triggerEmpty();
+        mStatusView.triggerEmpty();
         mToolbar.inflateMenu(R.menu.place_holder_menu);
         mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.menu_loading:
-                        mEmptyView.triggerLoading();
+                        mStatusView.triggerLoading();
                         return true;
                     case R.id.menu_show_data:
-                        mEmptyView.triggerOk();
+                        mStatusView.triggerOk();
                         return true;
                     case R.id.menu_error:
-                        mEmptyView.triggerNetError();
+                        mStatusView.triggerNetError();
                         //mEmptyView.triggerError();
                         return true;
                     case R.id.menu_null:
-                        mEmptyView.triggerEmpty();
+                        mStatusView.triggerEmpty();
                         // 需要条件的时候可以使用 mEmptyView.triggerOkOrEmpty(boolean isOk);
                         return true;
                     default:
@@ -67,7 +62,7 @@ public class PlaceHolderActivity extends BaseActivity {
             }
         });
 
-        mEmptyView.bind(mContent);
+        mStatusView.bind(mContent);
     }
 
 }

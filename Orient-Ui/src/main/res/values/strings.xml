@@ -5,4 +5,8 @@
     <string name="prompt_error">哎，错误发生了!</string>
     <string name="prompt_loading">加载中~</string>
 
+    <string name="test_empty">empty～</string>
+    <string name="test_error">Error!</string>
+    <string name="test_loading">Loading~</string>
+
 </resources>

@@ -50,7 +50,7 @@ ext{
     //以下三项均是必配项
     publishedGroupId = 'com.orient'
     artifact = 'Orient-Ui'
-    libraryVersion = '1.0.0'
+    libraryVersion = '1.0.1'
 
     //开源库对应的 github 地址，不知道可不可以不配，应该也是必配
     gitUrl = 'https://github.com/mCyp/Orient-Ui.git'
