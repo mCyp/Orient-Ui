@@ -34,7 +34,6 @@
         app:comErrorText="@string/test_error"
         app:comLoadingText="@string/test_loading"
         app:comLoadingColor="@color/amber_300"
-        app:comErrorDrawable=""
         />
 
 </LinearLayout>
