@@ -8,21 +8,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.orient.me.utils.UIUtils;
 import com.orient.me.widget.rv.itemdocration.timeline.TimeLine;
-import com.orient.me.widget.rv.layoutmanager.DoubleSideLayoutManager;
 import com.orient.ui.R;
 import com.orient.ui.ui.adapter.RecyclerAdapter;
 import com.orient.ui.ui.fragment.BaseFragment;
-import com.orient.ui.widget.timeline.dtl.DateInfo;
-import com.orient.ui.widget.timeline.dtl.DateInfoDTL;
-import com.orient.ui.widget.timeline.stl.NoteInfo;
 import com.orient.ui.widget.timeline.stl.SocialMediaInfo;
 import com.orient.ui.widget.timeline.stl.SocialMediaSTL;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;

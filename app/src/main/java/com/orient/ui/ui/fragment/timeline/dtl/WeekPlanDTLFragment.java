@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.orient.me.utils.UIUtils;
 import com.orient.me.widget.rv.itemdocration.timeline.TimeLine;
-import com.orient.me.widget.rv.layoutmanager.DoubleSideLayoutManager;
+import com.orient.me.widget.rv.layoutmanager.doubleside.DoubleSideLayoutManager;
 import com.orient.ui.R;
 import com.orient.ui.ui.activity.timeline.TimeItem;
 import com.orient.ui.ui.adapter.RecyclerAdapter;
