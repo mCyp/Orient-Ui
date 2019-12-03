@@ -55,7 +55,7 @@ public class GridItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     private void init(Config config) {
-        this.gridItems = config.gridItems;
+        this.gridItems = new ArrayList<>(config.gridItems);
         this.totalSpanSize = config.totalSpanSize;
         this.mTitleBgColor = config.titleBgColor;
         this.mTitleColor = config.titleTextColor;
@@ -92,7 +92,7 @@ public class GridItemDecoration extends RecyclerView.ItemDecoration {
         if(pos >= items.size())
             throw new UnsupportedOperationException();
 
-        this.gridItems = items;
+        this.gridItems = new ArrayList<>(items);
         int currentSpanSize = gridItems.get(0).getSpanSize();
         for(int i= 1;i<pos;i++){
             IGridItem item = items.get(i);
