@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.orient.me.widget.rv.adapter.BaseAdapter;
 import com.orient.me.widget.rv.itemdocration.GridItemDecoration;
 import com.orient.ui.R;
 import com.orient.ui.ui.adapter.RecyclerAdapter;
@@ -84,8 +85,7 @@ public class GridPageActivity extends AppCompatActivity {
 
         mAdapter.setAdapterListener(new RecyclerAdapter.AdapterListener<GridItem>() {
             @Override
-            public void onItemClick(RecyclerAdapter.ViewHolder<GridItem> holder, GridItem gridItem) {
-                // 测试的代码
+            public void onItemClick(BaseAdapter.ViewHolder<GridItem> holder, GridItem gridItem) {
                 int pos = holder.getAdapterPosition();
                 if(holder.getAdapterPosition() == mAdapter.getItemCount()-1){
                     List<GridItem> items = initData();
@@ -97,7 +97,7 @@ public class GridPageActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onItemLongClick(RecyclerAdapter.ViewHolder<GridItem> holder, GridItem gridItem) {
+            public void onItemLongClick(BaseAdapter.ViewHolder<GridItem> holder, GridItem gridItem) {
 
             }
         });

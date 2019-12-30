@@ -6,10 +6,12 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.orient.me.widget.rv.adapter.BaseAdapter;
 import com.orient.ui.R;
 import com.orient.ui.ui.activity.gridpage.GridPageActivity;
 import com.orient.ui.ui.activity.placeholder.PlaceHolderActivity;
 import com.orient.ui.ui.activity.doubleside.DoubleSideLayoutActivity;
+import com.orient.ui.ui.activity.table.TableActivity;
 import com.orient.ui.ui.activity.timeline.TimelineActivity;
 import com.orient.ui.ui.adapter.RecyclerAdapter;
 import com.orient.ui.widget.gridpage.GridDividerItemDecoration;
@@ -55,8 +57,9 @@ public class MainActivity extends BaseActivity {
         mRecyclerView.addItemDecoration(new GridDividerItemDecoration(this,3));
 
         mAdapter.setAdapterListener(new RecyclerAdapter.AdapterListenerImpl<MainItem>() {
+
             @Override
-            public void onItemClick(RecyclerAdapter.ViewHolder<MainItem> holder, MainItem mainItem) {
+            public void onItemClick(BaseAdapter.ViewHolder<MainItem> holder, MainItem mainItem) {
                 super.onItemClick(holder, mainItem);
 
                 switch (mainItem.name) {
@@ -73,7 +76,7 @@ public class MainActivity extends BaseActivity {
                         PlaceHolderActivity.show(MainActivity.this);
                         break;
                     case "表格":
-                        Toast.makeText(MainActivity.this,"开发进行中~",Toast.LENGTH_SHORT).show();
+                        TableActivity.show(MainActivity.this);
                         break;
                 }
             }
