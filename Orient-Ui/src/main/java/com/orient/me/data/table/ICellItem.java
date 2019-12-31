@@ -6,7 +6,7 @@ public interface ICellItem {
     // 列
     int getCol();
     // 行所占Span
-    int getRowSpan();
+    int getWidthSpan();
     // 列所占Span
-    int getColSpan();
+    int getHeightSpan();
 }

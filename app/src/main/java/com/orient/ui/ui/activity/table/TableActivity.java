@@ -60,33 +60,35 @@ public class TableActivity extends BaseActivity {
         super.initData();
 
         List<TableCell> cells = new LinkedList<>();
-        cells.add(new TableCell("a","1",1,0,0,1,1));
-        cells.add(new TableCell("b","1",1,0,1,1,1));
+        cells.add(new TableCell("a","1",1,0,0,4,1));
+        /*cells.add(new TableCell("b","1",1,0,1,1,1));
         cells.add(new TableCell("c","1",1,0,2,1,1));
-        cells.add(new TableCell("d","1",1,0,3,1,1));
-        cells.add(new TableCell("e","1",1,1,0,1,1));
-        cells.add(new TableCell("f","1",1,1,1,1,1));
+        cells.add(new TableCell("d","1",1,0,3,1,1));*/
+        cells.add(new TableCell("e","1",1,1,0,2,2));
+        //cells.add(new TableCell("f","1",1,1,1,1,1));
         cells.add(new TableCell("g","1",1,1,2,1,1));
-        cells.add(new TableCell("h","1",1,1,3,1,1));
-        cells.add(new TableCell("j","1",1,2,0,1,1));
-        cells.add(new TableCell("k","1",1,2,1,1,1));
+        cells.add(new TableCell("h","1",1,1,3,1,3));
+        //cells.add(new TableCell("j","1",1,2,0,1,1));
+        //cells.add(new TableCell("k","1",1,2,1,1,1));
         cells.add(new TableCell("l","1",1,2,2,1,1));
-        cells.add(new TableCell("m","1",1,2,3,1,1));
+        //cells.add(new TableCell("m","1",1,2,3,1,1));
         cells.add(new TableCell("n","1",1,3,0,1,1));
         cells.add(new TableCell("o","1",1,3,1,1,1));
         cells.add(new TableCell("p","1",1,3,2,1,1));
-        cells.add(new TableCell("q","1",1,3,3,1,1));
-        cells.add(new TableCell("r","1",1,4,0,1,1));
-        cells.add(new TableCell("s","1",1,4,1,1,1));
+        //cells.add(new TableCell("q","1",1,3,3,1,1));
+        cells.add(new TableCell("r","1",1,4,0,4,2));
+       /* cells.add(new TableCell("s","1",1,4,1,1,1));
         cells.add(new TableCell("t","1",1,4,2,1,1));
         cells.add(new TableCell("u","1",1,4,3,1,1));
         cells.add(new TableCell("v","1",1,5,0,1,1));
         cells.add(new TableCell("w","1",1,5,1,1,1));
         cells.add(new TableCell("x","1",1,5,2,1,1));
-        cells.add(new TableCell("y","1",1,5,3,1,1));
-        cells.add(new TableCell("z","1",1,6,0,1,1));
-        cells.add(new TableCell("a","1",1,6,1,1,1));
-        cells.add(new TableCell("b","1",1,6,2,1,1));
+        cells.add(new TableCell("y","1",1,5,3,1,1));*/
+        cells.add(new TableCell("z","1",1,6,0,4,1));
+        cells.add(new TableCell("a","1",1,7,0,4,1));
+        cells.add(new TableCell("b","1",1,8,0,4,1));
+        cells.add(new TableCell("c","1",1,9,0,4,1));
+        cells.add(new TableCell("d","1",1,10,0,4,1));
         mAdapter.addAllData(cells);
 
     }

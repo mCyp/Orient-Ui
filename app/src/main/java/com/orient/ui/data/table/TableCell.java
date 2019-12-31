@@ -9,8 +9,8 @@ public class TableCell implements ICellItem {
     private int type;
     private int row;
     private int col;
-    private int rowSpan;
-    private int colSpan;
+    private int widthSpan;
+    private int heightSpan;
 
     public TableCell(String name, String value, int type, int row, int col, int rowSpan, int colSpan) {
         this.name = name;
@@ -18,8 +18,8 @@ public class TableCell implements ICellItem {
         this.type = type;
         this.row = row;
         this.col = col;
-        this.rowSpan = rowSpan;
-        this.colSpan = colSpan;
+        this.widthSpan = rowSpan;
+        this.heightSpan = colSpan;
     }
 
     public String getName() {
@@ -54,12 +54,12 @@ public class TableCell implements ICellItem {
         this.col = col;
     }
 
-    public void setRowSpan(int rowSpan) {
-        this.rowSpan = rowSpan;
+    public void setWidthSpan(int widthSpan) {
+        this.widthSpan = widthSpan;
     }
 
-    public void setColSpan(int colSpan) {
-        this.colSpan = colSpan;
+    public void setHeightSpan(int heightSpan) {
+        this.heightSpan = heightSpan;
     }
 
     @Override
@@ -73,12 +73,12 @@ public class TableCell implements ICellItem {
     }
 
     @Override
-    public int getRowSpan() {
-        return rowSpan;
+    public int getWidthSpan() {
+        return widthSpan;
     }
 
     @Override
-    public int getColSpan() {
-        return colSpan;
+    public int getHeightSpan() {
+        return heightSpan;
     }
 }

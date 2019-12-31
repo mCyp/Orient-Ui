@@ -18,11 +18,11 @@ public abstract class TableAdapter<Data extends ICellItem> extends BaseAdapter<D
         if (checkData(data)) {
             int pos = getItemCount();
 
-            int rowSpan = data.getRowSpan();
-            int colSpan = data.getColSpan();
-            if (rowSpan > 1 || colSpan > 1) {
-                for (int i = 0; i < rowSpan; i++) {
-                    for (int j = 0; j < colSpan; j++) {
+            int widthSpan = data.getWidthSpan();
+            int heightSpan = data.getHeightSpan();
+            if (widthSpan > 1 || heightSpan > 1) {
+                for (int i = 0; i < heightSpan; i++) {
+                    for (int j = 0; j < widthSpan; j++) {
                         String key = (data.getRow() + i) + "-" + (data.getCol() + j);
                         coordinateCache.put(key, pos);
                     }
@@ -43,11 +43,11 @@ public abstract class TableAdapter<Data extends ICellItem> extends BaseAdapter<D
         for (int i = 0; i < datas.length; i++) {
             Data data = datas[i];
             if (checkData(data)) {
-                int rowSpan = data.getRowSpan();
-                int colSpan = data.getColSpan();
-                if (rowSpan > 1 || colSpan > 1) {
-                    for (int x = 0; x < rowSpan; x++) {
-                        for (int y = 0; y < colSpan; y++) {
+                int widthSpan = data.getWidthSpan();
+                int heightSpan = data.getHeightSpan();
+                if (widthSpan > 1 || heightSpan > 1) {
+                    for (int x = 0; x < heightSpan; x++) {
+                        for (int y = 0; y < widthSpan; y++) {
                             String key = (data.getRow() + x) + "-" + (data.getCol() + y);
                             coordinateCache.put(key, pos);
                         }
@@ -69,11 +69,11 @@ public abstract class TableAdapter<Data extends ICellItem> extends BaseAdapter<D
         int pos = getItemCount();
         for (Data data : datas) {
             if (checkData(data)) {
-                int rowSpan = data.getRowSpan();
-                int colSpan = data.getColSpan();
-                if (rowSpan > 1 || colSpan > 1) {
-                    for (int x = 0; x < rowSpan; x++) {
-                        for (int y = 0; y < colSpan; y++) {
+                int widthSpan = data.getWidthSpan();
+                int heightSpan = data.getHeightSpan();
+                if (widthSpan > 1 || heightSpan > 1) {
+                    for (int x = 0; x < heightSpan; x++) {
+                        for (int y = 0; y < widthSpan; y++) {
                             String key = (data.getRow() + x) + "-" + (data.getCol() + y);
                             coordinateCache.put(key, pos);
                         }
@@ -132,8 +132,8 @@ public abstract class TableAdapter<Data extends ICellItem> extends BaseAdapter<D
     public int[] getSpanArray(int pos) {
         Data data = mDataList.get(pos);
         if (data != null) {
-            int rowSpan = data.getRowSpan() <= 0 ? 1 : data.getRowSpan();
-            int colSpan = data.getColSpan() <= 0 ? 1 : data.getColSpan();
+            int rowSpan = data.getWidthSpan() <= 0 ? 1 : data.getWidthSpan();
+            int colSpan = data.getHeightSpan() <= 0 ? 1 : data.getHeightSpan();
             return new int[]{rowSpan, colSpan};
         } else
             return null;
