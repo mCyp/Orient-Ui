@@ -12,8 +12,8 @@ import com.orient.me.widget.rv.layoutmanager.table.TableLayoutManager;
 
 public class TableRecyclerView extends RecyclerView implements ScrollerCallback {
 
-    private boolean isCanScrollHor;
-    private boolean isCanScrollVer;
+    private boolean isCanScrollHor = true;
+    private boolean isCanScrollVer = true;
 
     private float mLastX;
     private float mLastY;
