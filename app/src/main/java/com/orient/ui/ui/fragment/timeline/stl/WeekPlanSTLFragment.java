@@ -7,17 +7,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.orient.me.utils.UIUtils;
 import com.orient.me.widget.rv.itemdocration.timeline.TimeLine;
-import com.orient.me.widget.rv.layoutmanager.DoubleSideLayoutManager;
 import com.orient.ui.R;
 import com.orient.ui.ui.activity.timeline.TimeItem;
 import com.orient.ui.ui.adapter.RecyclerAdapter;
 import com.orient.ui.ui.fragment.BaseFragment;
-import com.orient.ui.widget.timeline.dtl.WeekPlanDTL;
 import com.orient.ui.widget.timeline.stl.WeekPlanSTL;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
