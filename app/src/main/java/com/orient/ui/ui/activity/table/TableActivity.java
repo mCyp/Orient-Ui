@@ -39,7 +39,7 @@ public class TableActivity extends BaseActivity {
     protected void initWidget() {
         super.initWidget();
 
-        TableLayoutManager tll = new TableLayoutManager(TableLayoutManager.MODE_A,4,8);
+        TableLayoutManager tll = new TableLayoutManager(TableLayoutManager.MODE_A,4,4);
         tableRv.setLayoutManager(tll);
         mAdapter = new CommonTableAdapter<TableCell>() {
             @Override
@@ -60,7 +60,71 @@ public class TableActivity extends BaseActivity {
         super.initData();
 
         List<TableCell> cells = new LinkedList<>();
-        cells.add(new TableCell("a","1",1,0,0,4,1));
+        cells.add(new TableCell("1","1",1,0,0,1,1));
+        cells.add(new TableCell("2","1",1,0,1,1,1));
+        cells.add(new TableCell("3","1",1,0,2,1,1));
+        cells.add(new TableCell("4","1",1,0,3,1,1));
+        cells.add(new TableCell("5","1",1,0,4,1,1));
+        cells.add(new TableCell("6","1",1,0,5,1,1));
+
+        cells.add(new TableCell("7","1",1,1,0,1,1));
+        cells.add(new TableCell("8","1",1,1,1,1,1));
+        cells.add(new TableCell("9","1",1,1,2,1,1));
+        cells.add(new TableCell("10","1",1,1,3,1,1));
+        cells.add(new TableCell("11","1",1,1,4,1,1));
+        cells.add(new TableCell("12","1",1,1,5,1,1));
+
+        cells.add(new TableCell("13","1",1,2,0,1,1));
+        cells.add(new TableCell("14","1",1,2,1,1,1));
+        cells.add(new TableCell("15","1",1,2,2,1,1));
+        cells.add(new TableCell("16","1",1,2,3,1,1));
+        cells.add(new TableCell("17","1",1,2,4,1,1));
+        cells.add(new TableCell("18","1",1,2,5,1,1));
+
+        cells.add(new TableCell("19","1",1,3,0,1,1));
+        cells.add(new TableCell("20","1",1,3,1,1,1));
+        cells.add(new TableCell("21","1",1,3,2,1,1));
+        cells.add(new TableCell("22","1",1,3,3,1,1));
+        cells.add(new TableCell("23","1",1,3,4,1,1));
+        cells.add(new TableCell("24","1",1,3,5,1,1));
+
+        cells.add(new TableCell("25","1",1,4,0,1,1));
+        cells.add(new TableCell("26","1",1,4,1,1,1));
+        cells.add(new TableCell("27","1",1,4,2,1,1));
+        cells.add(new TableCell("28","1",1,4,3,1,1));
+        cells.add(new TableCell("29","1",1,4,4,1,1));
+        cells.add(new TableCell("30","1",1,4,5,1,1));
+
+        cells.add(new TableCell("31","1",1,5,0,1,1));
+        cells.add(new TableCell("32","1",1,5,1,1,1));
+        cells.add(new TableCell("33","1",1,5,2,1,1));
+        cells.add(new TableCell("34","1",1,5,3,1,1));
+        cells.add(new TableCell("35","1",1,5,4,1,1));
+        cells.add(new TableCell("36","1",1,5,5,1,1));
+
+
+
+        /*cells.add(new TableCell("a","1",1,0,0,1,4));
+        cells.add(new TableCell("e","1",1,0,1,2,2));
+        cells.add(new TableCell("g","1",1,2,1,1,1));
+        cells.add(new TableCell("h","1",1,3,1,3,1));
+
+        cells.add(new TableCell("l","1",1,2,2,1,1));
+
+        cells.add(new TableCell("n","1",1,0,3,1,1));
+        cells.add(new TableCell("o","1",1,1,3,1,1));
+        cells.add(new TableCell("p","1",1,2,3,1,1));
+
+        cells.add(new TableCell("r","1",1,0,4,2,4));
+
+        cells.add(new TableCell("z","1",1,0,6,4,1));
+        cells.add(new TableCell("a","1",1,1,6,4,1));
+        cells.add(new TableCell("b","1",1,2,6,4,1));
+        cells.add(new TableCell("c","1",1,3,6,4,1));*/
+
+
+
+        /*cells.add(new TableCell("a","1",1,0,0,4,1));
         cells.add(new TableCell("e","1",1,1,0,2,2));
         cells.add(new TableCell("g","1",1,1,2,1,1));
         cells.add(new TableCell("h","1",1,1,3,1,3));
@@ -102,7 +166,7 @@ public class TableActivity extends BaseActivity {
         cells.add(new TableCell("1","1",1,23,0,4,1));
         cells.add(new TableCell("2","1",1,24,0,4,1));
         cells.add(new TableCell("11","1",1,25,0,4,1));
-        cells.add(new TableCell("21","1",1,26,0,4,1));
+        cells.add(new TableCell("21","1",1,26,0,4,1));*/
         mAdapter.addAllData(cells);
 
     }

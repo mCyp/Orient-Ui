@@ -12,13 +12,8 @@ import com.orient.me.widget.rv.layoutmanager.table.TableLayoutManager;
 
 public class TableRecyclerView extends RecyclerView implements ScrollerCallback {
 
-    private boolean isCanScrollHor = true;
-    private boolean isCanScrollVer = true;
+    private boolean isCanScroll = true;
 
-    private float mLastX;
-    private float mLastY;
-    private float mCurrentX;
-    private float mCurrentY;
 
     public TableRecyclerView(@NonNull Context context) {
         super(context);
@@ -63,48 +58,29 @@ public class TableRecyclerView extends RecyclerView implements ScrollerCallback 
     public boolean dispatchTouchEvent(MotionEvent ev) {
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                mLastX = ev.getX();
-                mLastY = ev.getY();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if (!isCanScrollVer || !isCanScrollHor)
-                    return super.dispatchTouchEvent(ev);
-
-                mCurrentX = ev.getX();
-                mCurrentY = ev.getY();
-                if (Math.abs(mCurrentX - mLastX) > Math.abs(mCurrentY - mLastY)) {
-                    isCanScrollVer = true;
-                    isCanScrollHor = false;
-                } else {
-                    isCanScrollHor = true;
-                    isCanScrollVer = false;
-                }
-                mLastX = mCurrentX;
-                mLastY = mCurrentY;
+                isCanScroll = false;
                 break;
             case MotionEvent.ACTION_UP:
-                isCanScrollHor = true;
-                isCanScrollVer = true;
-                resetCoordinate();
+
                 break;
         }
         return super.dispatchTouchEvent(ev);
     }
 
-    private void resetCoordinate() {
-        mCurrentX = 0;
-        mCurrentY = 0;
-        mLastX = 0;
-        mLastY = 0;
+    @Override
+    public boolean canScroll() {
+        return isCanScroll;
     }
 
     @Override
-    public boolean canScrollVertical() {
-        return isCanScrollVer;
-    }
+    public void onScrollStateChanged(int state) {
+        super.onScrollStateChanged(state);
 
-    @Override
-    public boolean canScrollHorizontal() {
-        return isCanScrollHor;
+        if(state == SCROLL_STATE_IDLE && !isCanScroll){
+            isCanScroll = true;
+            if(getLayoutManager() instanceof  TableLayoutManager) {
+                ((TableLayoutManager) getLayoutManager()).clearScrollFlag();
+            }
+        }
     }
 }

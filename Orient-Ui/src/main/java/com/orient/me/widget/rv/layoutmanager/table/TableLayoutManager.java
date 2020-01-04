@@ -116,6 +116,9 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
 
     private LayoutChunkResult mLayoutChunkResult = new LayoutChunkResult();
 
+    // 滑动标记位 true表示正在滑动
+    private boolean scrollFlag = false;
+
     /**
      * 构造函数
      *
@@ -199,29 +202,57 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         return true;
     }
 
+    boolean isCanScrollHor = false;
+
     @Override
     public boolean canScrollHorizontally() {
-        return false;
+        if(!scrollFlag)
+            return true;
+        else
+            return mOrientation == RecyclerView.HORIZONTAL;
     }
 
     @Override
     public boolean canScrollVertically() {
-        return true;
+        if(!scrollFlag)
+            return true;
+        else
+            return mOrientation == RecyclerView.VERTICAL;
     }
 
 
     @Override
     public int scrollHorizontallyBy(int dx, RecyclerView.Recycler recycler, RecyclerView.State state) {
-        if (mOrientation == RecyclerView.VERTICAL)
-            return 0;
+        /*if (mOrientation == RecyclerView.VERTICAL)
+            return 0;*/
+       /* if (scrollFlag && mOrientation == RecyclerView.VERTICAL)
+            return 0;*/
+
+        scrollFlag = true;
+        mOrientation = RecyclerView.HORIZONTAL;
+        updateMeasurements();
+        ensureViewSet();
         return scrollBy(dx, recycler, state);
     }
 
     @Override
     public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
-        if (mOrientation == RecyclerView.HORIZONTAL)
-            return 0;
+        /*if (mOrientation == RecyclerView.HORIZONTAL)
+            return 0;*/
+       /* if (scrollFlag && mOrientation == RecyclerView.HORIZONTAL)
+            return 0;*/
+
+       isCanScrollHor = true;
+        scrollFlag = true;
+        mOrientation = RecyclerView.VERTICAL;
+        updateMeasurements();
+        ensureViewSet();
         return scrollBy(dy, recycler, state);
+    }
+
+    public void clearScrollFlag() {
+        scrollFlag = false;
+        Log.e(TAG, "clear Flag");
     }
 
     private int scrollBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
@@ -261,6 +292,7 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
                 top += mAveHolderHeight;
                 currentRow++;
             }
+            mLayoutState.mHeadYOffset = top;
 
             mScreenCoordinateRecorder.mCurStartRowIndex = currentRow;
         } else {
@@ -275,10 +307,11 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
                 left += mAveHolderWidth;
                 currentCol++;
             }
+            mLayoutState.mHeadXOffset = left;
+            Log.e(TAG, "mLayoutState.mHeadXOffset:" + mLayoutState.mHeadXOffset);
 
             mScreenCoordinateRecorder.mCurStartColIndex = currentCol;
         }
-
     }
 
     /**
@@ -320,7 +353,8 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
             if (lp.mHeightSpan == 1) {
                 mLayoutState.mCurRow = coordinate[0];
                 mLayoutState.mCurRow += mLayoutState.mItemDirection;
-                mLayoutState.mCurrentPosition = mCoordinateCallback.covertToPosition(mLayoutState.mCurRow, coordinate[1]);
+                mLayoutState.mCurCol = mScreenCoordinateRecorder.mCurStartColIndex;
+                mLayoutState.mCurrentPosition = mCoordinateCallback.covertToPosition(mLayoutState.mCurRow, mLayoutState.mCurCol);
                 mLayoutState.mYOffset = mMainOrientationHelper.getDecoratedEnd(child);
                 scrollingOffset = mMainOrientationHelper.getDecoratedEnd(child) - mMainOrientationHelper.getEndAfterPadding();
             } else {
@@ -331,6 +365,7 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
                     currentRow--;
                 }
                 mLayoutState.mCurRow = currentRow;
+                mLayoutState.mCurCol = mScreenCoordinateRecorder.mCurStartColIndex;
                 mLayoutState.mYOffset = bottom;
                 scrollingOffset = bottom - mMainOrientationHelper.getEndAfterPadding();
             }
@@ -338,6 +373,7 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
             mLayoutState.mExtra += mMainOrientationHelper.getStartAfterPadding();
             mLayoutState.mItemDirection = LayoutState.ITEM_DIRECTION_HEAD;
             mLayoutState.mCurRow = mScreenCoordinateRecorder.mCurStartRowIndex;
+            mLayoutState.mCurCol = mScreenCoordinateRecorder.mCurStartColIndex;
             mLayoutState.mCurRow += mLayoutState.mItemDirection;
             mLayoutState.mCurrentPosition = mCoordinateCallback.covertToPosition(mScreenCoordinateRecorder.mCurStartRowIndex
                     , mScreenCoordinateRecorder.mCurStartColIndex);
@@ -370,7 +406,8 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
             if (lp.mWidthSpan == 1) {
                 mLayoutState.mCurCol = coordinate[1];
                 mLayoutState.mCurCol += mLayoutState.mItemDirection;
-                mLayoutState.mCurrentPosition = mCoordinateCallback.covertToPosition(mLayoutState.mCurRow, coordinate[1]);
+                mLayoutState.mCurRow = mScreenCoordinateRecorder.mCurStartRowIndex;
+                mLayoutState.mCurrentPosition = mCoordinateCallback.covertToPosition(mLayoutState.mCurRow, mLayoutState.mCurCol);
                 mLayoutState.mXOffset = mAssistOrientationHelper.getDecoratedEnd(child);
                 scrollingOffset = mAssistOrientationHelper.getDecoratedEnd(child) - mAssistOrientationHelper.getEndAfterPadding();
             } else {
@@ -381,12 +418,14 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
                     currentCol--;
                 }
                 mLayoutState.mCurCol = currentCol;
+                mLayoutState.mCurRow = mScreenCoordinateRecorder.mCurStartRowIndex;
                 mLayoutState.mXOffset = right;
                 scrollingOffset = right - mAssistOrientationHelper.getEndAfterPadding();
             }
         } else {
             mLayoutState.mExtra += mAssistOrientationHelper.getStartAfterPadding();
             mLayoutState.mItemDirection = LayoutState.ITEM_DIRECTION_HEAD;
+            mLayoutState.mCurRow = mScreenCoordinateRecorder.mCurStartRowIndex;
             mLayoutState.mCurCol = mScreenCoordinateRecorder.mCurStartColIndex;
             mLayoutState.mCurCol += mLayoutState.mItemDirection;
             mLayoutState.mCurrentPosition = mCoordinateCallback.covertToPosition(mScreenCoordinateRecorder.mCurStartRowIndex
@@ -789,22 +828,22 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         if (cacheBorders == null || cacheBorders.length != spanCount + 2) {
             cacheBorders = new int[spanCount + 2];
         }
-        if (offset > 0) {
-            cacheBorders[0] = -offset;
+        if (offset < 0) {
+            cacheBorders[0] = offset;
         }
-        int sizePerSpan = totalSpace / spanCount;
+        int sizePerSpan = totalSpace / spanCount + 1;
         int sizePerSpanReminder = totalSpace % spanCount;
-        int consumePixels = -offset;
+        int consumePixels = offset;
         for (int i = 1; i <= spanCount; i++) {
             int itemSize = sizePerSpan;
-            if (sizePerSpanReminder > 0) {
+            /*if (sizePerSpanReminder > 0) {
                 itemSize++;
                 sizePerSpanReminder--;
-            }
+            }*/
             consumePixels += itemSize;
             cacheBorders[i] = consumePixels;
         }
-        if (cacheBorders[spanCount] < totalSpace) {
+        if (consumePixels < totalSpace) {
             cacheBorders[spanCount + 1] = consumePixels + sizePerSpan;
         } else {
             cacheBorders[spanCount + 1] = 0;
@@ -830,8 +869,8 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
             }
             cacheBorders = new int[spanCount + 2];
         }
-        if (offset > 0) {
-            cacheBorders[0] = -offset;
+        if (offset < 0) {
+            cacheBorders[0] = offset;
         }
         int consumePixels = 0;
         for (int i = 1; i <= spanCount; i++) {
@@ -1080,10 +1119,14 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         if (dt < 0)
             return;
         final int limit = dt;
-        for (int i = 0; i < childCount; i++) {
+        for (int i = childCount - 1; i >= 0; i--) {
             View child = getChildAt(i);
+            if (child == null)
+                continue;
             if (mAssistOrientationHelper.getDecoratedEnd(child) <= limit
                     && mAssistOrientationHelper.getTransformedEndWithDecoration(child) <= limit) {
+                LayoutParams lp = (LayoutParams) child.getLayoutParams();
+                mLayoutState.removeViewInParent(lp.getViewAdapterPosition());
                 removeAndRecycleViewAt(i, recycler);
             }
         }
@@ -1096,10 +1139,14 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         }
         final int limit = mAssistOrientationHelper.getEndAfterPadding() - dt;
 
-        for (int i = 0; i < childCount; i++) {
+        for (int i = childCount - 1; i >= 0; i--) {
             View child = getChildAt(i);
+            if (child == null)
+                continue;
             if (mAssistOrientationHelper.getDecoratedStart(child) >= limit
                     && mAssistOrientationHelper.getTransformedEndWithDecoration(child) >= limit) {
+                LayoutParams lp = (LayoutParams) child.getLayoutParams();
+                mLayoutState.removeViewInParent(lp.getViewAdapterPosition());
                 removeAndRecycleViewAt(i, recycler);
             }
         }
@@ -1151,17 +1198,19 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         // 该行子视图的数量
         int count = 0;
         int remainSpan;
-        int consumeRow = Integer.MAX_VALUE;
-        int consumeMinHeight = Integer.MAX_VALUE;
+        int consumeRow = -1;
+        int consumeMinHeight = -1;
+        int totalSpan;
 
         if (mHorCacheBorders[mHorCacheBorders.length - 1] == 0) {
             remainSpan = mHorTotalSpan;
         } else {
             remainSpan = mHorTotalSpan + 1;
         }
+        totalSpan = remainSpan;
 
         // 1. 生成子View
-        while (count < mHorTotalSpan && remainSpan > 0 && layoutState.hasMore(state)) {
+        while (count < totalSpan && remainSpan > 0 && layoutState.hasMore(state)) {
             // 判断是否是跨行的视图
             int row = layoutState.mCurRow;
             int col = layoutState.mCurCol;
@@ -1170,21 +1219,32 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
             if (layoutState.isViewExist(pos)) {
                 int[] spanArray = mCoordinateCallback.getSpanArray(pos);
                 int[] coordinate = mCoordinateCallback.coordinate(pos);
-                consumeRow = Math.min(row + spanArray[1] - coordinate[0], consumeRow);
-                consumeMinHeight = consumeRow * mAveHolderHeight;
+                if (consumeRow == -1) {
+                    consumeRow = row + spanArray[1] - coordinate[0];
+                    consumeMinHeight = consumeRow * mAveHolderHeight;
+                } else {
+                    consumeRow = Math.min(row + spanArray[1] - coordinate[0], consumeRow);
+                    consumeMinHeight = Math.min(consumeMinHeight, consumeRow * mAveHolderHeight);
+                }
                 remainSpan -= spanArray[0];
                 layoutState.mCurCol = coordinate[1] + spanArray[0];
                 layoutState.mCurrentPosition = mCoordinateCallback.covertToPosition(layoutState.mCurRow, layoutState.mCurCol);
                 continue;
             }
 
+            Log.e(TAG, "row:" + row + ",col:" + col + ",-----pos:" + layoutState.mCurrentPosition);
             int[] spanArray = mCoordinateCallback.getSpanArray(layoutState.mCurrentPosition);
             int[] coordinate = mCoordinateCallback.coordinate(layoutState.mCurrentPosition);
             if (spanArray == null || spanArray[0] > mHorTotalSpan + 1) {
                 throw new IllegalArgumentException("UnSupport TableCell Size!");
             }
-            consumeRow = Math.min(consumeRow, row + spanArray[1] - coordinate[0]);
-            consumeMinHeight = Math.min(consumeMinHeight, consumeRow * mAveHolderHeight);
+            if (consumeRow == -1) {
+                consumeRow = row + spanArray[1] - coordinate[0];
+                consumeMinHeight = consumeRow * mAveHolderHeight;
+            } else {
+                consumeRow = Math.min(consumeRow, row + spanArray[1] - coordinate[0]);
+                consumeMinHeight = Math.min(consumeMinHeight, consumeRow * mAveHolderHeight);
+            }
             int rowIndex = row - mScreenCoordinateRecorder.mCurStartRowIndex;
             int colIndex = col - mScreenCoordinateRecorder.mCurStartColIndex;
             remainSpan -= spanArray[0];
@@ -1274,44 +1334,58 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         // 该行子视图的数量
         int count = 0;
         int remainSpan;
-        int consumeCol = Integer.MAX_VALUE;
-        int consumeMinWidth = Integer.MAX_VALUE;
+        int consumeCol = -1;
+        int consumeMinWidth = -1;
+        int totalSpan;
 
         if (mVerCacheBorders[mVerCacheBorders.length - 1] == 0) {
             remainSpan = mVerTotalSpan;
         } else {
             remainSpan = mVerTotalSpan + 1;
         }
+        totalSpan = remainSpan;
 
         // 1. 生成子View
-        while (count < mVerTotalSpan && remainSpan > 0 && layoutState.hasMore(state)) {
+        while (count < totalSpan && remainSpan > 0 && layoutState.hasMore(state)) {
             // 判断是否是跨行的视图
             int row = layoutState.mCurRow;
             int col = layoutState.mCurCol;
             int pos = mCoordinateCallback.covertToPosition(row, col);
+            mLayoutState.mCurrentPosition = pos;
             if (layoutState.isViewExist(pos)) {
                 int[] spanArray = mCoordinateCallback.getSpanArray(pos);
                 int[] coordinate = mCoordinateCallback.coordinate(pos);
-                consumeCol = Math.min(col + spanArray[0] - coordinate[1], consumeCol);
-                consumeMinWidth = consumeCol * mAveHolderWidth;
+                if (consumeCol == -1) {
+                    consumeCol = col + spanArray[0] - coordinate[1];
+                    consumeMinWidth = consumeCol * mAveHolderWidth;
+                } else {
+                    consumeCol = Math.min(col + spanArray[0] - coordinate[1], consumeCol);
+                    consumeMinWidth = Math.min(consumeMinWidth, consumeCol * mAveHolderWidth);
+                }
                 remainSpan -= spanArray[1];
                 layoutState.mCurRow = coordinate[0] + spanArray[1];
                 layoutState.mCurrentPosition = mCoordinateCallback.covertToPosition(layoutState.mCurRow, layoutState.mCurCol);
                 continue;
             }
 
+            Log.e(TAG, "row:" + row + ",col:" + col + ",-----pos:" + layoutState.mCurrentPosition);
             int[] spanArray = mCoordinateCallback.getSpanArray(layoutState.mCurrentPosition);
             int[] coordinate = mCoordinateCallback.coordinate(layoutState.mCurrentPosition);
             if (spanArray == null || spanArray[1] > mVerTotalSpan + 1) {
                 throw new IllegalArgumentException("UnSupport TableCell Size!");
             }
-            consumeCol = Math.min(consumeCol, col + spanArray[0] - coordinate[1]);
-            consumeMinWidth = Math.min(consumeMinWidth, consumeCol * mAveHolderWidth);
+            if (consumeCol == -1) {
+                consumeCol = col + spanArray[0] - coordinate[1];
+                consumeMinWidth = consumeCol * mAveHolderWidth;
+            } else {
+                consumeCol = Math.min(consumeCol, col + spanArray[0] - coordinate[1]);
+                consumeMinWidth = Math.min(consumeMinWidth, consumeCol * mAveHolderWidth);
+            }
 
-            int rowIndex = row - mScreenCoordinateRecorder.mCurStartColIndex;
+            int rowIndex = row - mScreenCoordinateRecorder.mCurStartRowIndex;
             int colIndex = col - mScreenCoordinateRecorder.mCurStartColIndex;
             remainSpan -= spanArray[1];
-            View view = layoutState.next(recycler);
+            View view = layoutState.nextInHorizontal(recycler);
             if (view == null)
                 break;
 
@@ -1323,6 +1397,7 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
                 layoutParams.mColIndex = colIndex;
                 layoutParams.mWidthSpan = spanArray[0];
                 layoutParams.mHeightSpan = spanArray[1];
+
             }
             view.setLayoutParams(layoutParams);
 
@@ -1331,9 +1406,15 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         }
         if (count == 0) {
             // 有可能是跨行的子View造成的
-            result.mFinished = true;
-            result.mConsumedRowOrCol = consumeCol;
-            result.mConsume = consumeMinWidth;
+            if (consumeCol == -1) {
+                result.mFinished = true;
+                result.mConsume = 0;
+                result.mConsumedRowOrCol = 0;
+            } else {
+                result.mFinished = true;
+                result.mConsumedRowOrCol = consumeCol;
+                result.mConsume = consumeMinWidth;
+            }
             return;
         }
         // 添加子View
@@ -1352,7 +1433,7 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
                 LayoutParams params = (LayoutParams) view.getLayoutParams();
                 int[] coordinate = mCoordinateCallback.coordinate(params.getViewAdapterPosition());
 
-                while (lastRow != coordinate[1] || childCoordinate[0] < lastRow + 1) {
+                while (lastRow != coordinate[0] || childCoordinate[0] < lastRow + 1) {
                     lastRow = coordinate[0];
                     curPos++;
                     child = getChildAt(curPos);
@@ -1392,7 +1473,7 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
             View child = getChildAt(curPos);
             LayoutParams childLp = (LayoutParams) child.getLayoutParams();
             int[] childCoordinate = mCoordinateCallback.coordinate(childLp.getViewAdapterPosition());
-            for (int i = 0; i >= count; i++) {
+            for (int i = 0; i < count; i++) {
                 View view = mSet[i];
                 LayoutParams params = (LayoutParams) view.getLayoutParams();
                 int[] coordinate = mCoordinateCallback.coordinate(params.getViewAdapterPosition());
@@ -1401,7 +1482,7 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
                     lastRow = childCoordinate[0];
                     curPos++;
                     child = getChildAt(curPos);
-                    if(child == null)
+                    if (child == null)
                         break;
                     childLp = (LayoutParams) child.getLayoutParams();
                     childCoordinate = mCoordinateCallback.coordinate(childLp.getViewAdapterPosition());
@@ -1409,16 +1490,16 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
 
 
                 if (layoutState.mScrapList == null) {
-                    if(child == null){
+                    if (child == null) {
                         addView(view);
-                    }else {
-                        addView(view,curPos);
+                    } else {
+                        addView(view, curPos);
                     }
                 } else {
-                    if(child == null){
+                    if (child == null) {
                         addDisappearingView(view);
-                    }else {
-                        addDisappearingView(view,curPos);
+                    } else {
+                        addDisappearingView(view, curPos);
                     }
 
                 }
@@ -1757,6 +1838,17 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
 
             int[] spanArray = mCoordinateCallback.getSpanArray(mCurrentPosition);
             mCurCol += spanArray[0];
+            mCurrentPosition = mCoordinateCallback.covertToPosition(mCurRow, mCurCol);
+            return view;
+        }
+
+        View nextInHorizontal(RecyclerView.Recycler recycler) {
+            if (mCoordinateCallback == null)
+                throw new IllegalArgumentException("mCoordinateCallback in LayoutState can't be null");
+            final View view = recycler.getViewForPosition(mCurrentPosition);
+
+            int[] spanArray = mCoordinateCallback.getSpanArray(mCurrentPosition);
+            mCurRow += spanArray[1];
             mCurrentPosition = mCoordinateCallback.covertToPosition(mCurRow, mCurCol);
             return view;
         }
