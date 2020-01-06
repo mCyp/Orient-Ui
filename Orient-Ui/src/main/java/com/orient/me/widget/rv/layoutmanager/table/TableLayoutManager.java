@@ -202,31 +202,30 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         return true;
     }
 
-    boolean isCanScrollHor = false;
 
     @Override
     public boolean canScrollHorizontally() {
-        if(!scrollFlag)
-            return true;
-        else
-            return mOrientation == RecyclerView.HORIZONTAL;
+        if (scrollFlag && mOrientation == RecyclerView.VERTICAL)
+            return false;
+        return !scrollerCallback.canScrollVertical();
     }
 
     @Override
     public boolean canScrollVertically() {
-        if(!scrollFlag)
-            return true;
-        else
-            return mOrientation == RecyclerView.VERTICAL;
+        if (scrollFlag && mOrientation == RecyclerView.HORIZONTAL)
+            return false;
+        return scrollerCallback.canScrollVertical();
     }
 
 
     @Override
-    public int scrollHorizontallyBy(int dx, RecyclerView.Recycler recycler, RecyclerView.State state) {
+    public synchronized int scrollHorizontallyBy(int dx, RecyclerView.Recycler recycler, RecyclerView.State state) {
         /*if (mOrientation == RecyclerView.VERTICAL)
             return 0;*/
        /* if (scrollFlag && mOrientation == RecyclerView.VERTICAL)
             return 0;*/
+        if (scrollerCallback.canScrollVertical())
+            return 0;
 
         scrollFlag = true;
         mOrientation = RecyclerView.HORIZONTAL;
@@ -236,13 +235,14 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
     }
 
     @Override
-    public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
+    public synchronized int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
         /*if (mOrientation == RecyclerView.HORIZONTAL)
             return 0;*/
        /* if (scrollFlag && mOrientation == RecyclerView.HORIZONTAL)
             return 0;*/
+        if (!scrollerCallback.canScrollVertical())
+            return 0;
 
-       isCanScrollHor = true;
         scrollFlag = true;
         mOrientation = RecyclerView.VERTICAL;
         updateMeasurements();
@@ -252,7 +252,6 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
 
     public void clearScrollFlag() {
         scrollFlag = false;
-        Log.e(TAG, "clear Flag");
     }
 
     private int scrollBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
@@ -293,24 +292,34 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
                 currentRow++;
             }
             mLayoutState.mHeadYOffset = top;
-
             mScreenCoordinateRecorder.mCurStartRowIndex = currentRow;
-        } else {
 
+            // TODO 删除
+            int c = getChildCount();
+            int[] a = new int[c];
+            for (int i = 0; i < c; i++) {
+                View v = getChildAt(i);
+                LayoutParams p = (LayoutParams) v.getLayoutParams();
+                a[i] = p.getViewAdapterPosition();
+            }
+            Log.e(TAG, "pppp" + Arrays.toString(a));
+        } else {
             final View child = getChildCloseToStart();
             LayoutParams lp = (LayoutParams) child.getLayoutParams();
             int pos = lp.getViewAdapterPosition();
             int left = mAssistOrientationHelper.getDecoratedStart(child);
             int[] coordinate = mCoordinateCallback.coordinate(pos);
             int currentCol = coordinate[1];
+            Log.e(TAG, "begin left:" + left);
             while (left <= -mAveHolderWidth) {
                 left += mAveHolderWidth;
                 currentCol++;
             }
+            Log.e(TAG, "end left:" + left);
             mLayoutState.mHeadXOffset = left;
-            Log.e(TAG, "mLayoutState.mHeadXOffset:" + mLayoutState.mHeadXOffset);
 
             mScreenCoordinateRecorder.mCurStartColIndex = currentCol;
+            Log.e(TAG, "startCol:" + currentCol);
         }
     }
 
@@ -575,7 +584,6 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
             endOffset += fixOffset;
             fixLayoutEndGap(endOffset, recycler, state, false);
         }
-        //layoutForPredictiveAnimations(recycler, state, startOffset, endOffset);
         if (!state.isPreLayout()) {
             mMainOrientationHelper.onLayoutComplete();
 
@@ -828,8 +836,12 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         if (cacheBorders == null || cacheBorders.length != spanCount + 2) {
             cacheBorders = new int[spanCount + 2];
         }
+        cacheBorders[cacheBorders.length - 1] = 0;
+        cacheBorders[cacheBorders.length - 2] = 0;
         if (offset < 0) {
             cacheBorders[0] = offset;
+        } else {
+            cacheBorders[0] = 0;
         }
         int sizePerSpan = totalSpace / spanCount + 1;
         int sizePerSpanReminder = totalSpace % spanCount;
@@ -871,6 +883,8 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         }
         if (offset < 0) {
             cacheBorders[0] = offset;
+        } else {
+            cacheBorders[0] = 0;
         }
         int consumePixels = 0;
         for (int i = 1; i <= spanCount; i++) {
@@ -918,11 +932,11 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
     private void ensureViewSet() {
         if (mOrientation == RecyclerView.VERTICAL) {
             if (mSet == null || mSet.length != mHorTotalSpan) {
-                mSet = new View[mHorTotalSpan];
+                mSet = new View[mHorTotalSpan + 1];
             }
         } else {
             if (mSet == null || mSet.length != mVerTotalSpan) {
-                mSet = new View[mHorTotalSpan];
+                mSet = new View[mHorTotalSpan + 1];
             }
         }
     }
@@ -1226,13 +1240,17 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
                     consumeRow = Math.min(row + spanArray[1] - coordinate[0], consumeRow);
                     consumeMinHeight = Math.min(consumeMinHeight, consumeRow * mAveHolderHeight);
                 }
-                remainSpan -= spanArray[0];
+                int rowIndex = coordinate[0] - mScreenCoordinateRecorder.mCurStartRowIndex;
+                int colIndex = coordinate[1] - mScreenCoordinateRecorder.mCurStartColIndex;
+                if (colIndex < 0)
+                    remainSpan -= colIndex + spanArray[0];
+                else
+                    remainSpan -= spanArray[0];
                 layoutState.mCurCol = coordinate[1] + spanArray[0];
                 layoutState.mCurrentPosition = mCoordinateCallback.covertToPosition(layoutState.mCurRow, layoutState.mCurCol);
                 continue;
             }
 
-            Log.e(TAG, "row:" + row + ",col:" + col + ",-----pos:" + layoutState.mCurrentPosition);
             int[] spanArray = mCoordinateCallback.getSpanArray(layoutState.mCurrentPosition);
             int[] coordinate = mCoordinateCallback.coordinate(layoutState.mCurrentPosition);
             if (spanArray == null || spanArray[0] > mHorTotalSpan + 1) {
@@ -1245,10 +1263,15 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
                 consumeRow = Math.min(consumeRow, row + spanArray[1] - coordinate[0]);
                 consumeMinHeight = Math.min(consumeMinHeight, consumeRow * mAveHolderHeight);
             }
-            int rowIndex = row - mScreenCoordinateRecorder.mCurStartRowIndex;
-            int colIndex = col - mScreenCoordinateRecorder.mCurStartColIndex;
-            remainSpan -= spanArray[0];
-            View view = layoutState.next(recycler);
+            /*int rowIndex = row - mScreenCoordinateRecorder.mCurStartRowIndex;
+            int colIndex = col - mScreenCoordinateRecorder.mCurStartColIndex;*/
+            int rowIndex = coordinate[0] - mScreenCoordinateRecorder.mCurStartRowIndex;
+            int colIndex = coordinate[1] - mScreenCoordinateRecorder.mCurStartColIndex;
+            if (colIndex < 0)
+                remainSpan -= colIndex + spanArray[0];
+            else
+                remainSpan -= spanArray[0];
+            View view = layoutState.next(recycler, colIndex);
             if (view == null)
                 break;
 
@@ -1261,6 +1284,7 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
                 layoutParams.mColIndex = colIndex;
                 layoutParams.mWidthSpan = spanArray[0];
                 layoutParams.mHeightSpan = spanArray[1];
+                Log.e(TAG, "mRowIndex:" + rowIndex + ",mColIndex:" + colIndex + ",mWidthSpan:" + spanArray[0] + ",mHeightSpan:" + spanArray[1]);
             }
             view.setLayoutParams(layoutParams);
 
@@ -1278,19 +1302,50 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         // 测量子View
         // 布局子View
         if (layingOutInPrimaryDirection) {
-            for (int i = 0; i < count; i++) {
+            int curPos = getChildCount() - 1;
+            View child = getChildAt(curPos);
+            LayoutParams childLp;
+            int[] childCoordinate;
+            int curNum = -1;
+
+            if(child !=null) {
+                childLp = (LayoutParams) child.getLayoutParams();
+                childCoordinate = mCoordinateCallback.coordinate(childLp.getViewAdapterPosition());
+                curNum = getDetailNum(childCoordinate);
+            }
+
+            for (int i = count - 1; i >= 0; i--) {
                 View view = mSet[i];
-                if (layoutState.mScrapList == null) {
-                    addView(view);
-                } else {
-                    addDisappearingView(view);
+                LayoutParams params = (LayoutParams) view.getLayoutParams();
+                int[] coordinate = mCoordinateCallback.coordinate(params.getViewAdapterPosition());
+                int mNum = getDetailNum(coordinate);
+
+                while (mNum <= curNum) {
+                    curPos--;
+                    if (curPos <= -1 || getChildAt(curPos) == null)
+                        break;
+                    child = getChildAt(curPos);
+                    childLp = (LayoutParams) child.getLayoutParams();
+                    childCoordinate = mCoordinateCallback.coordinate(childLp.getViewAdapterPosition());
+                    curNum = getDetailNum(childCoordinate);
                 }
+                if (layoutState.mScrapList == null) {
+                    if (curPos == 0)
+                        addView(view, 0);
+                    else
+                        addView(view, curPos);
+                } else {
+                    if (curPos == 0)
+                        addDisappearingView(view, 0);
+                    else
+                        addDisappearingView(view, curPos);
+                }
+
                 Rect mInsets = new Rect();
                 calculateItemDecorationsForChild(view, mInsets);
                 measureChild(view, View.MeasureSpec.EXACTLY, mInsets);
                 layoutChild(view);
 
-                LayoutParams params = (LayoutParams) view.getLayoutParams();
                 if (params.isItemRemoved() || params.isItemChanged()) {
                     result.mIgnoreConsumed = true;
                 }
@@ -1299,19 +1354,45 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
                 layoutState.addViewInParent(params.getViewAdapterPosition());
             }
         } else {
-            for (int i = count - 1; i >= 0; i--) {
+            int curPos = 0;
+            View child = getChildAt(curPos);
+            LayoutParams childLp = (LayoutParams) child.getLayoutParams();
+            int[] childCoordinate = mCoordinateCallback.coordinate(childLp.getViewAdapterPosition());
+            int curNum = getDetailNum(childCoordinate);
+
+            for (int i = 0; i < count; i++) {
                 View view = mSet[i];
-                if (layoutState.mScrapList == null) {
-                    addView(view, 0);
-                } else {
-                    addDisappearingView(view, 0);
+                LayoutParams params = (LayoutParams) view.getLayoutParams();
+                int[] coordinate = mCoordinateCallback.coordinate(params.getViewAdapterPosition());
+                int mNum = getDetailNum(coordinate);
+
+                while (mNum >= curNum) {
+                    curPos++;
+                    child = getChildAt(curPos);
+                    if (child == null)
+                        break;
+                    childLp = (LayoutParams) child.getLayoutParams();
+                    childCoordinate = mCoordinateCallback.coordinate(childLp.getViewAdapterPosition());
+                    curNum = getDetailNum(childCoordinate);
                 }
+
+                if (layoutState.mScrapList == null) {
+                    if (child == null)
+                        addView(view);
+                    else
+                        addView(view, curPos);
+                } else {
+                    if (child == null)
+                        addDisappearingView(view);
+                    else
+                        addDisappearingView(view, curPos);
+                }
+
                 Rect mInsets = new Rect();
                 calculateItemDecorationsForChild(view, mInsets);
                 measureChild(view, View.MeasureSpec.EXACTLY, mInsets);
                 layoutChild(view);
 
-                LayoutParams params = (LayoutParams) view.getLayoutParams();
                 if (params.isItemRemoved() || params.isItemChanged()) {
                     result.mIgnoreConsumed = true;
                 }
@@ -1362,13 +1443,17 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
                     consumeCol = Math.min(col + spanArray[0] - coordinate[1], consumeCol);
                     consumeMinWidth = Math.min(consumeMinWidth, consumeCol * mAveHolderWidth);
                 }
-                remainSpan -= spanArray[1];
+                int rowIndex = coordinate[0] - mScreenCoordinateRecorder.mCurStartRowIndex;
+                int colIndex = coordinate[1] - mScreenCoordinateRecorder.mCurStartColIndex;
+                if (rowIndex < 0) {
+                    remainSpan -= (spanArray[1] + rowIndex);
+                } else
+                    remainSpan -= spanArray[1];
                 layoutState.mCurRow = coordinate[0] + spanArray[1];
                 layoutState.mCurrentPosition = mCoordinateCallback.covertToPosition(layoutState.mCurRow, layoutState.mCurCol);
                 continue;
             }
 
-            Log.e(TAG, "row:" + row + ",col:" + col + ",-----pos:" + layoutState.mCurrentPosition);
             int[] spanArray = mCoordinateCallback.getSpanArray(layoutState.mCurrentPosition);
             int[] coordinate = mCoordinateCallback.coordinate(layoutState.mCurrentPosition);
             if (spanArray == null || spanArray[1] > mVerTotalSpan + 1) {
@@ -1382,10 +1467,13 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
                 consumeMinWidth = Math.min(consumeMinWidth, consumeCol * mAveHolderWidth);
             }
 
-            int rowIndex = row - mScreenCoordinateRecorder.mCurStartRowIndex;
-            int colIndex = col - mScreenCoordinateRecorder.mCurStartColIndex;
-            remainSpan -= spanArray[1];
-            View view = layoutState.nextInHorizontal(recycler);
+            int rowIndex = coordinate[0] - mScreenCoordinateRecorder.mCurStartRowIndex;
+            int colIndex = coordinate[1] - mScreenCoordinateRecorder.mCurStartColIndex;
+            if (rowIndex < 0) {
+                remainSpan -= (spanArray[1] + rowIndex);
+            } else
+                remainSpan -= spanArray[1];
+            View view = layoutState.nextInHorizontal(recycler, rowIndex);
             if (view == null)
                 break;
 
@@ -1397,7 +1485,6 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
                 layoutParams.mColIndex = colIndex;
                 layoutParams.mWidthSpan = spanArray[0];
                 layoutParams.mHeightSpan = spanArray[1];
-
             }
             view.setLayoutParams(layoutParams);
 
@@ -1420,39 +1507,40 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         // 添加子View
         // 测量子View
         // 布局子View
+        // TODO 优化插入顺序
         if (layingOutInPrimaryDirection) {
-            int lastRow;
-            int curPos = 0;
+            int curPos = getChildCount() - 1;
             View child = getChildAt(curPos);
             LayoutParams childLp = (LayoutParams) child.getLayoutParams();
             int[] childCoordinate = mCoordinateCallback.coordinate(childLp.getViewAdapterPosition());
-            lastRow = childCoordinate[0];
+            int curNum = getDetailNum(childCoordinate);
 
-            for (int i = 0; i < count; i++) {
+            for (int i = count - 1; i >= 0; i--) {
                 View view = mSet[i];
                 LayoutParams params = (LayoutParams) view.getLayoutParams();
                 int[] coordinate = mCoordinateCallback.coordinate(params.getViewAdapterPosition());
+                int mNum = getDetailNum(coordinate);
 
-                while (lastRow != coordinate[0] || childCoordinate[0] < lastRow + 1) {
-                    lastRow = coordinate[0];
-                    curPos++;
-                    child = getChildAt(curPos);
-                    if (child == null)
+                while (mNum <= curNum) {
+                    if (curPos == 0 || getChildAt(curPos) == null)
                         break;
+                    curPos--;
+                    child = getChildAt(curPos);
                     childLp = (LayoutParams) child.getLayoutParams();
                     childCoordinate = mCoordinateCallback.coordinate(childLp.getViewAdapterPosition());
+                    curNum = getDetailNum(childCoordinate);
                 }
 
                 if (layoutState.mScrapList == null) {
-                    if (child == null)
-                        addView(view);
+                    if (curPos == 0)
+                        addView(view, 0);
                     else
                         addView(view, curPos);
                 } else {
-                    if (child == null)
-                        addView(view);
+                    if (curPos == 0)
+                        addDisappearingView(view, 0);
                     else
-                        addDisappearingView(view);
+                        addDisappearingView(view, curPos);
                 }
 
                 Rect mInsets = new Rect();
@@ -1468,40 +1556,38 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
                 layoutState.addViewInParent(params.getViewAdapterPosition());
             }
         } else {
-            int lastRow = -1;
             int curPos = 0;
             View child = getChildAt(curPos);
             LayoutParams childLp = (LayoutParams) child.getLayoutParams();
             int[] childCoordinate = mCoordinateCallback.coordinate(childLp.getViewAdapterPosition());
+            int curNum = getDetailNum(childCoordinate);
+
             for (int i = 0; i < count; i++) {
                 View view = mSet[i];
                 LayoutParams params = (LayoutParams) view.getLayoutParams();
                 int[] coordinate = mCoordinateCallback.coordinate(params.getViewAdapterPosition());
+                int mNum = getDetailNum(coordinate);
 
-                while (lastRow >= childCoordinate[0] || childCoordinate[0] != coordinate[0]) {
-                    lastRow = childCoordinate[0];
+                while (mNum >= curNum) {
                     curPos++;
                     child = getChildAt(curPos);
                     if (child == null)
                         break;
                     childLp = (LayoutParams) child.getLayoutParams();
                     childCoordinate = mCoordinateCallback.coordinate(childLp.getViewAdapterPosition());
+                    curNum = getDetailNum(childCoordinate);
                 }
 
-
                 if (layoutState.mScrapList == null) {
-                    if (child == null) {
+                    if (child == null)
                         addView(view);
-                    } else {
+                    else
                         addView(view, curPos);
-                    }
                 } else {
-                    if (child == null) {
+                    if (child == null)
                         addDisappearingView(view);
-                    } else {
+                    else
                         addDisappearingView(view, curPos);
-                    }
-
                 }
 
                 Rect mInsets = new Rect();
@@ -1516,10 +1602,22 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
 
                 layoutState.addViewInParent(params.getViewAdapterPosition());
             }
+
         }
         result.mConsumedRowOrCol = consumeCol;
         result.mConsume = consumeMinWidth;
         Arrays.fill(mSet, null);
+    }
+
+    /**
+     * 得到比较的的数字
+     *
+     * @param coordinate 数组
+     */
+    private int getDetailNum(int[] coordinate) {
+        if (coordinate == null || coordinate.length < 2)
+            return 0;
+        return coordinate[0] * 1000 + coordinate[1];
     }
 
 
@@ -1537,8 +1635,8 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
                 + lp.topMargin + lp.bottomMargin;
         final int horizontalInsets = insets.left + insets.right
                 + lp.leftMargin + lp.rightMargin;
-        final int verticalSpace = getSpaceForSpanRange(RecyclerView.VERTICAL, lp.mRowIndex, lp.mHeightSpan);
-        final int horizontalSpace = getSpaceForSpanRange(RecyclerView.HORIZONTAL, lp.mColIndex, lp.mWidthSpan);
+        final int verticalSpace = getSpaceForSpanRange(RecyclerView.VERTICAL, lp.mHeightSpan);
+        final int horizontalSpace = getSpaceForSpanRange(RecyclerView.HORIZONTAL, lp.mWidthSpan);
         final int wSpec;
         final int hSpec;
 
@@ -1596,7 +1694,7 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         return false;
     }
 
-    int getSpaceForSpanRange(int orientation, int startSpan, int spanSize) {
+    int getSpaceForSpanRange(int orientation, int spanSize) {
         if (orientation == RecyclerView.VERTICAL) {
             return mAveHolderHeight * spanSize;
         } else {
@@ -1606,10 +1704,17 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
 
     private void layoutChild(View view) {
         final LayoutParams lp = (LayoutParams) view.getLayoutParams();
+        final int[] coordinate = mCoordinateCallback.coordinate(lp.getViewAdapterPosition());
         int left, right, top, bottom;
         if (mOrientation == RecyclerView.VERTICAL) {
-            left = mHorCacheBorders[lp.mColIndex];
-            right = mHorCacheBorders[lp.mColIndex + lp.mWidthSpan];
+            if (lp.mColIndex < 0) {
+                left = mHorCacheBorders[0] + mAveHolderWidth * lp.mColIndex;
+            } else
+                left = mHorCacheBorders[lp.mColIndex];
+            if (lp.mColIndex + lp.mWidthSpan >= mHorCacheBorders.length)
+                right = mHorCacheBorders[mHorCacheBorders.length - 1] + (lp.mColIndex + lp.mWidthSpan - mHorCacheBorders.length + 1) * mAveHolderWidth;
+            else
+                right = mHorCacheBorders[lp.mColIndex + lp.mWidthSpan];
             if (mLayoutState.mLayoutDirection == LayoutState.LAYOUT_END) {
                 top = mLayoutState.mYOffset;
                 bottom = mLayoutState.mYOffset + lp.mHeightSpan * mAveHolderHeight;
@@ -1618,8 +1723,16 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
                 bottom = mLayoutState.mYOffset;
             }
         } else {
-            top = mVerCacheBorders[lp.mRowIndex];
-            bottom = mVerCacheBorders[lp.mRowIndex + lp.mHeightSpan];
+            int r = coordinate[0] - mScreenCoordinateRecorder.mCurStartRowIndex;
+            if (r < 0) {
+                top = mVerCacheBorders[0] + r * mAveHolderHeight;
+            } else
+                top = mVerCacheBorders[r];
+            if (r + lp.mHeightSpan >= mVerCacheBorders.length) {
+                bottom = mVerCacheBorders[mVerCacheBorders.length - 1] + (r + lp.mHeightSpan - mVerCacheBorders.length + 1) * mAveHolderHeight;
+            } else
+                bottom = mVerCacheBorders[r + lp.mHeightSpan];
+
             if (mLayoutState.mLayoutDirection == LayoutState.LAYOUT_END) {
                 left = mLayoutState.mXOffset;
                 right = mLayoutState.mXOffset + lp.mWidthSpan * mAveHolderWidth;
@@ -1627,6 +1740,7 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
                 right = mLayoutState.mXOffset;
                 left = mLayoutState.mXOffset - lp.mWidthSpan * mAveHolderWidth;
             }
+            Log.e(TAG, "pos:---left:" + left + ",top:" + top + ",right:" + right + ",bottom:" + bottom);
 
         }
         layoutDecoratedWithMargins(view, left, top, right, bottom);
@@ -1831,24 +1945,30 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
          *
          * @return The next element that we should layout.
          */
-        View next(RecyclerView.Recycler recycler) {
+        View next(RecyclerView.Recycler recycler, int colIndex) {
             if (mCoordinateCallback == null)
                 throw new IllegalArgumentException("mCoordinateCallback in LayoutState can't be null");
             final View view = recycler.getViewForPosition(mCurrentPosition);
 
             int[] spanArray = mCoordinateCallback.getSpanArray(mCurrentPosition);
-            mCurCol += spanArray[0];
+            if (colIndex < 0)
+                mCurCol += spanArray[0] + colIndex;
+            else
+                mCurCol += spanArray[0];
             mCurrentPosition = mCoordinateCallback.covertToPosition(mCurRow, mCurCol);
             return view;
         }
 
-        View nextInHorizontal(RecyclerView.Recycler recycler) {
+        View nextInHorizontal(RecyclerView.Recycler recycler, int rowIndex) {
             if (mCoordinateCallback == null)
                 throw new IllegalArgumentException("mCoordinateCallback in LayoutState can't be null");
             final View view = recycler.getViewForPosition(mCurrentPosition);
 
             int[] spanArray = mCoordinateCallback.getSpanArray(mCurrentPosition);
-            mCurRow += spanArray[1];
+            if (rowIndex < 0)
+                mCurRow += rowIndex + spanArray[1];
+            else
+                mCurRow += spanArray[1];
             mCurrentPosition = mCoordinateCallback.covertToPosition(mCurRow, mCurCol);
             return view;
         }

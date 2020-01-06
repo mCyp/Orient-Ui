@@ -60,26 +60,22 @@ public class TableActivity extends BaseActivity {
         super.initData();
 
         List<TableCell> cells = new LinkedList<>();
-        cells.add(new TableCell("1","1",1,0,0,1,1));
-        cells.add(new TableCell("2","1",1,0,1,1,1));
+        cells.add(new TableCell("1","1",1,0,0,2,2));
+        //cells.add(new TableCell("2","1",1,0,1,1,1));
         cells.add(new TableCell("3","1",1,0,2,1,1));
-        cells.add(new TableCell("4","1",1,0,3,1,1));
+        cells.add(new TableCell("4","1",1,0,3,1,2));
         cells.add(new TableCell("5","1",1,0,4,1,1));
         cells.add(new TableCell("6","1",1,0,5,1,1));
 
-        cells.add(new TableCell("7","1",1,1,0,1,1));
-        cells.add(new TableCell("8","1",1,1,1,1,1));
+        //cells.add(new TableCell("7","1",1,1,0,1,1));
+        //cells.add(new TableCell("8","1",1,1,1,1,1));
         cells.add(new TableCell("9","1",1,1,2,1,1));
-        cells.add(new TableCell("10","1",1,1,3,1,1));
         cells.add(new TableCell("11","1",1,1,4,1,1));
         cells.add(new TableCell("12","1",1,1,5,1,1));
 
-        cells.add(new TableCell("13","1",1,2,0,1,1));
-        cells.add(new TableCell("14","1",1,2,1,1,1));
-        cells.add(new TableCell("15","1",1,2,2,1,1));
-        cells.add(new TableCell("16","1",1,2,3,1,1));
-        cells.add(new TableCell("17","1",1,2,4,1,1));
-        cells.add(new TableCell("18","1",1,2,5,1,1));
+        cells.add(new TableCell("13","1",1,2,0,4,1));
+        cells.add(new TableCell("14","1",1,2,4,1,1));
+        cells.add(new TableCell("15","1",1,2,5,1,1));
 
         cells.add(new TableCell("19","1",1,3,0,1,1));
         cells.add(new TableCell("20","1",1,3,1,1,1));

@@ -6,13 +6,19 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.ViewConfiguration;
 
 import com.orient.me.widget.rv.adapter.TableAdapter;
 import com.orient.me.widget.rv.layoutmanager.table.TableLayoutManager;
 
 public class TableRecyclerView extends RecyclerView implements ScrollerCallback {
 
+    // 滑动方向
+    private int scrollFlag = -1;
     private boolean isCanScroll = true;
+
+    private float mLastX, mLastY;
+    private float mCurX, mCurY;
 
 
     public TableRecyclerView(@NonNull Context context) {
@@ -55,30 +61,52 @@ public class TableRecyclerView extends RecyclerView implements ScrollerCallback 
     }
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        switch (ev.getAction()) {
+    public boolean onInterceptTouchEvent(MotionEvent e) {
+        switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                mLastX = e.getX();
+                mLastY = e.getY();
+                scrollFlag = -1;
                 isCanScroll = false;
                 break;
+            case MotionEvent.ACTION_MOVE:
+                if(scrollFlag != -1)
+                    break;
+                mCurX = e.getX();
+                mCurY = e.getY();
+                float deltaX = Math.abs(mCurX - mLastX);
+                float deltaY = Math.abs(mCurY - mLastY);
+                int delta = ViewConfiguration.get(getContext()).getScaledTouchSlop();
+                if(deltaX < delta || deltaY < delta){
+                    break;
+                }
+                if(Math.abs(deltaX) <= Math.abs(deltaY))
+                    scrollFlag = RecyclerView.VERTICAL;
+                else
+                    scrollFlag = RecyclerView.HORIZONTAL;
+                break;
             case MotionEvent.ACTION_UP:
-
+                mCurX = -1;
+                mCurY = -1;
                 break;
         }
-        return super.dispatchTouchEvent(ev);
+        mLastX = mCurX;
+        mLastY = mCurY;
+        return super.onInterceptTouchEvent(e);
     }
 
     @Override
-    public boolean canScroll() {
-        return isCanScroll;
+    public boolean canScrollVertical() {
+        return scrollFlag != RecyclerView.HORIZONTAL;
     }
 
     @Override
     public void onScrollStateChanged(int state) {
         super.onScrollStateChanged(state);
 
-        if(state == SCROLL_STATE_IDLE && !isCanScroll){
+        if (state == SCROLL_STATE_IDLE && !isCanScroll) {
             isCanScroll = true;
-            if(getLayoutManager() instanceof  TableLayoutManager) {
+            if (getLayoutManager() instanceof TableLayoutManager) {
                 ((TableLayoutManager) getLayoutManager()).clearScrollFlag();
             }
         }
