@@ -80,7 +80,7 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
     // 主方向是总方向、辅助方向是横方向
     private OrientationHelper mMainOrientationHelper;
     private OrientationHelper mAssistOrientationHelper;
-
+    private View[] mSet;
 
     // 预布局SpanSize和SpanIndex设置
     final HashMap<String, Integer[]> mPreLayoutSpanCache = new HashMap<>();
@@ -103,17 +103,22 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
 
     /**
      * 当前的滑动方向
-     * 虽然使用TableLayoutManager可以上下左右滑动
-     * 同一时间内只能允许一个方向进行滑动
-     * 默认竖直方向
      */
     private int mOrientation = RecyclerView.VERTICAL;
 
+    /**
+     * 当前屏幕起始二维坐标记录辅助类
+     */
     private final ScreenCoordinateRecorder mScreenCoordinateRecorder = new ScreenCoordinateRecorder();
+
+    /**
+     * 位置转换回调
+     */
     private CoordinateCallback mCoordinateCallback;
 
-    private View[] mSet;
-
+    /**
+     * 加载一行结果的工具类
+     */
     private LayoutChunkResult mLayoutChunkResult = new LayoutChunkResult();
 
     // 滑动标记位 true表示正在滑动
@@ -205,16 +210,24 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
 
     @Override
     public boolean canScrollHorizontally() {
-        if (scrollFlag && mOrientation == RecyclerView.VERTICAL)
+        if (scrollFlag && mOrientation == RecyclerView.VERTICAL) {
+            Log.e(TAG,"1------canScrollHor:"+false);
             return false;
+        }
+        Log.e(TAG,"2********canScrollHor:"+!scrollerCallback.canScrollVertical());
         return !scrollerCallback.canScrollVertical();
+        //return true;
     }
 
     @Override
     public boolean canScrollVertically() {
-        if (scrollFlag && mOrientation == RecyclerView.HORIZONTAL)
+        if (scrollFlag && mOrientation == RecyclerView.HORIZONTAL) {
+            Log.e(TAG,"1-----canScrollVer:"+false);
             return false;
+        }
+        Log.e(TAG,"2*******canScrollVer:"+scrollerCallback.canScrollVertical());
         return scrollerCallback.canScrollVertical();
+        //return true;
     }
 
 
@@ -231,6 +244,7 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         mOrientation = RecyclerView.HORIZONTAL;
         updateMeasurements();
         ensureViewSet();
+        Log.e(TAG,"hor:"+dx);
         return scrollBy(dx, recycler, state);
     }
 
@@ -240,13 +254,14 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
             return 0;*/
        /* if (scrollFlag && mOrientation == RecyclerView.HORIZONTAL)
             return 0;*/
-        if (!scrollerCallback.canScrollVertical())
-            return 0;
+       /* if (!scrollerCallback.canScrollVertical())
+            return 0;*/
 
         scrollFlag = true;
         mOrientation = RecyclerView.VERTICAL;
         updateMeasurements();
         ensureViewSet();
+        Log.e(TAG,"ver:"+dy);
         return scrollBy(dy, recycler, state);
     }
 
@@ -279,12 +294,20 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         return scrolled;
     }
 
+    /**
+     * 更新屏幕的起始点的坐标
+     * @param isVertical 是否是竖直方向
+     * @param offset 偏移量
+     */
     private void calculateScreenStartCoordinate(boolean isVertical, int offset) {
         if (isVertical) {
             final View child = getChildCloseToStart();
+            if(child == null)
+                return;
+
+            int top = mMainOrientationHelper.getDecoratedStart(child);
             LayoutParams lp = (LayoutParams) child.getLayoutParams();
             int pos = lp.getViewAdapterPosition();
-            int top = mMainOrientationHelper.getDecoratedStart(child);
             int[] coordinate = mCoordinateCallback.coordinate(pos);
             int currentRow = coordinate[0];
             while (top <= -mAveHolderHeight) {
@@ -293,33 +316,22 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
             }
             mLayoutState.mHeadYOffset = top;
             mScreenCoordinateRecorder.mCurStartRowIndex = currentRow;
-
-            // TODO 删除
-            int c = getChildCount();
-            int[] a = new int[c];
-            for (int i = 0; i < c; i++) {
-                View v = getChildAt(i);
-                LayoutParams p = (LayoutParams) v.getLayoutParams();
-                a[i] = p.getViewAdapterPosition();
-            }
-            Log.e(TAG, "pppp" + Arrays.toString(a));
         } else {
-            final View child = getChildCloseToStart();
+            View child = getChildCloseToStart();
+            if (child == null)
+                return;
+
+            int left = mAssistOrientationHelper.getDecoratedStart(child);
             LayoutParams lp = (LayoutParams) child.getLayoutParams();
             int pos = lp.getViewAdapterPosition();
-            int left = mAssistOrientationHelper.getDecoratedStart(child);
             int[] coordinate = mCoordinateCallback.coordinate(pos);
             int currentCol = coordinate[1];
-            Log.e(TAG, "begin left:" + left);
             while (left <= -mAveHolderWidth) {
                 left += mAveHolderWidth;
                 currentCol++;
             }
-            Log.e(TAG, "end left:" + left);
             mLayoutState.mHeadXOffset = left;
-
             mScreenCoordinateRecorder.mCurStartColIndex = currentCol;
-            Log.e(TAG, "startCol:" + currentCol);
         }
     }
 
@@ -465,14 +477,17 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
                 View child = getChildAt(i);
                 LayoutParams lp = (LayoutParams) child.getLayoutParams();
                 int[] coordinate = mCoordinateCallback.coordinate(lp.getViewAdapterPosition());
-                maxCol = Math.max(maxCol, coordinate[1]);
-                if (maxCol == coordinate[1]) {
+                if(maxCol < coordinate[1]){
+                    maxCol = coordinate[1];
                     maxColPos = i;
+                    if(mAssistOrientationHelper.getDecoratedEnd(child) > mAssistOrientationHelper.getEndAfterPadding())
+                        break;
                 }
             }
             return getChildAt(maxColPos);
         }
     }
+
 
     private View getChildCloseToStart() {
         if (mOrientation == RecyclerView.VERTICAL)
@@ -484,12 +499,14 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
                 View child = getChildAt(i);
                 LayoutParams lp = (LayoutParams) child.getLayoutParams();
                 int[] coordinate = mCoordinateCallback.coordinate(lp.getViewAdapterPosition());
-                minCol = Math.min(minCol, coordinate[1]);
-                if (minCol == coordinate[1]) {
-                    minCol = i;
+                if(coordinate[1] < minCol){
+                    minCol = coordinate[1];
+                    minColPos = i;
+                    if(mAssistOrientationHelper.getDecoratedStart(child) < 0)
+                        break;
                 }
             }
-            return getChildAt(minCol);
+            return getChildAt(minColPos);
         }
     }
 
@@ -559,7 +576,6 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         updateLayoutStateToFillStart(mAnchorInfo);
         mLayoutState.mExtra = extraForStart;
         mLayoutState.mCurRow += mLayoutState.mItemDirection;
-        //TODO 转化Pos
         fill(recycler, mLayoutState, state, false);
         startOffset = mLayoutState.mYOffset;
 
@@ -1080,15 +1096,9 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         }
     }
 
+
     /**
-     * Recycles views that went out of bounds after scrolling towards the end of the layout.
-     * <p>
-     * Checks both layout position and visible position to guarantee that the view is not visible.
-     *
-     * @param recycler Recycler instance of {@link android.support.v7.widget.RecyclerView}
-     * @param dt       This can be used to add additional padding to the visible area. This is used
-     *                 to detect children that will go out of bounds after scrolling, without
-     *                 actually moving them.
+     * 从开始的方向回收，方法有点问题，不过问题不大
      */
     private void recycleViewsFromStart(RecyclerView.Recycler recycler, int dt) {
         if (dt < 0) {
@@ -1108,8 +1118,6 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         }
     }
 
-    // TODO 上和下的回收都会有问题
-    // 导致可能还在的视图就被回收了
     private void recycleViewsFromEnd(RecyclerView.Recycler recycler, int dt) {
         final int childCount = getChildCount();
         if (dt < 0) {
@@ -1212,15 +1220,12 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         // 该行子视图的数量
         int count = 0;
         int remainSpan;
-        int consumeRow = -1;
+        int consumeMinRow = -1;
         int consumeMinHeight = -1;
         int totalSpan;
 
-        if (mHorCacheBorders[mHorCacheBorders.length - 1] == 0) {
-            remainSpan = mHorTotalSpan;
-        } else {
-            remainSpan = mHorTotalSpan + 1;
-        }
+        // 一行或者一列的子视图的数量根据偏移会存在变化
+        remainSpan = mHorCacheBorders[mHorCacheBorders.length - 1] == 0 ? mHorTotalSpan : mHorTotalSpan + 1;
         totalSpan = remainSpan;
 
         // 1. 生成子View
@@ -1230,178 +1235,87 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
             int col = layoutState.mCurCol;
             int pos = mCoordinateCallback.covertToPosition(row, col);
             mLayoutState.mCurrentPosition = pos;
+            // 宽高所占单元格比例
+            int[] spanArray = mCoordinateCallback.getSpanArray(pos);
+            // 起始坐标
+            int[] coordinate = mCoordinateCallback.coordinate(pos);
+            int curConsumeRow = coordinate[0] + spanArray[1] - row;
             if (layoutState.isViewExist(pos)) {
-                int[] spanArray = mCoordinateCallback.getSpanArray(pos);
-                int[] coordinate = mCoordinateCallback.coordinate(pos);
-                if (consumeRow == -1) {
-                    consumeRow = row + spanArray[1] - coordinate[0];
-                    consumeMinHeight = consumeRow * mAveHolderHeight;
+                // 如果当前子视图已经存在
+                // 记录消耗的行或列 以及 消耗的长度或者宽度即可
+                if (consumeMinRow == -1) {
+                    consumeMinRow = curConsumeRow;
+                    consumeMinHeight = consumeMinRow * mAveHolderHeight;
                 } else {
-                    consumeRow = Math.min(row + spanArray[1] - coordinate[0], consumeRow);
-                    consumeMinHeight = Math.min(consumeMinHeight, consumeRow * mAveHolderHeight);
+                    consumeMinRow = Math.min(curConsumeRow, consumeMinRow);
+                    consumeMinHeight = Math.min(consumeMinHeight, consumeMinRow * mAveHolderHeight);
                 }
-                int rowIndex = coordinate[0] - mScreenCoordinateRecorder.mCurStartRowIndex;
                 int colIndex = coordinate[1] - mScreenCoordinateRecorder.mCurStartColIndex;
                 if (colIndex < 0)
+                    // **|*
+                    // 这里记录的情况是，以上面的 **|* 为例，比如一个单元格占用3列，只有右边的部分显示在屏幕里，其他2/3被隐藏在屏幕外了
+                    // 所以这里的消耗数量是屏幕里的一个*
                     remainSpan -= colIndex + spanArray[0];
                 else
                     remainSpan -= spanArray[0];
+
+                // 更新位置信息
                 layoutState.mCurCol = coordinate[1] + spanArray[0];
                 layoutState.mCurrentPosition = mCoordinateCallback.covertToPosition(layoutState.mCurRow, layoutState.mCurCol);
                 continue;
             }
 
-            int[] spanArray = mCoordinateCallback.getSpanArray(layoutState.mCurrentPosition);
-            int[] coordinate = mCoordinateCallback.coordinate(layoutState.mCurrentPosition);
             if (spanArray == null || spanArray[0] > mHorTotalSpan + 1) {
                 throw new IllegalArgumentException("UnSupport TableCell Size!");
             }
-            if (consumeRow == -1) {
-                consumeRow = row + spanArray[1] - coordinate[0];
-                consumeMinHeight = consumeRow * mAveHolderHeight;
+            if (consumeMinRow == -1) {
+                consumeMinRow = curConsumeRow;
+                consumeMinHeight = consumeMinRow * mAveHolderHeight;
             } else {
-                consumeRow = Math.min(consumeRow, row + spanArray[1] - coordinate[0]);
-                consumeMinHeight = Math.min(consumeMinHeight, consumeRow * mAveHolderHeight);
+                consumeMinRow = Math.min(consumeMinRow, curConsumeRow);
+                consumeMinHeight = Math.min(consumeMinHeight, consumeMinRow * mAveHolderHeight);
             }
-            /*int rowIndex = row - mScreenCoordinateRecorder.mCurStartRowIndex;
-            int colIndex = col - mScreenCoordinateRecorder.mCurStartColIndex;*/
             int rowIndex = coordinate[0] - mScreenCoordinateRecorder.mCurStartRowIndex;
             int colIndex = coordinate[1] - mScreenCoordinateRecorder.mCurStartColIndex;
             if (colIndex < 0)
                 remainSpan -= colIndex + spanArray[0];
             else
                 remainSpan -= spanArray[0];
+            // 获取下一个视图
             View view = layoutState.next(recycler, colIndex);
             if (view == null)
                 break;
 
             LayoutParams layoutParams = (LayoutParams) view.getLayoutParams();
-
-            // TODO 只有一个方向的rowInde游泳
             int[] screenCoordinate = mScreenCoordinateRecorder.getScreenCoordinate(layoutState.mCurRow, layoutState.mCurCol);
             if (checkCoordinate(screenCoordinate)) {
                 layoutParams.mRowIndex = rowIndex;
                 layoutParams.mColIndex = colIndex;
                 layoutParams.mWidthSpan = spanArray[0];
                 layoutParams.mHeightSpan = spanArray[1];
-                Log.e(TAG, "mRowIndex:" + rowIndex + ",mColIndex:" + colIndex + ",mWidthSpan:" + spanArray[0] + ",mHeightSpan:" + spanArray[1]);
             }
             view.setLayoutParams(layoutParams);
-
             mSet[count] = view;
             count++;
         }
+
         if (count == 0) {
             // 有可能是跨行的子View造成的
             result.mFinished = true;
             result.mConsume = consumeMinHeight;
-            result.mConsumedRowOrCol = consumeRow;
+            result.mConsumedRowOrCol = consumeMinRow;
             return;
         }
-        // 添加子View
-        // 测量子View
-        // 布局子View
+
+        // 给子View排序
+        mSet = sortView(mSet, count);
         if (layingOutInPrimaryDirection) {
-            int curPos = getChildCount() - 1;
-            View child = getChildAt(curPos);
-            LayoutParams childLp;
-            int[] childCoordinate;
-            int curNum = -1;
-
-            if(child !=null) {
-                childLp = (LayoutParams) child.getLayoutParams();
-                childCoordinate = mCoordinateCallback.coordinate(childLp.getViewAdapterPosition());
-                curNum = getDetailNum(childCoordinate);
-            }
-
-            for (int i = count - 1; i >= 0; i--) {
-                View view = mSet[i];
-                LayoutParams params = (LayoutParams) view.getLayoutParams();
-                int[] coordinate = mCoordinateCallback.coordinate(params.getViewAdapterPosition());
-                int mNum = getDetailNum(coordinate);
-
-                while (mNum <= curNum) {
-                    curPos--;
-                    if (curPos <= -1 || getChildAt(curPos) == null)
-                        break;
-                    child = getChildAt(curPos);
-                    childLp = (LayoutParams) child.getLayoutParams();
-                    childCoordinate = mCoordinateCallback.coordinate(childLp.getViewAdapterPosition());
-                    curNum = getDetailNum(childCoordinate);
-                }
-                if (layoutState.mScrapList == null) {
-                    if (curPos == 0)
-                        addView(view, 0);
-                    else
-                        addView(view, curPos);
-                } else {
-                    if (curPos == 0)
-                        addDisappearingView(view, 0);
-                    else
-                        addDisappearingView(view, curPos);
-                }
-
-                Rect mInsets = new Rect();
-                calculateItemDecorationsForChild(view, mInsets);
-                measureChild(view, View.MeasureSpec.EXACTLY, mInsets);
-                layoutChild(view);
-
-                if (params.isItemRemoved() || params.isItemChanged()) {
-                    result.mIgnoreConsumed = true;
-                }
-                result.mFocusable |= view.hasFocusable();
-
-                layoutState.addViewInParent(params.getViewAdapterPosition());
-            }
+            realLayoutChildrenSpecial(count, layoutState, result);
         } else {
-            int curPos = 0;
-            View child = getChildAt(curPos);
-            LayoutParams childLp = (LayoutParams) child.getLayoutParams();
-            int[] childCoordinate = mCoordinateCallback.coordinate(childLp.getViewAdapterPosition());
-            int curNum = getDetailNum(childCoordinate);
-
-            for (int i = 0; i < count; i++) {
-                View view = mSet[i];
-                LayoutParams params = (LayoutParams) view.getLayoutParams();
-                int[] coordinate = mCoordinateCallback.coordinate(params.getViewAdapterPosition());
-                int mNum = getDetailNum(coordinate);
-
-                while (mNum >= curNum) {
-                    curPos++;
-                    child = getChildAt(curPos);
-                    if (child == null)
-                        break;
-                    childLp = (LayoutParams) child.getLayoutParams();
-                    childCoordinate = mCoordinateCallback.coordinate(childLp.getViewAdapterPosition());
-                    curNum = getDetailNum(childCoordinate);
-                }
-
-                if (layoutState.mScrapList == null) {
-                    if (child == null)
-                        addView(view);
-                    else
-                        addView(view, curPos);
-                } else {
-                    if (child == null)
-                        addDisappearingView(view);
-                    else
-                        addDisappearingView(view, curPos);
-                }
-
-                Rect mInsets = new Rect();
-                calculateItemDecorationsForChild(view, mInsets);
-                measureChild(view, View.MeasureSpec.EXACTLY, mInsets);
-                layoutChild(view);
-
-                if (params.isItemRemoved() || params.isItemChanged()) {
-                    result.mIgnoreConsumed = true;
-                }
-                result.mFocusable |= view.hasFocusable();
-
-                layoutState.addViewInParent(params.getViewAdapterPosition());
-            }
+            realLayoutChildren(count, layoutState, result);
         }
-        result.mConsumedRowOrCol = consumeRow;
+
+        result.mConsumedRowOrCol = consumeMinRow;
         result.mConsume = consumeMinHeight;
         Arrays.fill(mSet, null);
     }
@@ -1419,11 +1333,7 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         int consumeMinWidth = -1;
         int totalSpan;
 
-        if (mVerCacheBorders[mVerCacheBorders.length - 1] == 0) {
-            remainSpan = mVerTotalSpan;
-        } else {
-            remainSpan = mVerTotalSpan + 1;
-        }
+        remainSpan = mVerCacheBorders[mVerCacheBorders.length - 1] == 0 ? mVerTotalSpan : mVerTotalSpan + 1;
         totalSpan = remainSpan;
 
         // 1. 生成子View
@@ -1433,18 +1343,19 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
             int col = layoutState.mCurCol;
             int pos = mCoordinateCallback.covertToPosition(row, col);
             mLayoutState.mCurrentPosition = pos;
+            int[] spanArray = mCoordinateCallback.getSpanArray(pos);
+            int[] coordinate = mCoordinateCallback.coordinate(pos);
+            int curConsumeCol = coordinate[1] + spanArray[0] - col;
+
             if (layoutState.isViewExist(pos)) {
-                int[] spanArray = mCoordinateCallback.getSpanArray(pos);
-                int[] coordinate = mCoordinateCallback.coordinate(pos);
                 if (consumeCol == -1) {
-                    consumeCol = col + spanArray[0] - coordinate[1];
+                    consumeCol = curConsumeCol;
                     consumeMinWidth = consumeCol * mAveHolderWidth;
                 } else {
-                    consumeCol = Math.min(col + spanArray[0] - coordinate[1], consumeCol);
+                    consumeCol = Math.min(curConsumeCol, consumeCol);
                     consumeMinWidth = Math.min(consumeMinWidth, consumeCol * mAveHolderWidth);
                 }
                 int rowIndex = coordinate[0] - mScreenCoordinateRecorder.mCurStartRowIndex;
-                int colIndex = coordinate[1] - mScreenCoordinateRecorder.mCurStartColIndex;
                 if (rowIndex < 0) {
                     remainSpan -= (spanArray[1] + rowIndex);
                 } else
@@ -1454,31 +1365,28 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
                 continue;
             }
 
-            int[] spanArray = mCoordinateCallback.getSpanArray(layoutState.mCurrentPosition);
-            int[] coordinate = mCoordinateCallback.coordinate(layoutState.mCurrentPosition);
             if (spanArray == null || spanArray[1] > mVerTotalSpan + 1) {
                 throw new IllegalArgumentException("UnSupport TableCell Size!");
             }
             if (consumeCol == -1) {
-                consumeCol = col + spanArray[0] - coordinate[1];
+                consumeCol = curConsumeCol;
                 consumeMinWidth = consumeCol * mAveHolderWidth;
             } else {
-                consumeCol = Math.min(consumeCol, col + spanArray[0] - coordinate[1]);
+                consumeCol = Math.min(consumeCol, curConsumeCol);
                 consumeMinWidth = Math.min(consumeMinWidth, consumeCol * mAveHolderWidth);
             }
-
             int rowIndex = coordinate[0] - mScreenCoordinateRecorder.mCurStartRowIndex;
             int colIndex = coordinate[1] - mScreenCoordinateRecorder.mCurStartColIndex;
             if (rowIndex < 0) {
                 remainSpan -= (spanArray[1] + rowIndex);
             } else
                 remainSpan -= spanArray[1];
+
             View view = layoutState.nextInHorizontal(recycler, rowIndex);
             if (view == null)
                 break;
 
             LayoutParams layoutParams = (LayoutParams) view.getLayoutParams();
-
             int[] screenCoordinate = mScreenCoordinateRecorder.getScreenCoordinate(layoutState.mCurRow, layoutState.mCurCol);
             if (checkCoordinate(screenCoordinate)) {
                 layoutParams.mRowIndex = rowIndex;
@@ -1487,7 +1395,6 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
                 layoutParams.mHeightSpan = spanArray[1];
             }
             view.setLayoutParams(layoutParams);
-
             mSet[count] = view;
             count++;
         }
@@ -1504,113 +1411,185 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
             }
             return;
         }
-        // 添加子View
-        // 测量子View
-        // 布局子View
-        // TODO 优化插入顺序
-        if (layingOutInPrimaryDirection) {
-            int curPos = getChildCount() - 1;
-            View child = getChildAt(curPos);
-            LayoutParams childLp = (LayoutParams) child.getLayoutParams();
-            int[] childCoordinate = mCoordinateCallback.coordinate(childLp.getViewAdapterPosition());
-            int curNum = getDetailNum(childCoordinate);
 
-            for (int i = count - 1; i >= 0; i--) {
-                View view = mSet[i];
-                LayoutParams params = (LayoutParams) view.getLayoutParams();
-                int[] coordinate = mCoordinateCallback.coordinate(params.getViewAdapterPosition());
-                int mNum = getDetailNum(coordinate);
+        // 给子视图排序
+        mSet = sortView(mSet, count);
 
-                while (mNum <= curNum) {
-                    if (curPos == 0 || getChildAt(curPos) == null)
-                        break;
-                    curPos--;
-                    child = getChildAt(curPos);
-                    childLp = (LayoutParams) child.getLayoutParams();
-                    childCoordinate = mCoordinateCallback.coordinate(childLp.getViewAdapterPosition());
-                    curNum = getDetailNum(childCoordinate);
-                }
+        // 添加子View、测量、定位
+        realLayoutChildren(count, layoutState, result);
 
-                if (layoutState.mScrapList == null) {
-                    if (curPos == 0)
-                        addView(view, 0);
-                    else
-                        addView(view, curPos);
-                } else {
-                    if (curPos == 0)
-                        addDisappearingView(view, 0);
-                    else
-                        addDisappearingView(view, curPos);
-                }
-
-                Rect mInsets = new Rect();
-                calculateItemDecorationsForChild(view, mInsets);
-                measureChild(view, View.MeasureSpec.EXACTLY, mInsets);
-                layoutChild(view);
-
-                if (params.isItemRemoved() || params.isItemChanged()) {
-                    result.mIgnoreConsumed = true;
-                }
-                result.mFocusable |= view.hasFocusable();
-
-                layoutState.addViewInParent(params.getViewAdapterPosition());
-            }
-        } else {
-            int curPos = 0;
-            View child = getChildAt(curPos);
-            LayoutParams childLp = (LayoutParams) child.getLayoutParams();
-            int[] childCoordinate = mCoordinateCallback.coordinate(childLp.getViewAdapterPosition());
-            int curNum = getDetailNum(childCoordinate);
-
-            for (int i = 0; i < count; i++) {
-                View view = mSet[i];
-                LayoutParams params = (LayoutParams) view.getLayoutParams();
-                int[] coordinate = mCoordinateCallback.coordinate(params.getViewAdapterPosition());
-                int mNum = getDetailNum(coordinate);
-
-                while (mNum >= curNum) {
-                    curPos++;
-                    child = getChildAt(curPos);
-                    if (child == null)
-                        break;
-                    childLp = (LayoutParams) child.getLayoutParams();
-                    childCoordinate = mCoordinateCallback.coordinate(childLp.getViewAdapterPosition());
-                    curNum = getDetailNum(childCoordinate);
-                }
-
-                if (layoutState.mScrapList == null) {
-                    if (child == null)
-                        addView(view);
-                    else
-                        addView(view, curPos);
-                } else {
-                    if (child == null)
-                        addDisappearingView(view);
-                    else
-                        addDisappearingView(view, curPos);
-                }
-
-                Rect mInsets = new Rect();
-                calculateItemDecorationsForChild(view, mInsets);
-                measureChild(view, View.MeasureSpec.EXACTLY, mInsets);
-                layoutChild(view);
-
-                if (params.isItemRemoved() || params.isItemChanged()) {
-                    result.mIgnoreConsumed = true;
-                }
-                result.mFocusable |= view.hasFocusable();
-
-                layoutState.addViewInParent(params.getViewAdapterPosition());
-            }
-
-        }
         result.mConsumedRowOrCol = consumeCol;
         result.mConsume = consumeMinWidth;
         Arrays.fill(mSet, null);
     }
 
     /**
-     * 得到比较的的数字
+     * 通用的真实的添加子View、测量子View、定位子View的过程
+     * 适用于向上滑动、向左滑动、向右滑动
+     *
+     * @param count       子视图的数量
+     * @param layoutState 布局状态
+     * @param result      结果的记录类
+     */
+    private void realLayoutChildren(int count, LayoutState layoutState, LayoutChunkResult result) {
+        // 过程
+        // 将一行或者一列子视图 按序 添加进父视图中
+        int curPos = 0;
+        View child = getChildAt(curPos);
+        LayoutParams childLp;
+        int[] childCoordinate;
+        int curNum = -1;
+        if (child != null) {
+            childLp = (LayoutParams) child.getLayoutParams();
+            childCoordinate = mCoordinateCallback.coordinate(childLp.getViewAdapterPosition());
+            curNum = getDetailNum(childCoordinate);
+        }
+
+        for (int i = 0; i < count; i++) {
+            View view = mSet[i];
+            LayoutParams params = (LayoutParams) view.getLayoutParams();
+            int[] coordinate = mCoordinateCallback.coordinate(params.getViewAdapterPosition());
+            int mNum = getDetailNum(coordinate);
+
+            while (mNum >= curNum && curNum != -1) {
+                curPos++;
+                child = getChildAt(curPos);
+                if (child == null)
+                    break;
+                childLp = (LayoutParams) child.getLayoutParams();
+                childCoordinate = mCoordinateCallback.coordinate(childLp.getViewAdapterPosition());
+                curNum = getDetailNum(childCoordinate);
+            }
+
+            if (layoutState.mScrapList == null) {
+                if (curPos == getChildCount())
+                    addView(view);
+                else {
+                    addView(view, curPos);
+                }
+            } else {
+                if (curPos == getChildCount()) {
+                    addDisappearingView(view);
+                } else {
+                    addDisappearingView(view, curPos);
+                }
+            }
+            curNum = mNum;
+
+            Rect mInsets = new Rect();
+            calculateItemDecorationsForChild(view, mInsets);
+            // 测量
+            measureChild(view, View.MeasureSpec.EXACTLY, mInsets);
+            // 布局
+            layoutChild(view);
+
+            if (params.isItemRemoved() || params.isItemChanged()) {
+                result.mIgnoreConsumed = true;
+            }
+            result.mFocusable |= view.hasFocusable();
+            layoutState.addViewInParent(params.getViewAdapterPosition());
+        }
+    }
+
+    /**
+     * 特殊的添加子视图的过程
+     * 适用于向下滑动
+     */
+    private void realLayoutChildrenSpecial(int count, LayoutState layoutState, LayoutChunkResult result) {
+        // 给子视图添加、测量、定位
+        int curPos = getChildCount() - 1;
+        View child = getChildAt(curPos);
+        LayoutParams childLp;
+        int[] childCoordinate;
+        int curNum = -1;
+        if (child != null) {
+            childLp = (LayoutParams) child.getLayoutParams();
+            childCoordinate = mCoordinateCallback.coordinate(childLp.getViewAdapterPosition());
+            curNum = getDetailNum(childCoordinate);
+        }
+
+        for (int i = count - 1; i >= 0; i--) {
+            View view = mSet[i];
+            LayoutParams params = (LayoutParams) view.getLayoutParams();
+            int[] coordinate = mCoordinateCallback.coordinate(params.getViewAdapterPosition());
+            int mNum = getDetailNum(coordinate);
+
+            while (mNum < curNum && curPos > -1) {
+                curPos--;
+                child = getChildAt(curPos);
+                childLp = (LayoutParams) child.getLayoutParams();
+                childCoordinate = mCoordinateCallback.coordinate(childLp.getViewAdapterPosition());
+                curNum = getDetailNum(childCoordinate);
+            }
+
+            if (layoutState.mScrapList == null) {
+                if (curPos == getChildCount() - 1)
+                    addView(view);
+                else {
+                    addView(view, curPos + 1);
+                }
+            } else {
+                if (curPos == getChildCount() - 1) {
+                    addDisappearingView(view);
+                } else {
+                    addDisappearingView(view, curPos + 1);
+                }
+            }
+
+            Rect mInsets = new Rect();
+            calculateItemDecorationsForChild(view, mInsets);
+            measureChild(view, View.MeasureSpec.EXACTLY, mInsets);
+            layoutChild(view);
+
+            if (params.isItemRemoved() || params.isItemChanged()) {
+                result.mIgnoreConsumed = true;
+            }
+            result.mFocusable |= view.hasFocusable();
+            layoutState.addViewInParent(params.getViewAdapterPosition());
+        }
+    }
+
+
+    /**
+     * 给子视图按照行列的顺序排序
+     *
+     * @param view  子视图
+     * @param count 子视图的数量，因为View[]不一定会填满
+     * @return 排完顺序的子视图
+     */
+    private View[] sortView(View[] view, int count) {
+        if (view == null || count == 0)
+            return view;
+
+        View[] sortView = new View[view.length];
+        int minRow = Integer.MAX_VALUE;
+        for (int i = 0; i < count; i++) {
+            View v = view[i];
+            if (v == null)
+                break;
+            LayoutParams lp = (LayoutParams) v.getLayoutParams();
+            int[] coordinate = mCoordinateCallback.coordinate(lp.getViewAdapterPosition());
+            minRow = Math.min(coordinate[0], minRow);
+        }
+
+        int c = 0;
+        while (c < count) {
+            for (int i = 0; i < count; i++) {
+                View v = view[i];
+                LayoutParams lp = (LayoutParams) v.getLayoutParams();
+                int[] coordinate = mCoordinateCallback.coordinate(lp.getViewAdapterPosition());
+                if (coordinate[0] == minRow) {
+                    sortView[c] = v;
+                    c++;
+                }
+            }
+            minRow++;
+        }
+        return sortView;
+    }
+
+    /**
+     * 将坐标转化为数字，方便比较
      *
      * @param coordinate 数组
      */
@@ -1622,12 +1601,10 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
 
 
     /**
-     * Measures a child with currently known information. This is not necessarily the child's final
-     * measurement. (see fillChunk for details).
+     * 测量子视图
      *
-     * @param view                   The child view to be measured
-     * @param otherDirParentSpecMode The RV measure spec that should be used in the secondary
-     *                               orientation
+     * @param view   子视图
+     * @param insets 外边距
      */
     private void measureChild(View view, int otherDirParentSpecMode, Rect insets) {
         final LayoutParams lp = (LayoutParams) view.getLayoutParams();
@@ -1702,15 +1679,21 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         }
     }
 
+    /**
+     * 给子视图定位
+     *
+     * @param view 子视图
+     */
     private void layoutChild(View view) {
         final LayoutParams lp = (LayoutParams) view.getLayoutParams();
         final int[] coordinate = mCoordinateCallback.coordinate(lp.getViewAdapterPosition());
         int left, right, top, bottom;
         if (mOrientation == RecyclerView.VERTICAL) {
-            if (lp.mColIndex < 0) {
-                left = mHorCacheBorders[0] + mAveHolderWidth * lp.mColIndex;
-            } else
-                left = mHorCacheBorders[lp.mColIndex];
+            // 测量子视图的左边有两种情况
+            // 情况一 子视图的长占了多列，子视图的left看不见了，且向外占了多个单元格的宽度
+            // 情况二 正常情况下子视图的left
+            left = lp.mColIndex < 0 ? mHorCacheBorders[0] + mAveHolderWidth * lp.mColIndex : mHorCacheBorders[lp.mColIndex];
+            // right同上
             if (lp.mColIndex + lp.mWidthSpan >= mHorCacheBorders.length)
                 right = mHorCacheBorders[mHorCacheBorders.length - 1] + (lp.mColIndex + lp.mWidthSpan - mHorCacheBorders.length + 1) * mAveHolderWidth;
             else
@@ -1740,8 +1723,6 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
                 right = mLayoutState.mXOffset;
                 left = mLayoutState.mXOffset - lp.mWidthSpan * mAveHolderWidth;
             }
-            Log.e(TAG, "pos:---left:" + left + ",top:" + top + ",right:" + right + ",bottom:" + bottom);
-
         }
         layoutDecoratedWithMargins(view, left, top, right, bottom);
     }
@@ -1959,6 +1940,9 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
             return view;
         }
 
+        /**
+         * 当主方向为水平方向的时候获取下一个子视图
+         */
         View nextInHorizontal(RecyclerView.Recycler recycler, int rowIndex) {
             if (mCoordinateCallback == null)
                 throw new IllegalArgumentException("mCoordinateCallback in LayoutState can't be null");
@@ -2147,8 +2131,13 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         }
     }
 
+    /**
+     * 加载一行或者一列内容的结果记录类
+     */
     protected static class LayoutChunkResult {
+        // 加载的行数或者列数
         int mConsumedRowOrCol;
+        // 当前消耗的高度或者长度
         int mConsume;
         boolean mFinished;
         boolean mIgnoreConsumed;
@@ -2162,7 +2151,6 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
             mFocusable = false;
         }
     }
-
 
     /**
      * 记录屏幕起始的工具类
