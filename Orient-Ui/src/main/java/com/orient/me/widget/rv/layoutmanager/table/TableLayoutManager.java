@@ -10,6 +10,7 @@ import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.orient.me.utils.UIUtils;
 import com.orient.me.widget.rv.rv.ScrollerCallback;
 
 import java.util.Arrays;
@@ -137,13 +138,13 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         if ((mode & s_row_span) != 0) {
             mHorTotalSpan = w;
         } else if ((mode & s_row_value) != 0) {
-            mAveHolderWidth = w;
+            mAveHolderWidth = UIUtils.dip2px(w);
         }
 
         if ((mode & s_col_span) != 0) {
             mVerTotalSpan = h;
         } else if ((mode & s_row_value) != 0) {
-            mAveHolderHeight = h;
+            mAveHolderHeight = UIUtils.dip2px(h);
         }
 
         initOrientHelper();
@@ -211,10 +212,10 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
     @Override
     public boolean canScrollHorizontally() {
         if (scrollFlag && mOrientation == RecyclerView.VERTICAL) {
-            Log.e(TAG,"1------canScrollHor:"+false);
+            Log.e(TAG, "1------canScrollHor:" + false);
             return false;
         }
-        Log.e(TAG,"2********canScrollHor:"+!scrollerCallback.canScrollVertical());
+        Log.e(TAG, "2********canScrollHor:" + !scrollerCallback.canScrollVertical());
         return !scrollerCallback.canScrollVertical();
         //return true;
     }
@@ -222,10 +223,10 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
     @Override
     public boolean canScrollVertically() {
         if (scrollFlag && mOrientation == RecyclerView.HORIZONTAL) {
-            Log.e(TAG,"1-----canScrollVer:"+false);
+            Log.e(TAG, "1-----canScrollVer:" + false);
             return false;
         }
-        Log.e(TAG,"2*******canScrollVer:"+scrollerCallback.canScrollVertical());
+        Log.e(TAG, "2*******canScrollVer:" + scrollerCallback.canScrollVertical());
         return scrollerCallback.canScrollVertical();
         //return true;
     }
@@ -244,7 +245,7 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         mOrientation = RecyclerView.HORIZONTAL;
         updateMeasurements();
         ensureViewSet();
-        Log.e(TAG,"hor:"+dx);
+        Log.e(TAG, "hor:" + dx);
         return scrollBy(dx, recycler, state);
     }
 
@@ -261,7 +262,7 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         mOrientation = RecyclerView.VERTICAL;
         updateMeasurements();
         ensureViewSet();
-        Log.e(TAG,"ver:"+dy);
+        Log.e(TAG, "ver:" + dy);
         return scrollBy(dy, recycler, state);
     }
 
@@ -296,13 +297,14 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
 
     /**
      * 更新屏幕的起始点的坐标
+     *
      * @param isVertical 是否是竖直方向
-     * @param offset 偏移量
+     * @param offset     偏移量
      */
     private void calculateScreenStartCoordinate(boolean isVertical, int offset) {
         if (isVertical) {
             final View child = getChildCloseToStart();
-            if(child == null)
+            if (child == null)
                 return;
 
             int top = mMainOrientationHelper.getDecoratedStart(child);
@@ -477,10 +479,10 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
                 View child = getChildAt(i);
                 LayoutParams lp = (LayoutParams) child.getLayoutParams();
                 int[] coordinate = mCoordinateCallback.coordinate(lp.getViewAdapterPosition());
-                if(maxCol < coordinate[1]){
+                if (maxCol < coordinate[1]) {
                     maxCol = coordinate[1];
                     maxColPos = i;
-                    if(mAssistOrientationHelper.getDecoratedEnd(child) > mAssistOrientationHelper.getEndAfterPadding())
+                    if (mAssistOrientationHelper.getDecoratedEnd(child) > mAssistOrientationHelper.getEndAfterPadding())
                         break;
                 }
             }
@@ -499,10 +501,10 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
                 View child = getChildAt(i);
                 LayoutParams lp = (LayoutParams) child.getLayoutParams();
                 int[] coordinate = mCoordinateCallback.coordinate(lp.getViewAdapterPosition());
-                if(coordinate[1] < minCol){
+                if (coordinate[1] < minCol) {
                     minCol = coordinate[1];
                     minColPos = i;
-                    if(mAssistOrientationHelper.getDecoratedStart(child) < 0)
+                    if (mAssistOrientationHelper.getDecoratedStart(child) < 0)
                         break;
                 }
             }
@@ -891,18 +893,16 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
     private int[] calculateValueBorder(int totalSpace, int value, int[] cacheBorders, int offset) {
         int spanCount = totalSpace / value;
         int sizeReminder = totalSpace % value;
-        if (cacheBorders == null || cacheBorders.length == 0) {
-            if (sizeReminder != 0) {
-                spanCount++;
-            }
-            cacheBorders = new int[spanCount + 2];
+        if (sizeReminder != 0) {
+            spanCount++;
         }
+        cacheBorders = new int[spanCount + 2];
         if (offset < 0) {
             cacheBorders[0] = offset;
         } else {
             cacheBorders[0] = 0;
         }
-        int consumePixels = 0;
+        int consumePixels = offset;
         for (int i = 1; i <= spanCount; i++) {
             consumePixels += value;
             cacheBorders[i] = consumePixels;
@@ -1265,7 +1265,7 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
                 continue;
             }
 
-            if (spanArray == null || spanArray[0] > mHorTotalSpan + 1) {
+            if (spanArray == null || spanArray[0] >= mHorTotalSpan + 1) {
                 throw new IllegalArgumentException("UnSupport TableCell Size!");
             }
             if (consumeMinRow == -1) {
@@ -1365,7 +1365,7 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
                 continue;
             }
 
-            if (spanArray == null || spanArray[1] > mVerTotalSpan + 1) {
+            if (spanArray == null || spanArray[1] >= mVerTotalSpan + 1) {
                 throw new IllegalArgumentException("UnSupport TableCell Size!");
             }
             if (consumeCol == -1) {
@@ -1689,13 +1689,14 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         final int[] coordinate = mCoordinateCallback.coordinate(lp.getViewAdapterPosition());
         int left, right, top, bottom;
         if (mOrientation == RecyclerView.VERTICAL) {
+            int limit = mHorCacheBorders[mHorCacheBorders.length - 1] == 0 ? mHorCacheBorders.length - 1 : mHorCacheBorders.length;
             // 测量子视图的左边有两种情况
             // 情况一 子视图的长占了多列，子视图的left看不见了，且向外占了多个单元格的宽度
             // 情况二 正常情况下子视图的left
             left = lp.mColIndex < 0 ? mHorCacheBorders[0] + mAveHolderWidth * lp.mColIndex : mHorCacheBorders[lp.mColIndex];
             // right同上
-            if (lp.mColIndex + lp.mWidthSpan >= mHorCacheBorders.length)
-                right = mHorCacheBorders[mHorCacheBorders.length - 1] + (lp.mColIndex + lp.mWidthSpan - mHorCacheBorders.length + 1) * mAveHolderWidth;
+            if (lp.mColIndex + lp.mWidthSpan >= limit)
+                right = mHorCacheBorders[limit - 1] + (lp.mColIndex + lp.mWidthSpan - limit + 1) * mAveHolderWidth;
             else
                 right = mHorCacheBorders[lp.mColIndex + lp.mWidthSpan];
             if (mLayoutState.mLayoutDirection == LayoutState.LAYOUT_END) {
@@ -1707,14 +1708,19 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
             }
         } else {
             int r = coordinate[0] - mScreenCoordinateRecorder.mCurStartRowIndex;
+            int limit = mVerCacheBorders[mVerCacheBorders.length - 1] == 0 ? mVerCacheBorders.length - 1 : mVerCacheBorders.length;
             if (r < 0) {
                 top = mVerCacheBorders[0] + r * mAveHolderHeight;
             } else
                 top = mVerCacheBorders[r];
-            if (r + lp.mHeightSpan >= mVerCacheBorders.length) {
-                bottom = mVerCacheBorders[mVerCacheBorders.length - 1] + (r + lp.mHeightSpan - mVerCacheBorders.length + 1) * mAveHolderHeight;
-            } else
+            if (r + lp.mHeightSpan >= limit) {
+                bottom = mVerCacheBorders[limit - 1] + (r + lp.mHeightSpan -limit + 1) * mAveHolderHeight;
+            } else {
+                //if (r + lp.mHeightSpan == mVerCacheBorders.length - 1 && mVerCacheBorders[r + lp.mHeightSpan] == 0) {
+                //  bottom = mVerCacheBorders[r+lp.m]
+                //} else
                 bottom = mVerCacheBorders[r + lp.mHeightSpan];
+            }
 
             if (mLayoutState.mLayoutDirection == LayoutState.LAYOUT_END) {
                 left = mLayoutState.mXOffset;

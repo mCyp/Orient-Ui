@@ -5,13 +5,13 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.TextView;
 
-import com.orient.me.widget.rv.adapter.TableAdapter;
+import com.orient.me.widget.rv.adapter.GridAdapter;
 import com.orient.me.widget.rv.layoutmanager.table.TableLayoutManager;
 import com.orient.me.widget.rv.rv.TableRecyclerView;
 import com.orient.ui.R;
 import com.orient.ui.data.table.TableCell;
 import com.orient.ui.ui.activity.BaseActivity;
-import com.orient.ui.ui.adapter.CommonTableAdapter;
+import com.orient.ui.ui.adapter.CommonGridAdapter;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -23,7 +23,7 @@ public class TableActivity extends BaseActivity {
     @BindView(R.id.rv_table)
     TableRecyclerView tableRv;
 
-    private TableAdapter<TableCell> mAdapter;
+    private GridAdapter<TableCell> mAdapter;
 
     public static void show(Context context){
         Intent intent = new Intent(context,TableActivity.class);
@@ -39,9 +39,9 @@ public class TableActivity extends BaseActivity {
     protected void initWidget() {
         super.initWidget();
 
-        TableLayoutManager tll = new TableLayoutManager(TableLayoutManager.MODE_A,4,4);
+        TableLayoutManager tll = new TableLayoutManager(TableLayoutManager.MODE_B,120,200);
         tableRv.setLayoutManager(tll);
-        mAdapter = new CommonTableAdapter<TableCell>() {
+        mAdapter = new CommonGridAdapter<TableCell>() {
             @Override
             public ViewHolder<TableCell> onCreateViewHolder(View root, int viewType) {
                 return new ViewHOlder(root);
@@ -113,14 +113,11 @@ public class TableActivity extends BaseActivity {
         cells.add(new TableCell("48","1",1,8,5,1,1));
 
         cells.add(new TableCell("1","1",1,9,0,2,2));
-        //cells.add(new TableCell("2","1",1,0,1,1,1));
         cells.add(new TableCell("3","1",1,9,2,1,1));
         cells.add(new TableCell("4","1",1,9,3,1,2));
         cells.add(new TableCell("5","1",1,9,4,1,1));
         cells.add(new TableCell("6","1",1,9,5,1,1));
 
-        //cells.add(new TableCell("7","1",1,1,0,1,1));
-        //cells.add(new TableCell("8","1",1,1,1,1,1));
         cells.add(new TableCell("9","1",1,10,2,1,1));
         cells.add(new TableCell("11","1",1,10,4,1,1));
         cells.add(new TableCell("12","1",1,10,5,1,1));
@@ -198,7 +195,7 @@ public class TableActivity extends BaseActivity {
 
     }
 
-    class ViewHOlder extends CommonTableAdapter.ViewHolder<TableCell>{
+    class ViewHOlder extends CommonGridAdapter.ViewHolder<TableCell>{
 
         @BindView(R.id.tv_name)
         TextView mNameTv;

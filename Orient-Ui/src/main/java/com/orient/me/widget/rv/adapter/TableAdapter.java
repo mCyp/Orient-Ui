@@ -1,147 +1,82 @@
 package com.orient.me.widget.rv.adapter;
 
-import com.orient.me.data.table.ICellItem;
-import com.orient.me.widget.rv.layoutmanager.table.TableLayoutManager;
+import android.view.View;
 
+import com.orient.me.data.table.ICellItem;
+
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class TableAdapter<Data extends ICellItem> extends BaseAdapter<Data>
-        implements TableLayoutManager.CoordinateCallback {
+/**
+ * 表格适配器
+ */
+public abstract class TableAdapter<Data extends ICellItem> implements ITableAdapter<Data> {
+    private List<Data> mDataList;
+    private IAdapterProxy<Data> titleAdapter;
+    private IAdapterProxy<Data> leftAdapter;
+    private IAdapterProxy<Data> tableAdapter;
 
-    private HashMap<String, Integer> coordinateCache = new HashMap<>();
 
-    @Override
-    public void add(Data data) {
-        if (checkData(data)) {
-            int pos = getItemCount();
+    public TableAdapter(List<Data> mDataList) {
+        this.mDataList = mDataList;
+    }
 
-            int widthSpan = data.getWidthSpan();
-            int heightSpan = data.getHeightSpan();
-            if (widthSpan > 1 || heightSpan > 1) {
-                for (int i = 0; i < heightSpan; i++) {
-                    for (int j = 0; j < widthSpan; j++) {
-                        String key = (data.getRow() + i) + "-" + (data.getCol() + j);
-                        coordinateCache.put(key, pos);
-                    }
-                }
-            } else {
-                String key = data.getRow() + "-" + data.getCol();
-                coordinateCache.put(key, pos);
-            }
-        } else
+    void setTitleAdapter(IAdapterProxy<Data> titleAdapter, IAdapterProxy<Data> leftAdapter, IAdapterProxy<Data> tableAdapter) {
+        this.titleAdapter = titleAdapter;
+        this.leftAdapter = leftAdapter;
+        this.tableAdapter = tableAdapter;
+
+        init();
+    }
+
+    void init() {
+        if (mDataList.size() == 0)
             return;
-        super.add(data);
-    }
 
-    @Override
-    public void addAllData(Data... datas) {
-        List<Data> dataList = new LinkedList<>();
-        int pos = getItemCount();
-        for (int i = 0; i < datas.length; i++) {
-            Data data = datas[i];
-            if (checkData(data)) {
-                int widthSpan = data.getWidthSpan();
-                int heightSpan = data.getHeightSpan();
-                if (widthSpan > 1 || heightSpan > 1) {
-                    for (int x = 0; x < heightSpan; x++) {
-                        for (int y = 0; y < widthSpan; y++) {
-                            String key = (data.getRow() + x) + "-" + (data.getCol() + y);
-                            coordinateCache.put(key, pos);
-                        }
-                    }
-                } else {
-                    String key = data.getRow() + "-" + data.getCol();
-                    coordinateCache.put(key, pos);
-                }
-                dataList.add(data);
-                pos++;
+        List<Data> titles = new LinkedList<>();
+        List<Data> lefts = new LinkedList<>();
+        List<Data> contents = new LinkedList<>();
+
+        for (Data data : mDataList) {
+            int row = data.getRow();
+            int col = data.getCol();
+
+            if (row == 0) {
+                titles.add(data);
+            } else if (col == 0) {
+                lefts.add(data);
+            } else {
+                contents.add(data);
             }
         }
-        super.addAllData(dataList);
+
+        mDataList.clear();
     }
 
-    @Override
-    public void addAllData(Collection<Data> datas) {
-        List<Data> dataList = new LinkedList<>();
-        int pos = getItemCount();
-        for (Data data : datas) {
-            if (checkData(data)) {
-                int widthSpan = data.getWidthSpan();
-                int heightSpan = data.getHeightSpan();
-                if (widthSpan > 1 || heightSpan > 1) {
-                    for (int x = 0; x < heightSpan; x++) {
-                        for (int y = 0; y < widthSpan; y++) {
-                            String key = (data.getRow() + x) + "-" + (data.getCol() + y);
-                            coordinateCache.put(key, pos);
-                        }
-                    }
-                } else {
-                    String key = data.getRow() + "-" + data.getCol();
-                    coordinateCache.put(key, pos);
-                }
-                dataList.add(data);
-                pos++;
-            }
+    public void addList(List<Data> data) {
+        if (data == null || data.size() == 0)
+            return;
+        mDataList.addAll(data);
+        init();
+    }
+
+    /**
+     * 设置监听器
+     */
+    public void setAdapterListener(BaseAdapter.AdapterListener<Data> listener) {
+        if (titleAdapter != null)
+            titleAdapter.setAdapterListener(listener);
+
+        if (leftAdapter != null) {
+            leftAdapter.setAdapterListener(listener);
         }
-        super.addAllData(dataList);
-    }
 
-    @Override
-    public void remove() {
-        coordinateCache.clear();
-        super.remove();
-    }
-
-    public void remove(Data data) {
-        if (checkData(data)) {
-            String key = data.getRow() + "-" + data.getCol();
-            coordinateCache.remove(key);
+        if (tableAdapter != null) {
+            tableAdapter.setAdapterListener(listener);
         }
     }
 
-    @Override
-    public void replace(Collection<Data> datas) {
-        coordinateCache.clear();
-        for (Data data : datas) {
-            add(data);
-        }
-        super.replace(datas);
-    }
 
-    @Override
-    public int covertToPosition(int row, int col) {
-        String key = row + "-" + col;
-        Integer num = coordinateCache.get(key);
-        if (num == null)
-            return -1;
-        return num;
-    }
-
-    @Override
-    public int[] coordinate(int pos) {
-        Data data = mDataList.get(pos);
-        if (data == null)
-            return null;
-        return new int[]{data.getRow(), data.getCol()};
-    }
-
-    @Override
-    public int[] getSpanArray(int pos) {
-        Data data = mDataList.get(pos);
-        if (data != null) {
-            int rowSpan = data.getWidthSpan() <= 0 ? 1 : data.getWidthSpan();
-            int colSpan = data.getHeightSpan() <= 0 ? 1 : data.getHeightSpan();
-            return new int[]{rowSpan, colSpan};
-        } else
-            return null;
-    }
-
-    private boolean checkData(Data data) {
-        int row = data.getRow();
-        int col = data.getCol();
-        return row >= 0 && col >= 0;
-    }
 }

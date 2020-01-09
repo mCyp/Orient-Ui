@@ -9,7 +9,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
-import com.orient.me.widget.rv.adapter.TableAdapter;
+import com.orient.me.widget.rv.adapter.GridAdapter;
 import com.orient.me.widget.rv.layoutmanager.table.TableLayoutManager;
 
 public class TableRecyclerView extends RecyclerView implements ScrollerCallback {
@@ -42,8 +42,8 @@ public class TableRecyclerView extends RecyclerView implements ScrollerCallback 
         LayoutManager layoutManager = getLayoutManager();
         if (layoutManager != null
                 && layoutManager instanceof TableLayoutManager
-                && getAdapter() instanceof TableAdapter) {
-            ((TableLayoutManager) layoutManager).setCoordinateCallback((TableAdapter) adapter);
+                && getAdapter() instanceof GridAdapter) {
+            ((TableLayoutManager) layoutManager).setCoordinateCallback((GridAdapter) adapter);
         }
     }
 
@@ -56,9 +56,9 @@ public class TableRecyclerView extends RecyclerView implements ScrollerCallback 
         }
 
         if (getAdapter() != null
-                && getAdapter() instanceof TableAdapter
+                && getAdapter() instanceof GridAdapter
                 && layout instanceof TableLayoutManager) {
-            ((TableLayoutManager) layout).setCoordinateCallback((TableAdapter) getAdapter());
+            ((TableLayoutManager) layout).setCoordinateCallback((GridAdapter) getAdapter());
         }
     }
 

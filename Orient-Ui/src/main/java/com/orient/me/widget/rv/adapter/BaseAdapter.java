@@ -22,7 +22,7 @@ import java.util.List;
  */
 @SuppressWarnings("ALL")
 public abstract class BaseAdapter<Data> extends RecyclerView.Adapter<BaseAdapter.ViewHolder<Data>>
-    implements View.OnClickListener,View.OnLongClickListener{
+    implements View.OnClickListener,View.OnLongClickListener,IAdapterProxy<Data>{
 
     // 数据集合
     protected List<Data> mDataList;

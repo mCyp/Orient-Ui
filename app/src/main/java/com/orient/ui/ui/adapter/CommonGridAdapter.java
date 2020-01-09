@@ -4,18 +4,18 @@ import android.view.View;
 
 import com.orient.me.data.table.ICellItem;
 import com.orient.me.widget.rv.adapter.BaseAdapter;
-import com.orient.me.widget.rv.adapter.TableAdapter;
+import com.orient.me.widget.rv.adapter.GridAdapter;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public abstract class CommonTableAdapter<Data extends ICellItem> extends TableAdapter<Data> {
+public abstract class CommonGridAdapter<Data extends ICellItem> extends GridAdapter<Data> {
 
     @Override
     protected void doWithRoot(BaseAdapter.ViewHolder viewHolder, View root) {
         super.doWithRoot(viewHolder, root);
 
-        ((CommonTableAdapter.ViewHolder)viewHolder).unbinder = ButterKnife.bind(viewHolder,root);
+        ((CommonGridAdapter.ViewHolder)viewHolder).unbinder = ButterKnife.bind(viewHolder,root);
     }
 
     /**
