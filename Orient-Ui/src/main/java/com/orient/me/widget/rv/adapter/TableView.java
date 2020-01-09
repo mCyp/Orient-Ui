@@ -19,6 +19,8 @@ import com.orient.me.widget.rv.adapter.TitleAdapterProxy;
 import com.orient.me.widget.rv.layoutmanager.table.TableLayoutManager;
 import com.orient.me.widget.rv.rv.TableRecyclerView;
 
+import java.util.List;
+
 public class TableView<Data extends ICellItem> extends FrameLayout {
 
     private RecyclerView mTitleRv;
@@ -32,8 +34,8 @@ public class TableView<Data extends ICellItem> extends FrameLayout {
     private LeftAdapterProxy<Data> mLeftAdapter;
     private TitleAdapterProxy<Data> mTitleAdapter;
 
-    private boolean isLeftOpen;
-    private boolean isTopOpen;
+    private boolean isLeftOpen = true;
+    private boolean isTopOpen = true;
 
     private int mMode = TableLayoutManager.MODE_A;
     private int w = 4;
@@ -53,11 +55,12 @@ public class TableView<Data extends ICellItem> extends FrameLayout {
 
     /**
      * 设置模型和长度
+     *
      * @param mode 模型
-     * @param w 长度 Or WidthSpan
-     * @param h 高度 or heightSpan
+     * @param w    长度 Or WidthSpan
+     * @param h    高度 or heightSpan
      */
-    public void setModeAndValue(int mode,int w,int h){
+    public void setModeAndValue(int mode, int w, int h) {
         this.mMode = mode;
         this.w = w;
         this.h = h;
@@ -65,39 +68,61 @@ public class TableView<Data extends ICellItem> extends FrameLayout {
 
     /**
      * 设置是否使用标题和左边的栏
+     *
      * @param isLeftOpen 使用坐标的第一栏
-     * @param isTopOpen 使用标题栏
+     * @param isTopOpen  使用标题栏
      */
-    public void setTitle(boolean isLeftOpen,boolean isTopOpen){
+    public void setTitle(boolean isLeftOpen, boolean isTopOpen) {
         this.isLeftOpen = isLeftOpen;
         this.isTopOpen = isTopOpen;
+
+        mLeftRv.setVisibility(isLeftOpen ? VISIBLE : GONE);
+        mTitleRv.setVisibility(isTopOpen ? VISIBLE : GONE);
+        mTitleHeadFl.setVisibility(isTopOpen ? VISIBLE : GONE);
     }
 
-    private void init(){
-        LayoutInflater.from(getContext()).inflate(R.layout.table_view,this,true);
+    private void init() {
+        LayoutInflater.from(getContext()).inflate(R.layout.table_view, this, true);
 
         mTitleRv = findViewById(R.id.rv_head);
         mTitleHeadFl = findViewById(R.id.fl_head);
         mLeftRv = findViewById(R.id.rv_left);
         mTableRv = findViewById(R.id.rv_table);
 
-        mTitleRv.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
-        mLeftRv.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
+        mTitleRv.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        mLeftRv.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
     }
 
-    public void setAdapter(TableAdapter<Data> adapter){
+    public void setAdapter(TableAdapter<Data> adapter) {
         this.mTableAdapter = adapter;
-        if(mTableAdapter != null){
+        if (mTableAdapter != null) {
             mGridAdapter = new GridAdapterProxy<>(mTableAdapter);
             mLeftAdapter = new LeftAdapterProxy<>(mTableAdapter);
             mTitleAdapter = new TitleAdapterProxy<>(mTableAdapter);
-            mTableAdapter.setTitleAdapter(mTitleAdapter,mLeftAdapter,mGridAdapter);
+            mTableAdapter.setTitleAdapter(mTitleAdapter, mLeftAdapter, mGridAdapter);
+
+            mTableRv.setLayoutManager(new TableLayoutManager(mMode, w, h));
+            mTableRv.setAdapter(mGridAdapter);
+            mLeftRv.setAdapter(mLeftAdapter);
+            mTitleRv.setAdapter(mTitleAdapter);
+
+            if (mTitleAdapter.getItemCount() > 0) {
+
+            }
 
 
         }
     }
 
+    void setHeadFirstItem() {
+        if (mTitleAdapter == null || mTitleAdapter.getItemCount() == 0)
+            return;
 
+        if(mTitleHeadFl.getChildCount() > 0)
+            return;
+
+
+    }
 
 
 }

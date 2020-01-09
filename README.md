@@ -48,7 +48,7 @@ English|[中文](https://github.com/mCyp/Orient-Ui/blob/master/README_ZH.md)
 ### Add Dependency 
 
 ```groovy
-implementation 'com.orient:Orient-Ui:1.0.0'
+implementation 'com.orient:Orient-Ui:1.0.1'
 ```
 
 ### [Using Document](https://github.com/mCyp/Orient-Ui/blob/master/doc/Document.md)
