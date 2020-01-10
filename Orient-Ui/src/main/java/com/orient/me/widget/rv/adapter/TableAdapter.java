@@ -17,6 +17,7 @@ public abstract class TableAdapter<Data extends ICellItem> implements ITableAdap
     private IAdapterProxy<Data> titleAdapter;
     private IAdapterProxy<Data> leftAdapter;
     private IAdapterProxy<Data> tableAdapter;
+    private FirstItemCallback mFirstCallback;
 
 
     public TableAdapter(List<Data> mDataList) {
@@ -52,14 +53,28 @@ public abstract class TableAdapter<Data extends ICellItem> implements ITableAdap
             }
         }
 
+        titleAdapter.addAllData(titles);
+        leftAdapter.addAllData(lefts);
+        tableAdapter.addAllData(contents);
+
         mDataList.clear();
     }
 
-    public void addList(List<Data> data) {
-        if (data == null || data.size() == 0)
+    void setHeaderFirstItemCallback(FirstItemCallback callback) {
+        this.mFirstCallback = callback;
+    }
+
+    public void addList(List<Data> dataList) {
+        if (dataList == null || dataList.size() == 0)
             return;
-        mDataList.addAll(data);
+        mDataList.addAll(dataList);
+
+        Data data = dataList.get(0);
+        boolean isNeedNotifyFirstAdd = data.getCol() == 0 && data.getRow() == 0;
         init();
+        if (isNeedNotifyFirstAdd) {
+            mFirstCallback.titleFirstItemAdd();
+        }
     }
 
     /**

@@ -71,6 +71,9 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
     // 横纵向固定宽度
     private int mAveHolderWidth;
     private int mAveHolderHeight;
+    // 多余的长度
+    private int mWidthReminder;
+    private int mHeightReminder;
 
     // 是否可以横纵向滑动的监听
     private ScrollerCallback scrollerCallback;
@@ -208,14 +211,52 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         return true;
     }
 
+    /**
+     * 得到当前屏幕的其实坐标
+     */
+    public int[] getCurrentScreenStartCoordinate() {
+        return new int[]{mScreenCoordinateRecorder.mCurStartRowIndex, mScreenCoordinateRecorder.mCurStartColIndex};
+    }
+
+    /**
+     * 得到第一个位置的偏移量
+     */
+    public int[] getCurrentFirstOffset() {
+        if (mLayoutState == null)
+            return null;
+        return new int[]{mLayoutState.mHeadXOffset, mLayoutState.mHeadYOffset};
+    }
+
+
+
+    /**
+     * 得到子视图的宽和高
+     */
+    public int[] getChildViewWidthAndHeight() {
+        int width;
+        int height;
+        width =  mAveHolderWidth;
+        height = mAveHolderHeight;
+        return new int[]{width, height};
+    }
+
+    public boolean isRowSpan() {
+        return (mode & s_row_span) != 0;
+    }
+
+    public boolean isColSpan() {
+        return (mode & s_col_span) != 0;
+    }
+
+    public int[] getReminder() {
+        return new int[]{mWidthReminder, mHeightReminder};
+    }
 
     @Override
     public boolean canScrollHorizontally() {
         if (scrollFlag && mOrientation == RecyclerView.VERTICAL) {
-            Log.e(TAG, "1------canScrollHor:" + false);
             return false;
         }
-        Log.e(TAG, "2********canScrollHor:" + !scrollerCallback.canScrollVertical());
         return !scrollerCallback.canScrollVertical();
         //return true;
     }
@@ -223,10 +264,8 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
     @Override
     public boolean canScrollVertically() {
         if (scrollFlag && mOrientation == RecyclerView.HORIZONTAL) {
-            Log.e(TAG, "1-----canScrollVer:" + false);
             return false;
         }
-        Log.e(TAG, "2*******canScrollVer:" + scrollerCallback.canScrollVertical());
         return scrollerCallback.canScrollVertical();
         //return true;
     }
@@ -245,7 +284,6 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         mOrientation = RecyclerView.HORIZONTAL;
         updateMeasurements();
         ensureViewSet();
-        Log.e(TAG, "hor:" + dx);
         return scrollBy(dx, recycler, state);
     }
 
@@ -262,7 +300,6 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         mOrientation = RecyclerView.VERTICAL;
         updateMeasurements();
         ensureViewSet();
-        Log.e(TAG, "ver:" + dy);
         return scrollBy(dy, recycler, state);
     }
 
@@ -803,6 +840,7 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         int horSpace, verSpace;
         horSpace = getWidth() - getPaddingStart() - getPaddingEnd();
         verSpace = getHeight() - getPaddingTop() - getPaddingBottom();
+        Log.e(TAG, "Hor:" + horSpace + ",Ver:" + verSpace);
         calculateItemBorders(horSpace, verSpace, mOrientation);
     }
 
@@ -816,27 +854,32 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
             // 更新横向mHorCacheBorders
             if ((mode & s_row_span) != 0) {
                 mHorCacheBorders = calculateSpanBorders(horSpace, mHorTotalSpan, mHorCacheBorders, mLayoutState.mHeadXOffset);
-                mAveHolderWidth = horSpace / mHorTotalSpan + 1;
+                mWidthReminder = horSpace % mHorTotalSpan;
+                mAveHolderWidth = mWidthReminder == 0 ? horSpace / mHorTotalSpan : horSpace / mHorTotalSpan + 1;
             } else {
                 mHorCacheBorders = calculateValueBorder(horSpace, mAveHolderWidth, mVerCacheBorders, mLayoutState.mHeadXOffset);
                 mHorTotalSpan = mHorCacheBorders.length - 2;
             }
 
             if ((mode & s_col_span) != 0) {
-                mAveHolderHeight = verSpace / mVerTotalSpan + 1;
+                mHeightReminder = verSpace % mVerTotalSpan;
+                mAveHolderHeight = mHeightReminder == 0 ? verSpace / mVerTotalSpan : verSpace / mVerTotalSpan + 1;
+                Log.e(TAG,"verSpace:"+verSpace+",reminder:"+mHeightReminder+",mAveHolderHeight:"+mAveHolderHeight);
             }
         } else {
             // 新纵向mVerCacheBorders
             if ((mode & s_col_span) != 0) {
                 mVerCacheBorders = calculateSpanBorders(verSpace, mVerTotalSpan, mVerCacheBorders, mLayoutState.mHeadYOffset);
-                mAveHolderHeight = verSpace / mVerTotalSpan + 1;
+                mHeightReminder = verSpace % mVerTotalSpan;
+                mAveHolderHeight = mHeightReminder == 0 ? verSpace / mVerTotalSpan : verSpace / mVerTotalSpan + 1;
             } else {
                 mVerCacheBorders = calculateValueBorder(verSpace, mAveHolderHeight, mVerCacheBorders, mLayoutState.mHeadYOffset);
                 mVerTotalSpan = mVerCacheBorders.length - 2;
             }
 
             if ((mode & s_row_span) != 0) {
-                mAveHolderWidth = horSpace / mHorTotalSpan + 1;
+                mWidthReminder = horSpace % mHorTotalSpan;
+                mAveHolderWidth = mWidthReminder == 0 ? horSpace / mHorTotalSpan : horSpace / mHorTotalSpan + 1;
             }
         }
     }
@@ -861,8 +904,8 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         } else {
             cacheBorders[0] = 0;
         }
-        int sizePerSpan = totalSpace / spanCount + 1;
         int sizePerSpanReminder = totalSpace % spanCount;
+        int sizePerSpan = sizePerSpanReminder == 0 ? totalSpace / spanCount : totalSpace / spanCount + 1;
         int consumePixels = offset;
         for (int i = 1; i <= spanCount; i++) {
             int itemSize = sizePerSpan;
@@ -922,7 +965,8 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
             return;
 
         int[] coordinate = mScreenCoordinateRecorder.getScreenCoordinate(anchorInfo.mRow, anchorInfo.mCol);
-        while (checkCoordinate(coordinate)) {
+        while (checkCoordinate(coordinate)
+                && (anchorInfo.mRow > 1 && anchorInfo.mCol > 1)) {
             if (mOrientation == RecyclerView.VERTICAL) {
                 anchorInfo.mRow--;
             } else {
@@ -952,7 +996,7 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
             }
         } else {
             if (mSet == null || mSet.length != mVerTotalSpan) {
-                mSet = new View[mHorTotalSpan + 1];
+                mSet = new View[mVerTotalSpan + 1];
             }
         }
     }
@@ -1287,13 +1331,11 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
                 break;
 
             LayoutParams layoutParams = (LayoutParams) view.getLayoutParams();
-            int[] screenCoordinate = mScreenCoordinateRecorder.getScreenCoordinate(layoutState.mCurRow, layoutState.mCurCol);
-            if (checkCoordinate(screenCoordinate)) {
-                layoutParams.mRowIndex = rowIndex;
-                layoutParams.mColIndex = colIndex;
-                layoutParams.mWidthSpan = spanArray[0];
-                layoutParams.mHeightSpan = spanArray[1];
-            }
+
+            layoutParams.mRowIndex = rowIndex;
+            layoutParams.mColIndex = colIndex;
+            layoutParams.mWidthSpan = spanArray[0];
+            layoutParams.mHeightSpan = spanArray[1];
             view.setLayoutParams(layoutParams);
             mSet[count] = view;
             count++;
@@ -1387,13 +1429,10 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
                 break;
 
             LayoutParams layoutParams = (LayoutParams) view.getLayoutParams();
-            int[] screenCoordinate = mScreenCoordinateRecorder.getScreenCoordinate(layoutState.mCurRow, layoutState.mCurCol);
-            if (checkCoordinate(screenCoordinate)) {
-                layoutParams.mRowIndex = rowIndex;
-                layoutParams.mColIndex = colIndex;
-                layoutParams.mWidthSpan = spanArray[0];
-                layoutParams.mHeightSpan = spanArray[1];
-            }
+            layoutParams.mRowIndex = rowIndex;
+            layoutParams.mColIndex = colIndex;
+            layoutParams.mWidthSpan = spanArray[0];
+            layoutParams.mHeightSpan = spanArray[1];
             view.setLayoutParams(layoutParams);
             mSet[count] = view;
             count++;
@@ -1714,7 +1753,7 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
             } else
                 top = mVerCacheBorders[r];
             if (r + lp.mHeightSpan >= limit) {
-                bottom = mVerCacheBorders[limit - 1] + (r + lp.mHeightSpan -limit + 1) * mAveHolderHeight;
+                bottom = mVerCacheBorders[limit - 1] + (r + lp.mHeightSpan - limit + 1) * mAveHolderHeight;
             } else {
                 //if (r + lp.mHeightSpan == mVerCacheBorders.length - 1 && mVerCacheBorders[r + lp.mHeightSpan] == 0) {
                 //  bottom = mVerCacheBorders[r+lp.m]
@@ -2034,8 +2073,8 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
     static class AnchorInfo {
         OrientationHelper mOrientationHelper;
         int mPosition;
-        int mRow;
-        int mCol;
+        int mRow = 1;
+        int mCol = 1;
         int mCoordinate;
         boolean mLayoutFromEnd;
         boolean mValid;
@@ -2167,8 +2206,8 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         private int mCurStartRowIndex, mCurStartColIndex;
 
         public ScreenCoordinateRecorder() {
-            this.mCurStartRowIndex = 0;
-            this.mCurStartColIndex = 0;
+            this.mCurStartRowIndex = 1;
+            this.mCurStartColIndex = 1;
         }
 
         /**
