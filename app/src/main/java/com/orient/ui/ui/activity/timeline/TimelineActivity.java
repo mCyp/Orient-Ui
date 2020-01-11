@@ -45,10 +45,6 @@ public class TimelineActivity extends BaseActivity {
     protected void initWidget() {
         super.initWidget();
 
-       /* for (int i = 0; i < titles.length; i++) {
-            mTabLayout.addTab(mTabLayout.newTab().setIcon(res[i]));
-        }*/
-
         mTabLayout.setupWithViewPager(mViewPager, true);
         mAdapter = new TimeLineAdapter(getSupportFragmentManager(), titles);
         mViewPager.setAdapter(mAdapter);

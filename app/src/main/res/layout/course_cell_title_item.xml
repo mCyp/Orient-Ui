@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="@dimen/len_4"
+    android:background="@drawable/common_title_bg"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/textPrimary"
+        android:layout_gravity="top"
+        android:layout_marginTop="@dimen/len_14"
+        android:gravity="center"
+        android:textSize="@dimen/font_16"
+        tools:text="周一"
+        />
+
+    <TextView
+        android:id="@+id/tv_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/textPrimary"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="@dimen/len_14"
+        android:gravity="center"
+        android:textSize="@dimen/font_16"
+        tools:text="周一"
+        />
+
+</FrameLayout>

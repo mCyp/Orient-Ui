@@ -2,15 +2,16 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:padding="@dimen/len_4"
     android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/amber_300"
+        android:background="@color/teal_500"
+        android:textColor="@color/white"
         android:gravity="center"
-        android:layout_margin="10dp"
         />
 
 </LinearLayout>

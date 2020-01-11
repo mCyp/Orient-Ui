@@ -1,8 +1,11 @@
-package com.orient.ui.ui.activity.table;
+package com.orient.ui.ui.fragment.table;
 
-import android.content.Context;
-import android.content.Intent;
+
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -11,10 +14,9 @@ import android.widget.TextView;
 import com.orient.me.widget.rv.adapter.BaseAdapter;
 import com.orient.me.widget.rv.adapter.TableAdapter;
 import com.orient.me.widget.rv.adapter.TableView;
-import com.orient.me.widget.rv.layoutmanager.table.TableLayoutManager;
 import com.orient.ui.R;
-import com.orient.ui.ui.activity.BaseActivity;
-import com.orient.ui.ui.adapter.CommonGridAdapter;
+import com.orient.ui.ui.activity.table.TableCell;
+import com.orient.ui.ui.fragment.BaseFragment;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -22,25 +24,32 @@ import java.util.List;
 
 import butterknife.BindView;
 
-public class TableActivity extends BaseActivity {
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class TableFragment extends BaseFragment {
 
 
-    public static void show(Context context) {
-        Intent intent = new Intent(context, TableActivity.class);
-        context.startActivity(intent);
+    @BindView(R.id.tb)
+    TableView mTable;
+
+    private TableAdapter<TableCell> mAdapter;
+
+
+    public TableFragment() {
+        // Required empty public constructor
     }
 
     @Override
     protected int getLayoutId() {
-        return R.layout.table_activity;
+        return R.layout.fragment_table;
     }
 
     @Override
-    protected void initWidget() {
-        super.initWidget();
+    protected void initWidget(View root) {
+        super.initWidget(root);
 
-        /*mTable.setModeAndValue(TableLayoutManager.MODE_A, 4, 8);
-        //mTable.setModeAndValue(TableLayoutManager.MODE_B,80,100);
+
         mTable.setAdapter(mAdapter = new TableAdapter<TableCell>(new ArrayList<>()) {
             @Override
             public int getItemLayout(TableCell tableCell, int pos) {
@@ -72,28 +81,31 @@ public class TableActivity extends BaseActivity {
                     case R.layout.table_cell_camera_item:
                         return new CameraHolder(root);
                     default:
-                        return new ViewHOlder(root);
+                        return new ViewHolder(root);
                 }
             }
         });
 
-        mTable.post(() -> mTable.reMeasure());*/
+        mTable.post(() -> mTable.reMeasure());
     }
-
 
     @Override
     protected void initData() {
         super.initData();
 
-        /*List<TableCell> cells = new LinkedList<>();
+        List<TableCell> cells = new LinkedList<>();
 
-        cells.add(new TableCell("计划", "1", 3, 0, 0, 1, 1));
-        cells.add(new TableCell("周一", "1", 3, 0, 1, 1, 1));
-        cells.add(new TableCell("周二", "1", 3, 0, 2, 1, 1));
-        cells.add(new TableCell("周三", "1", 3, 0, 3, 1, 1));
-        cells.add(new TableCell("周四", "1", 3, 0, 4, 1, 1));
-        cells.add(new TableCell("周五", "1", 3, 0, 5, 1, 1));
-        cells.add(new TableCell("周六", "1", 3, 0, 6, 1, 1));
+        cells.add(new TableCell("表格", "1", 3, 0, 0, 1, 1));
+        cells.add(new TableCell("姓名", "1", 3, 0, 1, 1, 1));
+        cells.add(new TableCell("编辑项", "1", 3, 0, 2, 1, 1));
+        cells.add(new TableCell("照片项", "1", 3, 0, 3, 1, 1));
+        cells.add(new TableCell("日期项", "1", 3, 0, 4, 1, 1));
+        cells.add(new TableCell("选择项", "1", 3, 0, 5, 1, 1));
+        cells.add(new TableCell("检查项", "1", 3, 0, 6, 1, 1));
+        cells.add(new TableCell("说明项一", "1", 3, 0, 7, 1, 1));
+        cells.add(new TableCell("说明项二", "1", 3, 0, 8, 1, 1));
+        cells.add(new TableCell("说明项三", "1", 3, 0, 9, 1, 1));
+        cells.add(new TableCell("说明项四", "1", 3, 0, 10, 1, 1));
 
         cells.add(new TableCell("P1", "1", 1, 1, 0, 1, 1));
         cells.add(new TableCell("1", "1", 2, 1, 1, 2, 2));
@@ -107,56 +119,15 @@ public class TableActivity extends BaseActivity {
         cells.add(new TableCell("11", "项目二", 1, 2, 5, 1, 1));
         cells.add(new TableCell("12", "项目三", 1, 2, 6, 1, 1));
 
-        cells.add(new TableCell("P3", "1", 1, 3, 0, 1, 1));
-        cells.add(new TableCell("13", "1", 4, 3, 1, 3, 1));
-        cells.add(new TableCell("xxx", "1", 1, 3, 4, 1, 1));
-        cells.add(new TableCell("14", "1", 1, 3, 5, 1, 1));
-        cells.add(new TableCell("15", "1", 1, 3, 6, 1, 1));
-
-        cells.add(new TableCell("P4", "1", 1, 4, 0, 1, 1));
-        cells.add(new TableCell("19", "1", 1, 4, 1, 1, 1));
-        cells.add(new TableCell("20", "1", 1, 4, 2, 1, 1));
-        cells.add(new TableCell("21", "1", 1, 4, 3, 1, 1));
-        cells.add(new TableCell("22", "1", 1, 4, 4, 1, 1));
-        cells.add(new TableCell("23", "1", 1, 4, 5, 1, 1));
-        cells.add(new TableCell("24", "1", 1, 4, 6, 1, 1));
-
-        cells.add(new TableCell("P5", "1", 1, 5, 0, 1, 1));
-        cells.add(new TableCell("25", "1", 5, 5, 1, 1, 1));
-        cells.add(new TableCell("26", "1", 5, 5, 2, 1, 1));
-        cells.add(new TableCell("27", "1", 5, 5, 3, 1, 1));
-        cells.add(new TableCell("28", "1", 5, 5, 4, 1, 1));
-        cells.add(new TableCell("29", "1", 5, 5, 5, 1, 1));
-        cells.add(new TableCell("30", "1", 5, 5, 6, 1, 1));
-
-        cells.add(new TableCell("P6", "1", 1, 6, 0, 1, 1));
-        cells.add(new TableCell("31", "1", 1, 6, 1, 1, 1));
-        cells.add(new TableCell("32", "1", 1, 6, 2, 1, 1));
-        cells.add(new TableCell("33", "1", 1, 6, 3, 1, 1));
-        cells.add(new TableCell("34", "1", 1, 6, 4, 1, 1));
-        cells.add(new TableCell("35", "1", 1, 6, 5, 1, 1));
-        cells.add(new TableCell("36", "1", 1, 6, 6, 1, 1));
-
-        cells.add(new TableCell("P7", "1", 1, 7, 0, 1, 1));
-        cells.add(new TableCell("37", "1", 1, 7, 1, 1, 2));
-        cells.add(new TableCell("38", "1", 1, 7, 2, 1, 2));
-        cells.add(new TableCell("39", "1", 1, 7, 3, 1, 2));
-        cells.add(new TableCell("40", "1", 1, 7, 4, 1, 2));
-        cells.add(new TableCell("41", "1", 1, 7, 5, 1, 2));
-        cells.add(new TableCell("42", "1", 1, 7, 6, 1, 2));
-
-        cells.add(new TableCell("P8", "1", 1, 8, 0, 1, 1));
-
-        mAdapter.addList(cells);*/
-
+        mAdapter.addList(cells);
     }
 
-    /*class ViewHOlder extends CommonGridAdapter.ViewHolder<TableCell> {
+    class ViewHolder extends BaseAdapter.ViewHolder<TableCell> {
 
         //@BindView(R.id.tv_name)
         TextView mNameTv;
 
-        public ViewHOlder(View itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
             mNameTv = itemView.findViewById(R.id.tv_name);
         }
@@ -167,7 +138,7 @@ public class TableActivity extends BaseActivity {
         }
     }
 
-    class ImgHolder extends CommonGridAdapter.ViewHolder<TableCell> {
+    class ImgHolder extends BaseAdapter.ViewHolder<TableCell> {
         ImageView mContent;
 
         public ImgHolder(View itemView) {
@@ -182,7 +153,7 @@ public class TableActivity extends BaseActivity {
         }
     }
 
-    class EditHolder extends CommonGridAdapter.ViewHolder<TableCell> {
+    class EditHolder extends BaseAdapter.ViewHolder<TableCell> {
         EditText mContent;
 
         public EditHolder(View itemView) {
@@ -197,7 +168,7 @@ public class TableActivity extends BaseActivity {
         }
     }
 
-    class CheckHolder extends CommonGridAdapter.ViewHolder<TableCell>{
+    class CheckHolder extends BaseAdapter.ViewHolder<TableCell> {
         CheckBox mCheckBox;
 
         public CheckHolder(View itemView) {
@@ -213,7 +184,7 @@ public class TableActivity extends BaseActivity {
         }
     }
 
-    class CameraHolder extends CommonGridAdapter.ViewHolder<TableCell>{
+    class CameraHolder extends BaseAdapter.ViewHolder<TableCell> {
         ImageView mCamera;
 
         public CameraHolder(View itemView) {
@@ -227,7 +198,5 @@ public class TableActivity extends BaseActivity {
         protected void onBind(TableCell tableCell) {
 
         }
-    }*/
-
-
+    }
 }

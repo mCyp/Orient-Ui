@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:padding="@dimen/len_4"
+    android:layout_height="match_parent">
+
+    <CheckBox
+        android:id="@+id/eb_content"
+        android:layout_marginStart="@dimen/len_20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:buttonTint="@color/colorAccent"
+        android:text="哈"
+        />
+
+</LinearLayout>

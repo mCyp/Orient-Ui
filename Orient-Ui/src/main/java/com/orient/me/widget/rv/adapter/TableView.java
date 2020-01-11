@@ -153,7 +153,6 @@ public class TableView<Data extends ICellItem> extends FrameLayout implements Fi
                 return;
 
             int value[] = tll.getChildViewWidthAndHeight();
-            Log.e(TAG, Arrays.toString(value));
             List<Data> tableData = mGridAdapter.getItems();
             List<Data> leftItems = mLeftAdapter.getItems();
             List<Data> titles = mTitleAdapter.getItems();
@@ -161,18 +160,9 @@ public class TableView<Data extends ICellItem> extends FrameLayout implements Fi
             mGridAdapter = new GridAdapterProxy<>(mTableAdapter);
             mGridAdapter.addAllData(tableData);
 
-            if(mMode == TableLayoutManager.MODE_A && isLeftOpen && isTitleOpen){
-                tll = new TableLayoutManager(mMode, w-1, h-1);
-            }else if(isLeftOpen && mMode == TableLayoutManager.MODE_C){
-                tll = new TableLayoutManager(mMode,w-1,h);
-            }else if(isTitleOpen && mMode == TableLayoutManager.MODE_D){
-                tll = new TableLayoutManager(mMode,w,h-1);
-            }else {
-                tll = new TableLayoutManager(mMode,w,h);
-            }
+            tll = new TableLayoutManager(TableLayoutManager.MODE_B, value[0], value[1]);
             mTableRv.setLayoutManager(tll);
             mTableRv.setAdapter(mGridAdapter);
-
 
             mLeftAdapter = new LeftAdapterProxy<>(mTableAdapter, value[0], value[1]);
             mLeftAdapter.addAllData(leftItems);

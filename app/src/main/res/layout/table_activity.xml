@@ -6,13 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".ui.activity.table.TableActivity">
 
-    <!--<com.orient.me.widget.rv.rv.TableRecyclerView
-        android:id="@+id/rv_table"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>-->
-
-    <com.orient.me.widget.rv.adapter.TableView
-        android:id="@+id/tb"
+    <fragment
+        android:id="@+id/fg_name"
+        android:name="com.orient.ui.ui.fragment.table.CourseFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

@@ -1,4 +1,4 @@
-package com.orient.ui.data.table;
+package com.orient.ui.ui.activity.table;
 
 import com.orient.me.data.table.ICellItem;
 
