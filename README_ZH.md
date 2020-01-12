@@ -45,7 +45,7 @@
 - 顶部和左侧标题悬浮
 - 多方向滑动
 
-![]()
+![table](https://github.com/mCyp/Orient-Ui/blob/master/picture/table.jpg)
 
 ## 📖 依赖和文档
 
