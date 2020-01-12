@@ -39,14 +39,20 @@
 
 #### 表格 - Table
 
-- [ ] TODO 
+**TableView**是一个强大和灵活的基于RecyclerView的表格控件，支持
+
+- 不规则表格
+- 顶部和左侧标题悬浮
+- 多方向滑动
+
+![]()
 
 ## 📖 依赖和文档
 
 ####  添加依赖
 
 ```groovy
-implementation 'com.orient:Orient-Ui:1.0.1'
+implementation 'com.orient:Orient-Ui:1.0.2'
 ```
 
 #### [使用说明](https://github.com/mCyp/Orient-Ui/blob/master/doc/Document.md)

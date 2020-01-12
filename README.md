@@ -41,14 +41,20 @@ English|[中文](https://github.com/mCyp/Orient-Ui/blob/master/README_ZH.md)
 
 #### Table
 
-- [ ] TODO 
+**TableView** is powerful and flexible Table which bases on **RecyclerView**, can support ：
+
+- Irregular table
+- Top and left Title Cell suspend
+- Muti-Direction scroll
+
+![]()
 
 ## 📖 Dependency And Document
 
 ### Add Dependency 
 
 ```groovy
-implementation 'com.orient:Orient-Ui:1.0.1'
+implementation 'com.orient:Orient-Ui:1.0.2'
 ```
 
 ### [Using Document](https://github.com/mCyp/Orient-Ui/blob/master/doc/Document.md)

@@ -3,14 +3,16 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:padding="@dimen/len_4"
+    android:background="@drawable/table_normal_bg"
     android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/et_content"
-        android:background="@drawable/common_et_bg"
+    <TextView
+        android:id="@+id/tv_select"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="bottom|center_horizontal"
+        android:gravity="center"
+        android:drawableEnd="@drawable/table_ic_down"
         />
 
 </LinearLayout>

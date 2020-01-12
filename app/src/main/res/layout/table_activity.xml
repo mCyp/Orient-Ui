@@ -4,12 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".ui.activity.table.TableActivity">
 
-    <fragment
-        android:id="@+id/fg_name"
-        android:name="com.orient.ui.ui.fragment.table.CourseFragment"
+    <android.support.design.widget.TabLayout
+        android:id="@+id/mTabLayout"
+        style="@style/TabLayoutStyle"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="@dimen/len_52"
+        app:tabMode="scrollable"
+        android:layout_marginBottom="@dimen/len_2"
+        app:tabTextAppearance="@style/CustomStyle" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/mViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/common_white_bg"/>
 
 </LinearLayout>

@@ -23,7 +23,7 @@ Add Dependency in `build.gradle`:
 > 在项目文件`build.gradle`添加依赖
 
 ```groovy
-implementation 'com.orient:Orient-Ui:1.0.0'
+implementation 'com.orient:Orient-Ui:1.0.2'
 ```
 
 ## DoubleSideLayout | 两侧布局
@@ -234,6 +234,124 @@ mEmptyView.triggerError(R.string.prompt_error);
 mEmptyView.triggerEmpty();
 ```
 
+## TableView | 表格
+
+**TableView** is used to create table，it bases on **RecyclerView**.
+
+> **TableView** 用来构建二维表格，基于**RecyclerView**。
+
+### Use | 使用
+
+1. Add to xml | 在xml文件中添加
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.fragment.table.TableFragment">
+
+    <com.orient.me.widget.rv.adapter.TableView
+        android:id="@+id/tb"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</FrameLayout>
+```
+
+2. Get View | 获取控件
+
+In order to make sure every cell item in same width/height(*A itemView can use muti cell item*) ，you can choose two different way，one is set detail width/height to cell item, the other is set number which **parent** height/width can contain max number of cell item。
+
+> 为了确保每个单元格拥有同样的高宽，你可以使用两种方式，一、给单元格设置具体的宽\高，二、设置父布局的宽\高可容纳单元格的数量。
+
+Some important functions in **TableView**
+
+> 在**TableView**中的一些重要方法
+
+| fun                                             | desc                                                         |
+| ----------------------------------------------- | ------------------------------------------------------------ |
+| setTitle(boolean isLeftOpen, boolean isTopOpen) | set whether if show title or not, if `isLeftOpen` is fasle, left title's Visiblity is gone。 |
+| setModeAndValue(int mode, int w, int h)         | see the following                                            |
+
+all mode in function `setModeAndValue(int mode, int w, int h)`:
+
+| mode kind                   | w                                         | h                                           |
+| --------------------------- | ----------------------------------------- | ------------------------------------------- |
+| `TableLayoutManager.MODE_A` | width = parentWidth/number，`w` is number | height = parentHeight/number，`h` is number |
+| `TableLayoutManager.MODE_B` | w = detail cell item width                | h = detail cell item height                 |
+| `TableLayoutManager.MODE_C` | width = parentWidth/number，`w` is number | h = detail cell item height                 |
+| `TableLayoutManager.MODE_D` | w = detail cell item width                | height = parentHeight/number，`h` is number |
+
+code | 代码
+
+```java
+// Use ButterKnife
+@BindView(R.id.tb)
+TableView mTable;
+
+// necessary
+mTable.setModeAndValue(TableLayoutManager.MODE_A, 6, 8);
+```
+
+3. Create Data | 创建数据
+
+implement interface  `ICellItem`，you should provide **start row/col and width/height span**，what is width span , if width span is 2, it means itemView's width = 2 * cell item width.
+
+> 实现`ICellItem`接口，你需要提供其实的行和列，以及长/宽所占单元格的数量
+
+```
+public class TableCell implements ICellItem {
+
+    private String name;
+    private String value;
+    private int type;
+    private int row;
+    private int col;
+    private int widthSpan;
+    private int heightSpan;
+
+    // ...
+
+    @Override
+    public int getRow() {
+        return row;
+    }
+
+    @Override
+    public int getCol() {
+        return col;
+    }
+
+    @Override
+    public int getWidthSpan() {
+        return widthSpan;
+    }
+
+    @Override
+    public int getHeightSpan() {
+        return heightSpan;
+    }
+}
+```
+
+4. set Adapter | 设置适配器
+
+Create Adapter class extends TableAdapter, see in the demo, it is similar to RecyclerView Adapter。
+
+> 创建类继承`TableAdapter`，设置适配器详见Demo，类似于RecyclerView的适配器
+
+5. remeasure | 重新测量
+
+if you use Mode_A、Mode_C or Mode_D, you need remeasure
+
+> 如果你使用的是Mode_A、Mode_C 或者 Mode_D，你需要重新测量
+
+```java
+mTable.post(() -> mTable.reMeasure());
+```
+
 ## GridPage | 网格首页
 
 **GridPage** is used to **create HomePage** and **reduce nest**, it should be Used with `RecyclerView` and `GridLayoutManager`, `GridPage` is normal `ItemDecoration`, it only provide a way to create homepage and reduce nest. 
@@ -247,3 +365,4 @@ mEmptyView.triggerEmpty();
 see demo
 
 > 详见Demo
+

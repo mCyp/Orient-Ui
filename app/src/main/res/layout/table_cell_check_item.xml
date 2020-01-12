@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:padding="@dimen/len_4"
+    android:background="@drawable/table_normal_bg"
     android:layout_height="match_parent">
 
     <CheckBox
-        android:id="@+id/eb_content"
-        android:layout_marginStart="@dimen/len_20"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/cb_name"
+        android:layout_width="@dimen/len_32"
+        android:layout_height="@dimen/len_32"
         android:layout_gravity="center"
-        android:buttonTint="@color/colorAccent"
-        android:text="哈"
-        />
+        android:buttonTint="@color/indigo_500" />
 
-</LinearLayout>
+</FrameLayout>
