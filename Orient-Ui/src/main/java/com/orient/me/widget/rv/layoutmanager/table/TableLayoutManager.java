@@ -1358,7 +1358,6 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
             layoutParams.mHeightSpan = spanArray[1];
             view.setLayoutParams(layoutParams);
 
-            Log.e(TAG,"coordinate:"+Arrays.toString(coordinate));
             mSet[count] = view;
             count++;
         }

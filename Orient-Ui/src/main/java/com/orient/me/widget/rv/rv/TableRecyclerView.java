@@ -84,15 +84,10 @@ public class TableRecyclerView extends RecyclerView implements ScrollerCallback 
                 if(deltaX < delta && deltaY < delta){
                     break;
                 }
-                Log.e(TAG,"dx:"+deltaX+",dy:"+deltaY+",d:"+delta);
                 if(Math.abs(deltaX) <= Math.abs(deltaY)) {
                     scrollFlag = RecyclerView.VERTICAL;
-                    //Log.e(TAG,"lastX:"+mLastX+",lastY:"+mLastY+",curX:"+mCurX+",curY:"+mCurY+",deltaX:"+deltaX+",deltaY:"+deltaY);
-                    //Log.e(TAG,"orientation:------Vertical");
                 }else {
                     scrollFlag = RecyclerView.HORIZONTAL;
-                    //Log.e(TAG,"lastX:"+mLastX+",lastY:"+mLastY+",curX:"+mCurX+",curY:"+mCurY+",deltaX:"+deltaX+",deltaY:"+deltaY);
-                    //Log.e(TAG,"orientation:------Horizontal");
                 }
                 break;
             case MotionEvent.ACTION_UP:

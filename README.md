@@ -39,7 +39,7 @@ English|[中文](https://github.com/mCyp/Orient-Ui/blob/master/README_ZH.md)
 
 <img width="200" height="400" src="https://github.com/mCyp/Orient-Ui/blob/master/picture/GridPage.png" alt="GridPage" style="float:left;" />
 
-#### Table
+### Table
 
 **TableView** is powerful and flexible Table which bases on **RecyclerView**, can support ：
 

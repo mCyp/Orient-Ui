@@ -19,6 +19,7 @@ import com.orient.ui.ui.activity.BaseActivity;
 import com.orient.ui.ui.adapter.CommonGridAdapter;
 import com.orient.ui.ui.adapter.TBAdapter;
 import com.orient.ui.ui.adapter.TimeLineAdapter;
+import com.orient.ui.widget.viewPager.NoScrollViewPager;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -35,7 +36,7 @@ public class TableActivity extends BaseActivity {
     TabLayout mTabLayout;
 
     @BindView(R.id.mViewPager)
-    ViewPager mViewPager;
+    NoScrollViewPager mViewPager;
 
     private TBAdapter mAdapter;
 
@@ -56,6 +57,7 @@ public class TableActivity extends BaseActivity {
         mTabLayout.setupWithViewPager(mViewPager, true);
         mAdapter = new TBAdapter(getSupportFragmentManager(), titles);
         mViewPager.setAdapter(mAdapter);
+        mViewPager.setNoScroll(true);
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {

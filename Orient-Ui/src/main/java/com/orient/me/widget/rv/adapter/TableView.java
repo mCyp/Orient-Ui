@@ -6,11 +6,9 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.orient.me.R;
@@ -19,7 +17,6 @@ import com.orient.me.widget.rv.layoutmanager.table.TableLayoutManager;
 import com.orient.me.widget.rv.rv.NoScrollRecyclerView;
 import com.orient.me.widget.rv.rv.TableRecyclerView;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class TableView<Data extends ICellItem> extends FrameLayout implements FirstItemCallback {
