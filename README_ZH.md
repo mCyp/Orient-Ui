@@ -13,19 +13,19 @@
 
 ## 💫 功能
 
-### 两侧布局 - DoubleSideLayout
+### # 两侧布局 - DoubleSideLayout
 
 借助`RecyclerView`实现以下布局。
 
 <img width="200" height="400" src="https://github.com/mCyp/Orient-Ui/blob/master/picture/%E4%B8%A4%E4%BE%A7%E5%B8%83%E5%B1%80.png" alt="S90929-10290486"  style="float:left;" />
 
-### 时间轴 - TimeLine
+### # 时间轴 - TimeLine
 
 **样式由自己定制的时间轴**。
 
 ![timeline](https://github.com/mCyp/Orient-Ui/blob/master/picture/Timeline.png)
 
-### 表格 - Table
+### # 表格 - Table
 
 **TableView**是一个强大和灵活的基于RecyclerView的表格控件，支持
 
@@ -35,17 +35,11 @@
 
 ![table](https://github.com/mCyp/Orient-Ui/blob/master/picture/table.jpg)
 
-### 状态视图 - EmptyView
+### # 状态视图 - EmptyView
 
 自由切换数据的`空`、`加载`、`错误`和`显示`的状态。
 
 <img src="https://github.com/mCyp/Orient-Ui/blob/master/picture/EmptyView.png" alt="EmptyView" style="zoom:50%;" />
-
-### 网格首页 - GridPage
-
-摆脱嵌套，借助`RecyclerView`的`GridLayoutManager`自制首页。
-
-<img width="200" height="400" src="https://github.com/mCyp/Orient-Ui/blob/master/picture/GridPage.png" alt="GridPage" style="float:left;" />
 
 ## 📖 依赖和文档
 
