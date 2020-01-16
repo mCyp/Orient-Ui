@@ -227,8 +227,6 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         return new int[]{mLayoutState.mHeadXOffset, mLayoutState.mHeadYOffset};
     }
 
-
-
     /**
      * 得到子视图的宽和高
      */
@@ -248,17 +246,12 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
         return (mode & s_col_span) != 0;
     }
 
-    public int[] getReminder() {
-        return new int[]{mWidthReminder, mHeightReminder};
-    }
-
     @Override
     public boolean canScrollHorizontally() {
         if (scrollFlag && mOrientation == RecyclerView.VERTICAL) {
             return false;
         }
         return !scrollerCallback.canScrollVertical();
-        //return true;
     }
 
     @Override
@@ -267,16 +260,11 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
             return false;
         }
         return scrollerCallback.canScrollVertical();
-        //return true;
     }
 
 
     @Override
     public synchronized int scrollHorizontallyBy(int dx, RecyclerView.Recycler recycler, RecyclerView.State state) {
-        /*if (mOrientation == RecyclerView.VERTICAL)
-            return 0;*/
-       /* if (scrollFlag && mOrientation == RecyclerView.VERTICAL)
-            return 0;*/
         if (scrollerCallback.canScrollVertical())
             return 0;
 
@@ -289,12 +277,8 @@ public class TableLayoutManager extends RecyclerView.LayoutManager {
 
     @Override
     public synchronized int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
-        /*if (mOrientation == RecyclerView.HORIZONTAL)
-            return 0;*/
-       /* if (scrollFlag && mOrientation == RecyclerView.HORIZONTAL)
-            return 0;*/
-       /* if (!scrollerCallback.canScrollVertical())
-            return 0;*/
+        if (!scrollerCallback.canScrollVertical())
+            return 0;
 
         scrollFlag = true;
         mOrientation = RecyclerView.VERTICAL;

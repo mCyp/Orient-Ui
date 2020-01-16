@@ -12,6 +12,10 @@ import android.view.ViewConfiguration;
 import com.orient.me.widget.rv.adapter.GridAdapter;
 import com.orient.me.widget.rv.layoutmanager.table.TableLayoutManager;
 
+/**
+ * 写这个类的目的：
+ * 是为了保证当前RecyclerView只能在一个方向滑动
+ */
 public class TableRecyclerView extends RecyclerView implements ScrollerCallback {
     private static final String TAG = "TableRecyclerView";
 
