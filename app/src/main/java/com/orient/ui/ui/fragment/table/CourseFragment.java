@@ -3,21 +3,15 @@ package com.orient.ui.ui.fragment.table;
 
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.orient.me.data.table.ICellItem;
 import com.orient.me.widget.rv.adapter.BaseAdapter;
 import com.orient.me.widget.rv.adapter.TableAdapter;
 import com.orient.me.widget.rv.adapter.TableView;
 import com.orient.me.widget.rv.layoutmanager.table.TableLayoutManager;
 import com.orient.ui.R;
-import com.orient.ui.ui.activity.table.TableActivity;
 import com.orient.ui.ui.activity.table.TableCell;
 import com.orient.ui.ui.fragment.BaseFragment;
 

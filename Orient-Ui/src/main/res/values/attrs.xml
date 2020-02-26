@@ -16,4 +16,14 @@
         <attr name="indicatorName" format="string"/>
         <attr name="indicatorColor" format="color"/>
     </declare-styleable>
+
+    <declare-styleable name="MultiSwitch">
+        <attr name="msBackgroundColor" format="reference|color" />
+        <attr name="msNormalTextColor" format="reference|color"/>
+        <attr name="msThumbTextColor" format="reference|color"/>
+        <attr name="msThumbColor" format="reference|color"/>
+        <attr name="msTextSize" format="reference|dimension"/>
+
+
+    </declare-styleable>
 </resources>

@@ -1,10 +1,9 @@
 package com.orient.ui.ui.activity;
 
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.orient.me.widget.rv.adapter.BaseAdapter;
 import com.orient.ui.R;

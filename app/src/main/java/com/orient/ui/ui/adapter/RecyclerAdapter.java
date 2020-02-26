@@ -1,18 +1,10 @@
 package com.orient.ui.ui.adapter;
 
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 
-import com.orient.me.data.IGridItem;
 import com.orient.me.widget.rv.adapter.BaseAdapter;
-import com.orient.ui.R;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import butterknife.ButterKnife;

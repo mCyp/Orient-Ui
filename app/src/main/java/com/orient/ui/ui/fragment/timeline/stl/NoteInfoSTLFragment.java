@@ -2,8 +2,8 @@ package com.orient.ui.ui.fragment.timeline.stl;
 
 
 import android.graphics.Color;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
@@ -12,19 +12,14 @@ import com.orient.me.widget.rv.itemdocration.timeline.TimeLine;
 import com.orient.ui.R;
 import com.orient.ui.ui.adapter.RecyclerAdapter;
 import com.orient.ui.ui.fragment.BaseFragment;
-import com.orient.ui.widget.timeline.dtl.DateInfo;
 import com.orient.ui.widget.timeline.stl.NoteInfo;
 import com.orient.ui.widget.timeline.stl.NoteInfoSTL;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 
 import static com.orient.ui.widget.timeline.stl.NoteInfo.NOTE_IMG;
-import static com.orient.ui.widget.timeline.stl.NoteInfo.NOTE_TEXT;
 
 /**
  * 展示详细日期的时间轴

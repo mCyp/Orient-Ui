@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context=".ui.activity.placeholder.PlaceHolderActivity">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:background="@color/teal_300"

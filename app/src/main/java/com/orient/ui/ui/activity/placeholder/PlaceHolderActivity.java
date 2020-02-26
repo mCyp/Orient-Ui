@@ -2,8 +2,8 @@ package com.orient.ui.ui.activity.placeholder;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
+import androidx.appcompat.widget.Toolbar;
+
 import android.widget.TextView;
 
 import com.orient.me.widget.placeholder.StatusView;

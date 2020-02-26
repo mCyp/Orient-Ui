@@ -9,7 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.activity.table.TableActivity"></activity>
+        <activity android:name=".ui.activity.sw.MultiSwitchActivity">
+        </activity>
+        <activity android:name=".ui.activity.table.TableActivity" />
         <activity android:name=".ui.activity.placeholder.PlaceHolderActivity" />
         <activity android:name=".ui.activity.timeline.TimelineActivity" />
         <activity android:name=".ui.activity.gridpage.GridPageActivity" />

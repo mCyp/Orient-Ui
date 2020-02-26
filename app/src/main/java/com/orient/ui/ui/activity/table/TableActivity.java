@@ -2,28 +2,12 @@ package com.orient.ui.ui.activity.table;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.view.View;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
+import com.google.android.material.tabs.TabLayout;
 
-import com.orient.me.widget.rv.adapter.BaseAdapter;
-import com.orient.me.widget.rv.adapter.TableAdapter;
-import com.orient.me.widget.rv.adapter.TableView;
-import com.orient.me.widget.rv.layoutmanager.table.TableLayoutManager;
 import com.orient.ui.R;
 import com.orient.ui.ui.activity.BaseActivity;
-import com.orient.ui.ui.adapter.CommonGridAdapter;
 import com.orient.ui.ui.adapter.TBAdapter;
-import com.orient.ui.ui.adapter.TimeLineAdapter;
 import com.orient.ui.widget.viewPager.NoScrollViewPager;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 import butterknife.BindView;
 

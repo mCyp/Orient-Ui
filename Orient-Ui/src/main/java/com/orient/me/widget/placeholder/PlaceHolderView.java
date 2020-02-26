@@ -1,6 +1,6 @@
 package com.orient.me.widget.placeholder;
 
-import android.support.annotation.StringRes;
+import androidx.annotation.StringRes;
 
 /**
  * 基础的占位布局接口定义

@@ -1,18 +1,12 @@
 package com.orient.ui.ui.adapter;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.orient.ui.ui.fragment.table.CourseFragment;
 import com.orient.ui.ui.fragment.table.PageFragment;
 import com.orient.ui.ui.fragment.table.TableFragment;
-import com.orient.ui.ui.fragment.timeline.dtl.DateInfoDTLFragment;
-import com.orient.ui.ui.fragment.timeline.dtl.WeekPlanDTLFragment;
-import com.orient.ui.ui.fragment.timeline.stl.NoteInfoSTLFragment;
-import com.orient.ui.ui.fragment.timeline.stl.SocialMediaSTLFragment;
-import com.orient.ui.ui.fragment.timeline.stl.StepSTLFragment;
-import com.orient.ui.ui.fragment.timeline.stl.WeekPlanSTLFragment;
 
 /**
  * 时间轴的展示的适配器

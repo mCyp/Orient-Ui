@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context=".ui.activity.table.TableActivity">
 
-    <android.support.design.widget.TabLayout
+    <com.google.android.material.tabs.TabLayout
         android:id="@+id/mTabLayout"
         style="@style/TabLayoutStyle"
         android:layout_width="match_parent"

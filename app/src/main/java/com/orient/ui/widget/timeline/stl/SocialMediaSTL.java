@@ -5,15 +5,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.graphics.Typeface;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+
 import android.text.TextUtils;
 
 import com.orient.me.data.ITimeItem;
 import com.orient.me.utils.UIUtils;
-import com.orient.me.widget.rv.itemdocration.timeline.DoubleTimeLineDecoration;
 import com.orient.me.widget.rv.itemdocration.timeline.SingleTimeLineDecoration;
 import com.orient.ui.widget.timeline.dtl.DateInfo;
 
