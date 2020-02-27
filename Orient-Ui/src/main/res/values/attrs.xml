@@ -23,6 +23,16 @@
         <attr name="msThumbTextColor" format="reference|color"/>
         <attr name="msThumbColor" format="reference|color"/>
         <attr name="msTextSize" format="reference|dimension"/>
+        <attr name="msIconSize" format="reference|dimension"/>
+        <attr name="msThumbMargin" format="reference|dimension"/>
+        <attr name="msShape" format="enum">
+            <enum name="rect" value="0"/>
+            <enum name="oval"  value="1"/>
+        </attr>
+        <attr name="msType" format="enum">
+            <enum name="text" value="0"/>
+            <enum name="icon" value="1"/>
+        </attr>
 
 
     </declare-styleable>

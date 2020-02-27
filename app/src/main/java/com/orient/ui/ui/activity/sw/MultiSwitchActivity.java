@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import com.orient.me.widget.sw.MultiSwitch;
 import com.orient.ui.R;
 import com.orient.ui.ui.activity.BaseActivity;
 
