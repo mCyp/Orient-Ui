@@ -39,7 +39,7 @@ public class DateInfoDTL extends DoubleTimeLineDecoration {
 
         space = UIUtils.dip2px(6);
 
-        mDotPaint.setMaskFilter(new BlurMaskFilter(6, BlurMaskFilter.Blur.SOLID));;
+        mDotPaint.setMaskFilter(new BlurMaskFilter(6, BlurMaskFilter.Blur.SOLID));
 
     }
 

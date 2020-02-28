@@ -1,13 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".ui.activity.sw.MultiSwitchActivity">
 
-    <com.orient.me.widget.sw.MultiSwitch
+    <FrameLayout
+        android:id="@+id/fl_head"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:background="@color/grey_300"
+        android:layout_height="@dimen/len_72">
 
-</FrameLayout>
+        <com.orient.me.widget.sw.MultiSwitch
+            android:id="@+id/ms_head"
+            android:layout_width="240dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            app:msBackgroundColor="@color/grey_800"
+            app:msNormalTextColor="@color/textPrimary"
+            app:msShape="rect"
+            app:msTextSize="@dimen/font_16"
+            app:msThumbColor="@color/purple_600"
+            app:msThumbTextColor="@color/white"
+            app:msType="text" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_content"
+        android:layout_width="match_parent"
+        android:background="@color/grey_800"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/black" />
+
+        <com.orient.me.widget.sw.MultiSwitch
+            android:id="@+id/ms_content"
+            android:layout_width="240dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/len_20"
+            app:msBackgroundColor="@color/grey_500"
+            app:msNormalTextColor="@color/white"
+            app:msShape="rect"
+            app:msTextSize="@dimen/font_16"
+            app:msThumbColor="@color/orange_300"
+            app:msThumbTextColor="@color/grey_500"
+            app:msType="text" />
+
+        <com.orient.me.widget.sw.MultiSwitch
+            android:id="@+id/ms_icon"
+            android:layout_width="240dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/len_20"
+            app:msBackgroundColor="@color/red_400"
+            app:msIconSize="@dimen/len_24"
+            app:msNormalTextColor="@color/white"
+            app:msShape="oval"
+            app:msThumbColor="@color/white"
+            app:msThumbMargin="@dimen/len_6"
+            app:msThumbTextColor="@color/red_400"
+            app:msType="icon" />
+
+        <com.orient.me.widget.sw.MultiSwitch
+            android:id="@+id/ms_weak"
+            android:layout_width="match_parent"
+            android:layout_marginStart="@dimen/len_10"
+            android:layout_marginEnd="@dimen/len_10"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/len_20"
+            app:msBackgroundColor="@color/teal_300"
+            app:msTextSize="@dimen/font_18"
+            app:msNormalTextColor="@color/white_alpha_192"
+            app:msShape="rect"
+            app:msThumbColor="@color/white"
+            app:msThumbMargin="@dimen/len_6"
+            app:msThumbTextColor="@color/teal_300"
+            app:msType="text" />
+
+        <com.orient.me.widget.sw.MultiSwitch
+            android:id="@+id/ms_check"
+            android:layout_width="120dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/len_20"
+            app:msBackgroundColor="@color/light_blue_400"
+            app:msTextSize="@dimen/font_18"
+            app:msNormalTextColor="@color/white_alpha_192"
+            app:msShape="oval"
+            app:msThumbColor="@color/white"
+            app:msThumbTextColor="@color/light_blue_500"
+            app:msType="text" />
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

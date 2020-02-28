@@ -22,6 +22,8 @@
         <attr name="msNormalTextColor" format="reference|color"/>
         <attr name="msThumbTextColor" format="reference|color"/>
         <attr name="msThumbColor" format="reference|color"/>
+        <attr name="msThumbBorderWidth" format="reference|dimension"/>
+        <attr name="msThumbBorderColor" format="color|dimension"/>
         <attr name="msTextSize" format="reference|dimension"/>
         <attr name="msIconSize" format="reference|dimension"/>
         <attr name="msThumbMargin" format="reference|dimension"/>

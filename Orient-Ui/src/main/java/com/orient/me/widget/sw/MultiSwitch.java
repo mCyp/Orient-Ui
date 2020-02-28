@@ -1,20 +1,24 @@
 package com.orient.me.widget.sw;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 
 import com.orient.me.R;
 import com.orient.me.utils.UIUtils;
@@ -31,6 +35,8 @@ import com.orient.me.utils.UIUtils;
  * 6. 支持椭圆或者圆角矩形
  */
 public class MultiSwitch extends View {
+
+    public static final String TAG = "MultiSwitch";
 
     /**
      * 形状
@@ -91,17 +97,25 @@ public class MultiSwitch extends View {
     private int mTextSize;
     // 图标大小
     private int mIconSize;
+    // 边框大小
+    private int mThumbBorderWidth;
 
     private Paint mBgColorPaint;
     private Paint mBgTextPaint;
     private Paint mThumbColorPaint;
     private Paint mThumbTextPaint;
+    private Paint mThumbBorderPaint;
 
     // 当前滑块的状态
     private ThumbState mThumbState;
     private int mThumbMargin;
 
     private ValueAnimator mValueAnimator;
+
+    // 点击时间
+    private long pressTime;
+
+    private MultiSwitchListener mListener;
 
     public MultiSwitch(Context context) {
         this(context, null);
@@ -126,28 +140,40 @@ public class MultiSwitch extends View {
         mBgTextColor = typedArray.getColor(R.styleable.MultiSwitch_msNormalTextColor, getResources().getColor(R.color.textPrimary));
         mThumbColor = typedArray.getColor(R.styleable.MultiSwitch_msThumbColor, getResources().getColor(R.color.colorPrimary));
         mThumbTextColor = typedArray.getColor(R.styleable.MultiSwitch_msThumbTextColor, getResources().getColor(R.color.white));
-        // TODO 检验得出来的文本大小是否转化过
         mTextSize = typedArray.getDimensionPixelSize(R.styleable.MultiSwitch_msTextSize, UIUtils.sp2px(context, 20));
         mIconSize = typedArray.getDimensionPixelSize(R.styleable.MultiSwitch_msIconSize, UIUtils.dip2px(context, 24));
         mType = SwitchType.values()[typedArray.getInt(R.styleable.MultiSwitch_msType, SwitchType.TEXT.ordinal())];
         mShape = SwitchShape.values()[typedArray.getInt(R.styleable.MultiSwitch_msShape, SwitchShape.RECT.ordinal())];
         mThumbMargin = typedArray.getDimensionPixelOffset(R.styleable.MultiSwitch_msThumbMargin, UIUtils.dip2px(2));
+        mThumbBorderWidth = typedArray.getDimensionPixelOffset(R.styleable.MultiSwitch_msThumbBorderWidth, UIUtils.dip2px(0));
+        int thumbBorderColor = typedArray.getColor(R.styleable.MultiSwitch_msThumbBorderColor, getResources().getColor(R.color.white));
         // TODO 设置默认位置
 
         // 初始化画笔
         mBgColorPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
         mBgColorPaint.setColor(mBgColor);
-        mBgTextPaint = new Paint();
+        mBgTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
         mBgTextPaint.setTextSize(mTextSize);
         mBgTextPaint.setColor(mBgTextColor);
-        mThumbColorPaint = new Paint();
+        mThumbColorPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
         mThumbColorPaint.setColor(mThumbColor);
-        mThumbTextPaint = new Paint();
+        mThumbBorderPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+        mThumbBorderPaint.setStyle(Paint.Style.STROKE);
+        mThumbBorderPaint.setStrokeWidth(mThumbBorderWidth);
+        mThumbBorderPaint.setColor(thumbBorderColor);
+        mThumbTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
         mThumbTextPaint.setTextSize(mTextSize);
         mThumbTextPaint.setColor(mThumbTextColor);
 
         // 初始化滑块状态
         mThumbState = new ThumbState(0, 0);
+    }
+
+    /**
+     * 设置监听器
+     */
+    public void setMultiSwitchListener(MultiSwitchListener listener) {
+        this.mListener = listener;
     }
 
     /**
@@ -163,6 +189,7 @@ public class MultiSwitch extends View {
         this.mItems = items;
         this.mItemCount = items.length;
         this.mItemCoordinate = new int[items.length + 1];
+        invalidate();
     }
 
     /**
@@ -178,6 +205,7 @@ public class MultiSwitch extends View {
         this.mIconRes = items;
         this.mItemCount = items.length;
         this.mItemCoordinate = new int[items.length + 1];
+        invalidate();
     }
 
     @Override
@@ -288,7 +316,7 @@ public class MultiSwitch extends View {
         Rect bounds = new Rect();
         paint.getTextBounds(text, 0, text.length(), bounds);
         Paint.FontMetrics fontMetrics = paint.getFontMetrics();
-        int x = w / 2 - bounds.width() / 2;
+        int x = left + (w / 2 - bounds.width() / 2);
         int y = (int) ((h - fontMetrics.bottom + fontMetrics.top) / 2 - fontMetrics.top);
         canvas.drawText(text, x, y, paint);
     }
@@ -297,16 +325,48 @@ public class MultiSwitch extends View {
      * 绘制图标
      */
     private void drawIcon(Canvas canvas, int res, int left, int top, int right, int bottom, Paint paint) {
-        Drawable drawable = ContextCompat.getDrawable(getContext(), res);
-        drawable.setTint(paint.getColor());
-        int cx = left + (right - left) / 2;
-        int cy = top + (bottom - top) / 2;
-        int l = cx - mIconSize / 2;
-        int t = cy - mIconSize / 2;
-        int r = cx + mIconSize / 2;
-        int b = cy + mIconSize / 2;
-        drawable.setBounds(l, t, r, b);
-        drawable.draw(canvas);
+        Bitmap bitmap = getBitmap(getContext(), res, paint.getColor());
+        bitmap = zoomImg(bitmap, mIconSize, mIconSize);
+        int cx = left + (right - left - bitmap.getWidth()) / 2;
+        int cy = top + (bottom - top - bitmap.getHeight()) / 2;
+        canvas.drawBitmap(bitmap, cx, cy, paint);
+    }
+
+    /**
+     * 对Bitmap进行缩放
+     */
+    public Bitmap zoomImg(Bitmap bm, int newWidth, int newHeight) {
+        // 获得图片的宽高
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        // 计算缩放比例
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // 取得想要缩放的matrix参数
+        Matrix matrix = new Matrix();
+        matrix.postScale(scaleWidth, scaleHeight);
+        // 得到新的图片
+        Bitmap newbm = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, true);
+        return newbm;
+    }
+
+    /**
+     * 对矢量图进行获取
+     */
+    private Bitmap getBitmap(Context context, int vectorDrawableId, int color) {
+        Bitmap bitmap;
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            Drawable vectorDrawable = context.getDrawable(vectorDrawableId);
+            vectorDrawable.setTint(color);
+            bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(),
+                    vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            vectorDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            vectorDrawable.draw(canvas);
+        } else {
+            bitmap = BitmapFactory.decodeResource(context.getResources(), vectorDrawableId);
+        }
+        return bitmap;
     }
 
     /**
@@ -318,14 +378,21 @@ public class MultiSwitch extends View {
         canvas.save();
         Rect rect = new Rect(left + mThumbMargin, top + mThumbMargin, right - mThumbMargin, bottom - mThumbMargin);
         canvas.clipRect(rect);
-
         // 绘制滑块
+        int padding = mThumbMargin + mThumbBorderWidth;
         if (mShape == SwitchShape.RECT) {
-            drawRoundRect(canvas, left + mThumbMargin, top + mThumbMargin
-                    , right - mThumbMargin, bottom - mThumbMargin, CORNER_RADIUS, mThumbColorPaint);
+            drawRoundRect(canvas, left + padding, top + padding
+                    , right - padding, bottom - padding, CORNER_RADIUS, mThumbColorPaint);
+            if (mThumbBorderWidth != 0)
+                drawRoundRect(canvas, left + mThumbMargin, top + mThumbMargin
+                        , right - mThumbMargin, bottom - mThumbMargin, CORNER_RADIUS, mThumbBorderPaint);
+
         } else {
-            drawRoundRect(canvas, left + mThumbMargin, top + mThumbMargin
-                    , right - mThumbMargin, bottom - mThumbMargin, (bottom - top) / 2 - mThumbMargin, mThumbColorPaint);
+            drawRoundRect(canvas, left + padding, top + padding
+                    , right - padding, bottom - padding, (bottom - top) / 2 - padding, mThumbColorPaint);
+            if (mThumbBorderWidth != 0)
+                drawRoundRect(canvas, left + mThumbMargin, top + mThumbMargin
+                        , right - mThumbMargin, bottom - mThumbMargin, (bottom - top) / 2 - mThumbMargin, mThumbBorderPaint);
         }
 
         int first, second;
@@ -336,20 +403,20 @@ public class MultiSwitch extends View {
             first = mThumbState.pos;
             second = -1;
         } else {
-            first = mThumbState.pos - 1;
-            second = first + 1;
+            first = mThumbState.pos;
+            second = first - 1;
         }
 
         // 绘制文字
         if (mType == SwitchType.TEXT) {
-            drawText(canvas, mItems[first], mItemCoordinate[first], top, mItemCoordinate[first + 1], bottom, mThumbColorPaint);
-            if (second != -1) {
-                drawText(canvas, mItems[second], mItemCoordinate[second], top, mItemCoordinate[second + 1], bottom, mThumbColorPaint);
+            drawText(canvas, mItems[first], mItemCoordinate[first], top, mItemCoordinate[first + 1], bottom, mThumbTextPaint);
+            if (second != -1 && second <= mItemCount - 1) {
+                drawText(canvas, mItems[second], mItemCoordinate[second], top, mItemCoordinate[second + 1], bottom, mThumbTextPaint);
             }
         } else {
-            drawIcon(canvas, mIconRes[first], mItemCoordinate[first], top, mItemCoordinate[first + 1], bottom, mThumbColorPaint);
-            if (second != -1) {
-                drawIcon(canvas, mIconRes[second], mItemCoordinate[second], top, mItemCoordinate[second + 1], bottom, mThumbColorPaint);
+            drawIcon(canvas, mIconRes[first], mItemCoordinate[first], top, mItemCoordinate[first + 1], bottom, mThumbTextPaint);
+            if (second >= 0) {
+                drawIcon(canvas, mIconRes[second], mItemCoordinate[second], top, mItemCoordinate[second + 1], bottom, mThumbTextPaint);
             }
         }
 
@@ -362,29 +429,45 @@ public class MultiSwitch extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (mItemCount <= 0)
+            return true;
         curX = event.getX();
         curY = event.getY();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                pressTime = System.currentTimeMillis();
                 checkDrag();
+                if (mThumbState.canDrag && mValueAnimator != null && mValueAnimator.isRunning()) {
+                    mValueAnimator.cancel();
+                }
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (!mThumbState.canDrag)
                     break;
                 float deltaX = curX - lastX;
-                if (deltaX > ViewConfiguration.get(getContext()).getScaledTouchSlop()) {
+                if (deltaX != 0) {
+                    mThumbState.state = ThumbStatus.STATUS_DRAG;
                     handleMove(deltaX);
                 }
                 break;
-            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_UP: {
+                int pos = 0;
+                boolean isClick = (System.currentTimeMillis() - pressTime) <= 300;
+                pos = calculatePos(curX, isClick);
+                animate(mItemCoordinate[pos]);
+                mThumbState.canDrag = false;
+                break;
+            }
             case MotionEvent.ACTION_CANCEL:
-
+                int pos = calculatePos(lastX, false);
+                animate(mItemCoordinate[pos]);
+                mThumbState.canDrag = false;
                 break;
 
         }
         lastX = curX;
         lastY = curY;
-        return super.onTouchEvent(event);
+        return true;
     }
 
     /**
@@ -406,59 +489,123 @@ public class MultiSwitch extends View {
      * @param dx 滑动距离
      */
     private void handleMove(float dx) {
+        // 如果当前处于最后一个或者第一个
+        if ((mThumbState.pos > mItemCount - 1)) {
+            mThumbState.pos = mItemCount - 1;
+            mThumbState.offset = 0;
+            return;
+        }
+        if (mThumbState.pos < 0) {
+            mThumbState.pos = 0;
+            mThumbState.offset = 0;
+            return;
+        }
+
+        // 判断当前位置是否越界
+        float targetOffset = mItemCoordinate[mThumbState.pos] + mThumbState.offset + dx;
+        if (targetOffset > mItemCoordinate[mItemCount - 1]) {
+            mThumbState.pos = mItemCount - 1;
+            mThumbState.offset = 0;
+            return;
+        } else if (targetOffset < mItemCoordinate[0]) {
+            mThumbState.pos = 0;
+            mThumbState.offset = 0;
+            return;
+        }
+
         mThumbState.offset += dx;
         if (Math.abs(mThumbState.offset) >= mAveWidth) {
             int pos = mThumbState.pos;
             if (mThumbState.offset > 0) {
                 while (mItemCoordinate[pos] + mThumbState.offset >= mItemCoordinate[pos + 1]) {
-                    if (pos == mItemCount - 1
-                            || mItemCoordinate[pos] + mThumbState.offset >= mItemCoordinate[mItemCount - 1]) {
-                        mThumbState.pos = mItemCount - 1;
-                        mThumbState.offset = 0;
-                        invalidate();
-                        return;
-                    }
-
                     pos++;
                     mThumbState.offset -= (mItemCoordinate[pos] - mItemCoordinate[pos - 1]);
                 }
             } else {
                 while (pos != 0 && mItemCoordinate[pos] + mThumbState.offset <= mItemCoordinate[pos - 1]) {
-                    if (pos == 1
-                            || mItemCoordinate[pos] + mThumbState.offset < mItemCoordinate[0]) {
-                        mThumbState.pos = 0;
-                        mThumbState.offset = 0;
-                        invalidate();
-                        return;
-                    }
-
                     pos--;
-                    mThumbState.offset += (mItemCoordinate[pos + 1] - mItemCoordinate[pos - 1]);
+                    mThumbState.offset += (mItemCoordinate[pos + 1] - mItemCoordinate[pos]);
                 }
             }
             mThumbState.pos = pos;
         }
-        invalidate();
+
+        if (mListener != null) {
+            float percent = ((float) mThumbState.offset) / mAveWidth;
+            mListener.onPositionOffsetPercent(mThumbState.pos, percent);
+        }
+
+        postInvalidate();
     }
 
-    private void animate(float x){
-        int startX = mThumbState.pos+mThumbState.offset;
-        mValueAnimator = ValueAnimator.ofFloat(startX,x);
+    private int calculatePos(float x, boolean isClick) {
+        int targetPos = mThumbState.pos;
+        if (isClick) {
+            targetPos = (int) (x / mAveWidth);
+        } else {
+            if (Math.abs(mThumbState.offset) > mAveWidth / 2) {
+                if (mThumbState.offset > 0) {
+                    targetPos = mThumbState.pos + 1;
+                }
+                if (mThumbState.offset < 0) {
+                    targetPos = mThumbState.pos - 1;
+                }
+            }
+        }
+
+        // 判断当前位置是否越界
+        if (targetPos < 0)
+            targetPos = 0;
+        else if (targetPos >= mItemCount)
+            targetPos = mItemCount - 1;
+
+        return targetPos;
+    }
+
+    private void animate(float x) {
+        int startX = mItemCoordinate[mThumbState.pos] + mThumbState.offset;
+        mValueAnimator = ValueAnimator.ofFloat(startX, x);
         mValueAnimator.setDuration(200);
         mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float cx = (float) animation.getAnimatedValue();
-                //int x = (cx - (mItemCoordinate[mThumbState.pos]+mThumbState.offset))
+                int x = (int) (cx / mAveWidth);
+                mThumbState.pos = x;
+                mThumbState.offset = (int) (cx - mItemCoordinate[mThumbState.pos]);
+                postInvalidate();
             }
         });
+        mValueAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                super.onAnimationCancel(animation);
+                mThumbState.state = ThumbStatus.STATUS_STATIC;
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                mThumbState.state = ThumbStatus.STATUS_STATIC;
+                if (mListener != null) {
+                    mListener.onPositionSelected(mThumbState.pos);
+                }
+            }
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                mThumbState.state = ThumbStatus.STATUS_ANIMATION;
+            }
+        });
+        mValueAnimator.start();
     }
 
 
     /**
      * 滑块的状态
      */
-    enum ThumbStaus {
+    enum ThumbStatus {
         STATUS_STATIC,
         STATUS_DRAG,
         STATUS_ANIMATION
@@ -471,7 +618,7 @@ public class MultiSwitch extends View {
         int pos;
         int offset;
         boolean canDrag;
-        ThumbStaus state = ThumbStaus.STATUS_STATIC;
+        ThumbStatus state = ThumbStatus.STATUS_STATIC;
 
         public ThumbState(int pos, int offset) {
             this.pos = pos;
