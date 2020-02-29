@@ -52,7 +52,8 @@
 ####  添加依赖
 
 ```groovy
-implementation 'com.orient:Orient-Ui:1.0.2'
+// 最新版本详见上面
+implementation 'com.orient:Orient-Ui:latestVersion'
 ```
 
 #### [使用说明](https://github.com/mCyp/Orient-Ui/blob/master/doc/Document.md)
