@@ -6,10 +6,12 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.orient.me.widget.rv.adapter.BaseAdapter;
+import com.orient.me.widget.sw.MultiSwitch;
 import com.orient.ui.R;
 import com.orient.ui.ui.activity.gridpage.GridPageActivity;
 import com.orient.ui.ui.activity.placeholder.PlaceHolderActivity;
 import com.orient.ui.ui.activity.doubleside.DoubleSideLayoutActivity;
+import com.orient.ui.ui.activity.sw.MultiSwitchActivity;
 import com.orient.ui.ui.activity.table.TableActivity;
 import com.orient.ui.ui.activity.timeline.TimelineActivity;
 import com.orient.ui.ui.adapter.RecyclerAdapter;
@@ -77,6 +79,9 @@ public class MainActivity extends BaseActivity {
                     case "表格":
                         TableActivity.show(MainActivity.this);
                         break;
+                    case "MultiSwitch":
+                        MultiSwitchActivity.show(MainActivity.this);
+                        break;
                 }
             }
         });
@@ -89,6 +94,7 @@ public class MainActivity extends BaseActivity {
         items.add(new MainItem("时间轴", -1));
         items.add(new MainItem("占位布局", -1));
         items.add(new MainItem("表格", -1));
+        items.add(new MainItem("MultiSwitch", -1));
         return items;
     }
 

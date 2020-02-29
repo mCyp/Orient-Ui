@@ -13,12 +13,6 @@
 
 ## 💫 功能
 
-### # 两侧布局 - DoubleSideLayout
-
-借助`RecyclerView`实现以下布局。
-
-<img width="200" height="400" src="https://github.com/mCyp/Orient-Ui/blob/master/picture/%E4%B8%A4%E4%BE%A7%E5%B8%83%E5%B1%80.png" alt="S90929-10290486"  style="float:left;" />
-
 ### # 时间轴 - TimeLine
 
 **样式由自己定制的时间轴**。
@@ -35,11 +29,23 @@
 
 ![table](https://github.com/mCyp/Orient-Ui/blob/master/picture/table.jpg)
 
-### # 状态视图 - EmptyView
+### # 切换按钮 - MultiSwitch
+
+**MultiSwitch**支持多个子选项。
+
+![MultiSwirch](https://github.com/mCyp/Orient-Ui/blob/master/picture/MultiSwitch.gif)
+
+### # 状态视图 - StatusView
 
 自由切换数据的`空`、`加载`、`错误`和`显示`的状态。
 
-<img src="https://github.com/mCyp/Orient-Ui/blob/master/picture/EmptyView.png" alt="EmptyView" style="zoom:50%;" />
+![StatusView](https://github.com/mCyp/Orient-Ui/blob/master/picture/StatusView.gif)
+
+### # 两侧布局 - DoubleSideLayout
+
+借助`RecyclerView`实现以下布局。
+
+<img width="200" height="400" src="https://github.com/mCyp/Orient-Ui/blob/master/picture/%E4%B8%A4%E4%BE%A7%E5%B8%83%E5%B1%80.png" alt="S90929-10290486"  style="float:left;" />
 
 ## 📖 依赖和文档
 

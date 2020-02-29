@@ -23,7 +23,8 @@ Add Dependency in `build.gradle`:
 > 在项目文件`build.gradle`添加依赖
 
 ```groovy
-implementation 'com.orient:Orient-Ui:1.0.2'
+// 注意是否是最新版本
+implementation 'com.orient:Orient-Ui:2.1.0'
 ```
 
 ## DoubleSideLayout | 两侧布局
@@ -151,7 +152,7 @@ The main difference between **SingleTimeLine** and **DoubleTimeLine** is parent 
 
 ### Use | 使用
 
-1. add into xml | 添加进xml文件中
+1. add in xml | 添加进xml文件中
 
 some **attr** in **StatusView**
 
@@ -351,6 +352,85 @@ if you use Mode_A、Mode_C or Mode_D, you need remeasure
 ```java
 mTable.post(() -> mTable.reMeasure());
 ```
+
+## MultiSwitch | 多状态切换按钮
+
+**MultiSwitch** can support multi-item and icon.
+
+> **MultiSwitch** 支持多个子选项，并且支持图标。
+
+### Use | 使用
+
+1. Add in xml | 添加进xml布局文件
+
+```xml
+<com.orient.me.widget.sw.MultiSwitch
+    android:id="@+id/ms_weak"
+    android:layout_width="match_parent"
+    android:layout_marginStart="@dimen/len_10"
+    android:layout_marginEnd="@dimen/len_10"
+    android:layout_height="60dp"
+    android:layout_gravity="center"
+    android:layout_marginTop="@dimen/len_20"
+    app:msBackgroundColor="@color/teal_300"
+    app:msTextSize="@dimen/font_18"
+    app:msNormalTextColor="@color/white_alpha_192"
+    app:msShape="rect"
+    app:msThumbColor="@color/white"
+    app:msThumbMargin="@dimen/len_6"
+    app:msThumbTextColor="@color/teal_300"
+    app:msType="text" />
+```
+
+解释一下各个属性的用法：
+
+| 属性                | 说明                       | 类型                 |
+| ------------------- | -------------------------- | -------------------- |
+| `msBackgroundColor` | 背景颜色                   | reference\|color     |
+| `msNormalTextColor` | 非选中状态文本或者Icon颜色 | reference\|color     |
+| `msThumbTextColor`  | 滑块中文本或者Icon颜色     | reference\|color     |
+| `msTextSize`        | 文本大小                   | reference\|dimension |
+| `msIconSize`        | 图标大小                   | reference\|dimension |
+| `msThumbMargin`     | 滑块的外边距               | reference\|dimension |
+| `msShape`           | 选择的形状                 | `rect` or `oval`     |
+| `msType`            | 选择的类型                 | `text` or `icon`     |
+| `msThumbColor`      | 滑块背景色                 | reference            |
+
+2. Get MultiSwitch | 获取MultiSwitch
+
+use `findViewById` get MultiSwitch
+
+> 使用`findViewById`获取
+
+3. Set Items（necessary） | 设置选项内容
+
+set `String Array` or `Icon Array`
+
+> 设置字符串数组或者Icon数组
+
+```java
+mHead.setItemsArray(new String[]{"Dark","Light"});
+// or
+mIconSwitch.setIconArray(new int[]{R.drawable.grid_ic_play,R.drawable.ic_camera,R.drawable.common_ic_back});
+```
+
+4. Set Linstener | 设置监听器
+
+```java
+mHead.setMultiSwitchListener(new MultiSwitchListener() {
+    @Override
+    public void onPositionSelected(int pos) {
+        // when pos selected, it will call back
+    }
+
+    @Override
+    public void onPositionOffsetPercent(int pos, float percent) {
+        // current page move offset percent when drag
+    }
+});
+```
+
+
 
 ## GridPage | 网格首页
 
