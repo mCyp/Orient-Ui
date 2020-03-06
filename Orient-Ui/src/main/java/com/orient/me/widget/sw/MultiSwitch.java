@@ -189,6 +189,7 @@ public class MultiSwitch extends View {
         this.mItems = items;
         this.mItemCount = items.length;
         this.mItemCoordinate = new int[items.length + 1];
+        fillArray();
         invalidate();
     }
 
@@ -205,6 +206,20 @@ public class MultiSwitch extends View {
         this.mIconRes = items;
         this.mItemCount = items.length;
         this.mItemCoordinate = new int[items.length + 1];
+        fillArray();
+        invalidate();
+    }
+
+    /**
+     * 设置当前位置
+     * @param pos
+     */
+    public void setCurrentItem(int pos){
+        if(pos >= mItemCount)
+            pos = mItemCount - 1;
+        else if(pos < 0)
+            pos = 0;
+        mThumbState.pos = pos;
         invalidate();
     }
 
@@ -231,24 +246,31 @@ public class MultiSwitch extends View {
             mHeight = h;
         }
         if (mWidth != 0 && mItemCount != 0) {
-            int aveWidth = mWidth / mItemCount;
-            int reminder = mWidth % mItemCount;
-            int startLeft = 0;
-            mItemCoordinate[0] = startLeft;
-            for (int i = 1; i < mItemCoordinate.length; i++) {
-                startLeft += aveWidth;
-                if (reminder > 0) {
-                    startLeft++;
-                    reminder--;
-                }
-                mItemCoordinate[i] = startLeft;
-            }
-            mAveWidth = aveWidth;
+           fillArray();
         }
         if (mHeight != 0) {
             top = 0;
             bottom = top + mHeight;
         }
+    }
+
+    private void fillArray(){
+        if(mWidth == 0)
+            return;
+
+        int aveWidth = mWidth / mItemCount;
+        int reminder = mWidth % mItemCount;
+        int startLeft = 0;
+        mItemCoordinate[0] = startLeft;
+        for (int i = 1; i < mItemCoordinate.length; i++) {
+            startLeft += aveWidth;
+            if (reminder > 0) {
+                startLeft++;
+                reminder--;
+            }
+            mItemCoordinate[i] = startLeft;
+        }
+        mAveWidth = aveWidth;
     }
 
     @Override
@@ -257,6 +279,7 @@ public class MultiSwitch extends View {
 
         mWidth = w;
         mHeight = h;
+        fillArray();fillArray();
     }
 
     @Override
@@ -373,12 +396,15 @@ public class MultiSwitch extends View {
      * 绘制Switch滑动块
      */
     private void drawThumb(Canvas canvas) {
+        // 滑块的左右边界
         int left = mItemCoordinate[mThumbState.pos] + mThumbState.offset;
         int right = mItemCoordinate[mThumbState.pos + 1] + mThumbState.offset;
+        // 1. 保存当前图层
         canvas.save();
         Rect rect = new Rect(left + mThumbMargin, top + mThumbMargin, right - mThumbMargin, bottom - mThumbMargin);
+        // 2. 根据滑块的设定大小裁剪画布
         canvas.clipRect(rect);
-        // 绘制滑块
+        // 3. 绘制滑块
         int padding = mThumbMargin + mThumbBorderWidth;
         if (mShape == SwitchShape.RECT) {
             drawRoundRect(canvas, left + padding, top + padding
@@ -407,7 +433,7 @@ public class MultiSwitch extends View {
             second = first - 1;
         }
 
-        // 绘制文字
+        // 4. 绘制文字orIcon
         if (mType == SwitchType.TEXT) {
             drawText(canvas, mItems[first], mItemCoordinate[first], top, mItemCoordinate[first + 1], bottom, mThumbTextPaint);
             if (second != -1 && second <= mItemCount - 1) {
@@ -420,8 +446,8 @@ public class MultiSwitch extends View {
             }
         }
 
+        // 5. 底层的画布恢复
         canvas.restore();
-
     }
 
     private float curX, curY;

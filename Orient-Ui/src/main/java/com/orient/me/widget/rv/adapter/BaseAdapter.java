@@ -138,7 +138,7 @@ public abstract class BaseAdapter<Data> extends RecyclerView.Adapter<BaseAdapter
     public void addAllData(Collection<Data> datas){
         int start = mDataList.size();
         mDataList.addAll(datas);
-        notifyItemRangeChanged(start,mDataList.size()-1);
+        notifyItemRangeChanged(start,datas.size());
     }
 
     /**
@@ -147,7 +147,7 @@ public abstract class BaseAdapter<Data> extends RecyclerView.Adapter<BaseAdapter
     public void addAllData(Data... datas){
         int start = mDataList.size();
         mDataList.addAll(Arrays.asList(datas));
-        notifyItemRangeChanged(start,mDataList.size()-1);
+        notifyItemRangeChanged(start,datas.length);
     }
 
     /**

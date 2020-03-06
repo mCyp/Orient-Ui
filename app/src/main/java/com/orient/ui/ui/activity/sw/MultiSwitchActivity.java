@@ -71,6 +71,7 @@ public class MultiSwitchActivity extends BaseActivity {
         });
 
         mSwitch.setItemsArray(new String[]{"Android", "Ios", "Java"});
+        mSwitch.setCurrentItem(2);
         mSwitch.setMultiSwitchListener(new MultiSwitchListener() {
             @Override
             public void onPositionSelected(int pos) {
