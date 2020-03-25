@@ -44,6 +44,9 @@ public class TableView<Data extends ICellItem> extends FrameLayout implements Fi
     private int w = 4;
     private int h = 8;
 
+    // 边界的监听器
+    private BoundCallback callback;
+
     public TableView(@NonNull Context context) {
         this(context, null);
     }
@@ -83,6 +86,14 @@ public class TableView<Data extends ICellItem> extends FrameLayout implements Fi
         mLeftRv.setVisibility(isLeftOpen ? VISIBLE : GONE);
         mTitleRv.setVisibility(isTopOpen ? VISIBLE : GONE);
         mTitleHeadFl.setVisibility(isTopOpen ? VISIBLE : GONE);
+    }
+
+    /**
+     * 设置边界监听器
+     * 可以是被是否被滑动到底部或者顶部
+     */
+    public void setBoundCallback(BoundCallback callback){
+        this.callback = callback;
     }
 
     private void init() {
@@ -209,6 +220,18 @@ public class TableView<Data extends ICellItem> extends FrameLayout implements Fi
         });
 
         mTableRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && callback != null) {
+                    boolean isToBottom = recyclerView.canScrollVertically(1);
+                    boolean isToTop = recyclerView.canScrollVertically(-1);
+                    callback.onScrollToTopOrBottom(isToTop, isToBottom);
+                }
+            }
+
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -260,10 +283,19 @@ public class TableView<Data extends ICellItem> extends FrameLayout implements Fi
     }
 
 
+
+
     @Override
     public void titleFirstItemAdd() {
         setHeadFirstItem();
 
+    }
+
+    /**
+     * 用来监听是否话
+     */
+    public interface BoundCallback{
+        void onScrollToTopOrBottom(boolean isToTop,boolean isToBottom);
     }
 
 
