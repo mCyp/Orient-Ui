@@ -109,8 +109,10 @@ public class MultiSwitch extends View {
     // 当前滑块的状态
     private ThumbState mThumbState;
     private int mThumbMargin;
-
+    // 动画
     private ValueAnimator mValueAnimator;
+    private boolean canSelect = true;
+
 
     // 点击时间
     private long pressTime;
@@ -221,6 +223,13 @@ public class MultiSwitch extends View {
             pos = 0;
         mThumbState.pos = pos;
         invalidate();
+    }
+
+    /**
+     * 设置是否可以点击
+     */
+    public void setCanSelect(boolean canSelect){
+        this.canSelect = false;
     }
 
     @Override
@@ -455,7 +464,7 @@ public class MultiSwitch extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (mItemCount <= 0)
+        if (mItemCount <= 0 || !canSelect)
             return true;
         curX = event.getX();
         curY = event.getY();

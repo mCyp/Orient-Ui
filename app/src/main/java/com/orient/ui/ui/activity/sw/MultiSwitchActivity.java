@@ -54,6 +54,8 @@ public class MultiSwitchActivity extends BaseActivity {
     protected void initWidget() {
         super.initWidget();
 
+        //mSwitch.setCanSelect(false);
+
         mHead.setItemsArray(new String[]{"Dark", "Light"});
         mHead.setMultiSwitchListener(new MultiSwitchListener() {
             @Override
